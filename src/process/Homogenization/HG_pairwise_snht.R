@@ -1,5 +1,16 @@
+# Pairwise SNHT - A relative homogeneity test
+# ts_data: Time series (matrix), first column is the target
+# alpha: The confidence level for the SNHT test (to detect break point)
+# period: Window size for the test statistic in months
+
+# Note: 
+# using scaled = TRUE in snht::snht the statistic follows an approximate
+# Chi^2 distribution, so in that way it is possible to obtain the critical value of the 
+# SHNT test (see https://www.math.uzh.ch/li/index.php?file&key1=38056)
+# Ho : there is no change point in the time series
+
 pha_hmg <- function(ts_data,
-                    crit = 20,
+                    alpha = 0.05,
                     period = 12*5)
 {
   
@@ -19,7 +30,10 @@ pha_hmg <- function(ts_data,
                                    dist = cor_dist, 
                                    k = dim(cor_dist)[1]-1, 
                                    period = period,
-                                   crit = crit)
+                                   robust = TRUE,
+                                   scaled = TRUE, 
+                                   crit = qchisq(1 - alpha/(length(ts_data) - period*2), df = 1))
+  
   target_hmg <- pha_result$data[pha_result$data$location == station_target,]$data
   target_hmg <- target_hmg[length(target_hmg):1] # time reversed (normal)
   target_hmg <- xts::xts(target_hmg, time(ts_data))

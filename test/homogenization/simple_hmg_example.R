@@ -21,3 +21,4 @@ snht_hmg(ts_data = data)$breaks
 lattice::xyplot(snht_hmg(ts_data = data)$hmg)
 # difference
 lattice::xyplot(snht_hmg(ts_data = data)$original-snht_hmg(ts_data = data)$hmg)
+
