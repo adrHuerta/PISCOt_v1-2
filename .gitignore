@@ -37,3 +37,17 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+
+# Heavy dirs
+/data/processed
+/data/raw/gridded/ELV/ELV.tif
+/data/raw/gridded/ELV/ELV2.tif
+/data/raw/gridded/LST/DAY
+/data/raw/gridded/LST/NIGHT
+/data/raw/gridded/TDI/TDI.tif
+/data/raw/gridded/TDI/TDI2.tif
+/data/raw/vectorial
+/data/raw/obs
+/data/output
+
+
