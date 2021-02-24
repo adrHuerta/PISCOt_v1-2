@@ -1,4 +1,17 @@
-# detrended non-parametric quantile mapping using robust empirical quantiles 
+# daily_varying_anom_qmap - Anomaly non-parametric quantile mapping using robust empirical quantiles
+# ts_obs : time serie of observed data
+# ts_model : time serie of model data
+# window_c : number of days after/previous date of correction
+
+# Note:
+# The approach is similar to https://journals.ametsoc.org/view/journals/clim/28/17/jcli-d-14-00754.1.xml and
+# https://journals.ametsoc.org/view/journals/eint/21/3/ei-d-16-0025.1.xml
+# i) the data is divided into chunks (366), each one has a center date 
+# that represent the daily climatology with +/- window_c dates, 
+# so a chunk has 2*window_c + 1 values 
+# ii) compute anomalies based on the mean values of OBS/MODEL data and fit the qmodel
+# iii) apply the qmodel using the anomaly of MODEL in the center date (anomaly based on the mean of OBS) 
+# iv) add iii) to the mean OBS value to get the absolute temperature values
 
 daily_varying_anom_qmap <- function(ts_obs,
                                     ts_model,
@@ -18,7 +31,7 @@ daily_varying_anom_qmap <- function(ts_obs,
     dailyVar[x:y]
   }, x = 1:366, y = (window_c*2+1):length(dailyVar), SIMPLIFY = FALSE) -> dailyVar
   
-  # applying qmap in standardized time series for each chunk of the daily climatology
+  # applying qmap in standardized (anomalies) time series for each chunk of the daily climatology
   lapply(dailyVar, function(daily_var_i){
     
     # chunk data

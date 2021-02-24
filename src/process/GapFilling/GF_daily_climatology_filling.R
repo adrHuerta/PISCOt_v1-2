@@ -1,3 +1,9 @@
+# daily_climatology_filling - Filling a time series with daily climatology values
+# ts_data: A single time series
+
+# Note:
+# Only 02-28 values is used to fill two dates: itself and 02-29 
+
 daily_climatology_filling <- function(ts_data)
 {
   

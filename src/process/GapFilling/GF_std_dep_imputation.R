@@ -1,3 +1,13 @@
+# std_dep_imputation_daily - daily imputation using standardized values (departure-based) 
+# nested function - main routine
+# stat_data: Time series (matrix), first column is the target
+
+# Note:
+# The approach follows the steps of https://link.springer.com/article/10.1007/s00704-017-2082-0 
+# which is similar to https://journals.ametsoc.org/view/journals/apme/34/2/1520-0450-34_2_371.xml
+# But, it is applied for each day (except for 02-28 where 02-29 is added), so
+# it preserves the daily climatology
+
 std_dep_imputation_daily <- function(stat_data)
 {
   
@@ -17,7 +27,7 @@ std_dep_imputation_daily <- function(stat_data)
     
     Tt <- zoo::coredata(data_base_w[, 1]) # target
     Tj <- zoo::coredata(data_base_w[, -1]) # neighbours
-    Wj <- apply(Tj, 2, function(x) ((1 + 0.01) / (sd(Tt - x, na.rm = TRUE) + 0.01 ))^2 )
+    Wj <- apply(Tj, 2, function(x) ((1 + 0.01) / (sd(Tt - x, na.rm = TRUE) + 0.01 ))^2 ) # adding 0.01 to avoid artifacts
     Zj <- apply(Tj, 2, function(x) (x - mean(x, na.rm = TRUE))/sd(x, na.rm = TRUE))
 
     Ttj <- Tt
@@ -47,6 +57,17 @@ std_dep_imputation_daily <- function(stat_data)
                filled = do.call("rbind", rest_all_filled))
   )
 }
+
+
+# -------------------------------------------------------------------------------
+# std_dep_imputation - daily imputation using standardized values (departure-based) 
+# stat_data: Time series (matrix), first column is the target
+
+# Note: two conditions based of stat_data
+# i) If stat_data has one single time serie or if it has full NAs (even in a matrix)
+# the output is same time serie 
+# ii) otherwise, std_dep_imputation_daily is applied
+
 
 std_dep_imputation <- function(stat_data)
 {

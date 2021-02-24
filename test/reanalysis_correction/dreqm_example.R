@@ -14,7 +14,7 @@ lattice::xyplot(exp_data)
 # correction:
 # detrended non-parametric quantile mapping using robust empirical quantiles
 ERA5_c <- daily_varying_anom_qmap(ts_obs = exp_data$OBS,
-                                       ts_model = exp_data$ERA5)
+                                  ts_model = exp_data$ERA5)
 
 # the idea is to get a new station
 # but sometimes is not possible, r > .6 to be used as new station

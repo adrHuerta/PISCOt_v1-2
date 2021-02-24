@@ -1,3 +1,14 @@
+# build_neigh_matrix - It builds time series based on neighboring stations (matrix) 
+# nested function - main routine
+# id_stations : IDs of stations (first one is the target)
+# time_series_database : Time series database
+
+# Note:
+# An potential neighbour station is used if achieve two conditions:
+# i) There is a shared period with five years of data (365*5) in both time series
+# ii) Correlation is at least >= 0.6 (target vs neighbour)
+# iii) otherwise, is not added
+
 build_neigh_matrix <- function(id_stations,
                                time_series_database)
 {
@@ -10,7 +21,7 @@ build_neigh_matrix <- function(id_stations,
     matrix_data <- cbind(matrix_data,
                          time_series_database[, n_station])
     
-    # the time series (target and neigh) at least match in 5 times each day except 02-29?
+    # the time series (target and neighbor) at least match in 5 times each day except 02-29?
     at_leat_any_data <- apply(matrix_data[, c(id_stations[1], n_station)], 1, function(x) ifelse(any(is.na(x)), 0, 1))
     at_leat_any_data <- data.frame(count = at_leat_any_data, date = format(time(matrix_data),"%m-%d"))
     at_leat_any_data <- at_leat_any_data[at_leat_any_data$count != 0,]
@@ -24,6 +35,7 @@ build_neigh_matrix <- function(id_stations,
       
     } else {
       
+      # how is the correlation?
       rcor_neigh = round(cor(matrix_data[, c(id_stations[1], n_station)], use = "pairwise.complete.obs")[2], 1)
     
       if(rcor_neigh < .6){
@@ -39,6 +51,19 @@ build_neigh_matrix <- function(id_stations,
   matrix_data
   
 }
+
+
+
+
+# -------------------------------------------------------------------------------
+# build_matrix - It builds time series based on neighboring stations (matrix) 
+# id_stations : IDs of stations (first one is the target)
+# time_series_database : Time series database
+
+# Note: two conditions based of id_stations
+# i) If id_stations has one single time serie (one value)
+# the output is same time serie 
+# ii) otherwise, build_neigh_matrix is applied
 
 build_matrix <- function(id_stations,
                          time_series_database)
