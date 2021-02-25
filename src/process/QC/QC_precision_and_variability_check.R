@@ -1,17 +1,20 @@
-# ENHANCED AND VISUAL QC
-# 6. Precision inconsistencies 
-# 
-# - count the amount of decimales grouped (.0, .1, .. ., .9) by year
-# - years with more than 40% of data in any level is deleted
-# - years with more than 35% and 0% of data in at least three levels (anyone) at the same year is deleted
-# - years with less than 35% of data is deleted (need to define)
-# 
-# 
-# 7. Reduced variability 
-# 
-# - by data visualization
-# - Eliminación de series con quiebres obvios y periodos con inhomogeneidades evidentes:
+# Enhanced and visual QC
+# From https://www.geography.unibe.ch/unibe/portal/fak_naturwis/e_geowiss/c_igeogr/content/e39603/e68757/e84588/e199552/e640019/files640026/flag_description_eng.pdf
+# 0) Some atypical values are deleted (automatic QC may no too robust [needed for lower thresholds], but trade-off false positives vs number of missing data)
+# 1) Missing temperature intervals are corrected as possible (mis.tem.int), worst case are deleted (such as 3)
+# 2) Rounding errors, not evaluated as this need an specific evaluation of the frequencies of decimals (also confirmation by looking at original documents) and can be seen as other problem 
+# 3) Asymmetric rounding patterns (asy.rou), all asymmetric rounding patterns are accepted
+# 4) Low measurement resolution (mea.pre.inc), worst case are deleted (such as 0)
+# 5) Irregularities in the data pattern (oth.qua.pro), worst case are deleted (such as 3)
+# 6) Obvious in-homogeneities (gro.inh), worst case are deleted (such as 3)
 
+#----------------------------------------------------------------------
+# get_dec_from_xts - distribution calculation of decimal values
+# nested function - main routine
+# xts_obj : an xts obj single time serie
+
+# Note:
+# The approach follows the idea of https://rmets.onlinelibrary.wiley.com/doi/full/10.1002/joc.5037
 
 get_dec_from_xts <- function(xts_obj)
 {
@@ -39,6 +42,15 @@ get_dec_from_xts <- function(xts_obj)
   
 }
 
+
+
+#----------------------------------------------------------------------
+# get_pRcs_temp - distribution calculation of decimal values
+# xts_obj : an xts obj time serie (tmax and tmin)
+
+# Note:
+# The approach follows the idea of https://rmets.onlinelibrary.wiley.com/doi/full/10.1002/joc.5037
+
 get_pRcs_temp <- function(xts_obj)
 {
   
@@ -50,6 +62,14 @@ get_pRcs_temp <- function(xts_obj)
                                   tmax = get_dec_from_xts(xts_obj = tmax))))
   
 }
+
+
+
+
+#----------------------------------------------------------------------
+# var_plot - Time series plot for tmax and tmin
+# nested function - main routine
+# df_data : a data frame time series (tmax and tmin)
 
 var_plot <- function(df_data)
   {
@@ -79,6 +99,17 @@ var_plot <- function(df_data)
   pp1
 
 }
+
+
+
+
+#----------------------------------------------------------------------
+# prcs_plot - Time series plot of decimal distribution for tmax and tmin 
+# nested function - main routine
+# df_data : a data frame time series (tmax and tmin)
+
+# Note:
+# The approach follows the idea of https://rmets.onlinelibrary.wiley.com/doi/full/10.1002/joc.5037
 
 prcs_plot <- function(df_data){
   
@@ -127,8 +158,19 @@ prcs_plot <- function(df_data){
   pp2
 }
 
+
+
+
+
+#--------------------------------------------------------------------------------
+# enhanced_qc_plot - Plots to be used for visual qc (two plots for tmax and tmin)
+# get_pRcs_temp_output : output from get_pRcs_temp()
+
+# Note:
+# The approach follows the idea of https://rmets.onlinelibrary.wiley.com/doi/full/10.1002/joc.5037
+
 enhanced_qc_plot <- function(get_pRcs_temp_output,
-                          title_plt = "ID")
+                             title_plt = "ID")
   {
   
   tmax_plt_pr <- get_pRcs_temp_output$prcs_xts_obj[["tmax"]] %>% prcs_plot()

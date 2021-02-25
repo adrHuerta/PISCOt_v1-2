@@ -1,8 +1,10 @@
-# 3. Internal consistency check
-# Only performed to temperature data
-# - Consistency among variables
-# - Tmax <= Tmin
-# - Tmax = Tmin = 0
+# inCons_check - Internal consistency check (Only performed to temperature data)
+# xts_obs : a xts matrix (tmax, tmin)
+
+# Note: 
+# Consistency among variables:
+# i) Tmax <= Tmin
+# ii) Tmax = Tmin = 0
  
 inCons_check <- function(xts_obj)
 {

@@ -1,11 +1,14 @@
-# 5. Spatial coherence check
+# spt_neighrs - Seek of neighbouring stations
 # id_station : ID of station data
 # stations_database: a dataframe with LON and LAT information (it also needs to have a ID columns)
-# limits_km : define the distance (in km) in which a station is declared as a neighboring station (searh in three levels)
-# limints_n : at least how many stations is need to have a station to be used for spatial analysis, if is less that the designed value, neighboring station are provided 
+# lmt_dist : distance (in km) in which a station is declared as a neighbouring station
+# lmt_elv : elevation (in m) limit in which a station is declared as a neighbouring station
+# lmt_n : number of maximum neighbouring stations
 
-# - Only done where area highly amount of stations (jungle may is not posible)
-# - Estacion candidata vs estaciones vecinas (al menos 4 estaciones)
+# Note:
+# Defined values based on analysis of correlation vs distance vs elevation
+# i) neighbouring stations are filtered using given limits
+# ii) sort distance (method = "euclidean") in 3D distance (lat, lon, elev)
 
 spt_neighrs <- function(id_station,
                         stations_database,

@@ -1,8 +1,11 @@
-# - Only done where area highly amount of stations (jungle may is not posible)
-# - Estacion candiata vs estaciones vecinas (al menos 2 estaciones)
-# - Values to percentil, higher differences between the same day (75th) 
-# - Cita http://onlinelibrary.wiley.com/doi/10.1002/joc.1850/abstract
+# sptCohrc_check - Spatial coherence check
+# nghrs_stations : IDs of stations (first is the target, the rest are neighbouring)
+# xts_list_database : list() of xts objects (tmax, tmin)
+# umb_outlier : threshold to identify outliers
 
+# Note:
+# Based on http://onlinelibrary.wiley.com/doi/10.1002/joc.1850/
+# Only done where area highly amount of stations (jungle may is not posible)
 
 sptCohrc_check <- function(nghrs_stations,
                            xts_list_database,

@@ -1,16 +1,20 @@
 ## Changing NaN to NA
-# source: https://stackoverflow.com/questions/18142117/how-to-replace-nan-value-with-zero-in-a-huge-data-frame/18142212
+# Note: 
+# https://stackoverflow.com/questions/18142117/how-to-replace-nan-value-with-zero-in-a-huge-data-frame/18142212
 is.nan.data.frame <- function(x) do.call(cbind, lapply(x, is.nan))
 
 
-## rclimdex format file to xts object
-# converting a data.frame to xts class by performing a very basic QC:
-# i. deleting missing values numbers
-# ii. deleting bad/duplicated dates
-# iii. good and bad data is returned as a list()
+#---------------------------------------------------
+# rclimdex_2_xts - rclimdex format file to xts object
 # data_frame: a data.frame object from rclimdex format file
 # vars: variables to be passed 
 # non_values: non numeric values to be converted as NA
+
+# Note: 
+# convert a data.frame to xts class by performing a very basic QC:
+# i) deleting missing values numbers
+# ii) deleting bad/duplicated dates
+# "good" and "bad" data is returned as a list()
 
 
 rclimdex_2_xts <- function(data_frame,

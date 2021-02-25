@@ -1,9 +1,10 @@
-# 4. Temporal coherence check
-# 
-# xts_obs : a xts dataframe
+# temCoh_check - Temporal coherence check
+# xts_obs : a xts matrix (tmax, tmin)
 # csc_umb : max number of repetead values, after that number, all values are deleted
 # jump_umb: jump steps (day to day) of this value are deleted 
-# https://www.senamhi.gob.pe/load/file/01402SENA-5.pdf
+
+# Note:
+# Defined values based on: https://www.senamhi.gob.pe/load/file/01402SENA-5.pdf and
 # https://www.senamhi.gob.pe/pdf/estudios/PublicacionesDMA/2012/Espinoza_etal_clidy_2013_AuthorCopy.pdf
 
 temCoh_check <- function(xts_obj,
