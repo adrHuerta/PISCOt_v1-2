@@ -6,7 +6,7 @@ source('./src/process/QC/QC_extreme_value_check.R')
 source('./src/process/GapFilling/GF_daily_climatology_filling.R')
 
 #
-qc_data <- readRDS("./data/processed/obs/QC_data.RDS")
+qc_data <- readRDS("./data/processed/obs/qc_output/QC_data.RDS")
 era_qc_data_xy <- qc_data$xyz[qc_data$xyz$filter_qc == 1, ]
 era_qc_data_xy$ID <- paste("ERA5", era_qc_data_xy$ID, sep = "_")
 era_qc_data_xy$SRC <- "ERA5"
@@ -108,4 +108,4 @@ rownames(qc_data$xyz) <- NULL
 
 
 saveRDS(object = qc_data,
-        file = "./data/processed/obs/QC_(plusERA5)_data.RDS")
+        file = "./data/processed/obs/qc_output/QC_(plusERA5)_data.RDS")

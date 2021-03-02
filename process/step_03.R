@@ -9,7 +9,7 @@ source("./src/process/GapFilling/GF_std_dep_imputation.R")
 source("./src/process/GapFilling/GF_daily_climatology_filling.R")
 
 
-qc_data <- readRDS("./data/processed/obs/QC_(plusERA5)_data.RDS")
+qc_data <- readRDS("./data/processed/obs/qc_output/QC_(plusERA5)_data.RDS")
 
 # xyz data to be filled
 obs_xyz <- qc_data$xyz[qc_data$xyz$SRC != "ERA5" ,]
@@ -46,7 +46,7 @@ for(xi in seq_along(param_spt)){
                          build_matrix(id_stations = .,
                                       time_series_database = qc_data_values_tmax_ERA5_filled) %>%
                          std_dep_imputation(stat_data = .) %>%
-                         .$model
+                         .$filled # model + available data
                      }, mc.cores = 5) %>%
     do.call("cbind", .) %>%
     setNames(obs_xyz$ID) -> tmax_ERA5_to_be_filled
@@ -64,7 +64,7 @@ for(xi in seq_along(param_spt)){
                          build_matrix(id_stations = .,
                                       time_series_database = qc_data_values_tmin_ERA5_filled) %>%
                          std_dep_imputation(stat_data = .) %>%
-                         .$model
+                         .$filled # model + available data
                      }, mc.cores = 5) %>%
     do.call("cbind", .) %>%
     setNames(obs_xyz$ID) -> tmin_ERA5_to_be_filled
@@ -128,4 +128,4 @@ qc_data$xyz <- obs_xyz[match(stations_filter, obs_xyz$ID), ]
 rownames(qc_data$xyz) <- NULL
 
 saveRDS(object = qc_data,
-        file = "./data/processed/obs/QC_GF_data.RDS")
+        file = "./data/processed/obs/qc_output/QC_GF_data.RDS")

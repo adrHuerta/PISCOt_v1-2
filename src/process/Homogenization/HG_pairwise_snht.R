@@ -30,7 +30,7 @@ pha_hmg <- function(ts_data,
                                    dist = cor_dist, 
                                    k = dim(cor_dist)[1]-1, 
                                    period = period,
-                                   robust = TRUE,
+                                   robust = FALSE,
                                    scaled = TRUE, 
                                    crit = qchisq(1 - alpha/(length(ts_data) - period*2), df = 1))
   

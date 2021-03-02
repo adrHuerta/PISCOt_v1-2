@@ -5,7 +5,8 @@
 
 # Note:
 # Based on http://onlinelibrary.wiley.com/doi/10.1002/joc.1850/
-# Only done where area highly amount of stations (jungle may is not posible)
+# Only done where area highly amount of stations (jungle may is not posible),
+# If nghrs_stations has a size of one, nothing is done
 
 sptCohrc_check <- function(nghrs_stations,
                            xts_list_database,

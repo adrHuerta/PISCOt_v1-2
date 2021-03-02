@@ -12,7 +12,7 @@ source('./src/process/Homogenization/HG_simple_snht.R')
 source('./src/process/Homogenization/HG_hmgFactor2daily.R')
 
 # data
-qc_data <- readRDS("./data/processed/obs/QC_GF_data.RDS")
+qc_data <- readRDS("./data/processed/obs/qc_output/QC_GF_data.RDS")
 
 # make monthly values
 monthly_tmax <- do.call("cbind", lapply(qc_data$values$tmax, function(x) round(xts::apply.monthly(x, mean), 2)))
@@ -68,30 +68,30 @@ for(xi in seq_along(param_spt)){
   # tmin
   parallel::mclapply(qc_data$xyz$ID,
                      function(station_j){
-                       
+
                        ID_stat_s  <- spt_neighrs(id_station = station_j,
                                                  stations_database = qc_data$xyz,
                                                  lmt_dist = param_spt[[xi]]$lmt_dist,
                                                  lmt_elv = param_spt[[xi]]$lmt_elv,
                                                  lmt_n = param_spt[[xi]]$lmt_n) %>%
-                         build_matrix(id_stations = ., 
+                         build_matrix(id_stations = .,
                                       time_series_database = qc_monthly_values_tmin_ERA5_hmg)
-                       
+
                        if(ncol(ID_stat_s) >= 4){
-                         
+
                          response <- pha_hmg(ts_data = ID_stat_s)$hmg
-                         
+
                        } else {
-                         
+
                          response <- snht_hmg(ts_data = ID_stat_s[, 1])$hmg
-                         
+
                        }
-                       
+
                        response
-                       
+
                      }, mc.cores = 5) -> qc_monthly_values_tmin_ERA5_hmg
-  
-  qc_monthly_values_tmin_ERA5_hmg <- do.call("cbind", qc_monthly_values_tmin_ERA5_hmg) 
+
+  qc_monthly_values_tmin_ERA5_hmg <- do.call("cbind", qc_monthly_values_tmin_ERA5_hmg)
   colnames(qc_monthly_values_tmin_ERA5_hmg) <- qc_data$xyz$ID
   
 
@@ -142,12 +142,22 @@ qc_data$xyz <- qc_data$xyz[match(colnames(qc_daily_values_tmax_ERA5_hmg), qc_dat
 rownames(qc_data$xyz) <- NULL
 
 saveRDS(object = qc_data,
-        file = "./data/processed/obs/QC_GF_HG_data.RDS")
+        file = "./data/processed/obs/qc_output/QC_GF_HG_data.RDS")
 
-# for(i in qc_data$xyz$ID){
-#   
-#   lattice::xyplot(cbind(qc_data$values$tmax[, i],
-#                         qc_data$values$tmin[, i]), type = "p", cex = .125) %>%
-#     print()
-#   Sys.sleep(.75)
-# }
+source('./src/process/QC/QC_precision_and_variability_check.R')
+
+qc_data$xyz$ID %>%
+  lapply(function(x){
+
+    ID_station <- x %>% as.character()
+    plot_title = paste(ID_station, "-", qc_data$xyz$NAM[match(x, qc_data$xyz$ID)], sep = "")
+    get_pRcs_temp(xts_obj = cbind(qc_data$values$tmax[, ID_station], qc_data$values$tmin[, ID_station]) %>%
+                    setNames(c("tmax", "tmin"))) %>%
+      enhanced_qc_plot(get_pRcs_temp_output = .,
+                       title_plt = plot_title) %>%
+      ggplot2::ggsave(filename = file.path("./data/processed/obs/enhanced_qc/plots", paste(plot_title, "_3.jpg", sep = "")),
+                      plot = .,
+                      width = 20, height = 7,
+                      dpi = 150)
+
+  })

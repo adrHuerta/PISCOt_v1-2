@@ -5,8 +5,8 @@
 
 library(raster)
 
-PISCO_BBOX <- c(-81.325, -18.575, -67.175, 1.275)
-CLOUD_FOLDER <- "/home/csaybar/Desktop/cloud_coverage/world/"
+PISCO_BBOX <- c(-81.4 - 0.03, -18.75 - 0.03, -68.05 + 0.03, 0.95 + 0.03)
+CLOUD_FOLDER <- "./data/raw/gridded/CC/CC_monthly/"
 
 # Link of the files
 files_to_download <- sprintf("https://data.earthenv.org/cloud/MODCF_monthlymean_%02d.tif", 1:12)

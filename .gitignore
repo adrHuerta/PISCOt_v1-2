@@ -39,7 +39,11 @@ vignettes/*.pdf
 .Renviron
 
 # Heavy dirs
-/data/processed
+/data/processed/gridded
+/data/processed/obs/enhanced_qc/plots
+/data/processed/obs/non_qc_output
+/data/processed/obs/qc_output
+/data/raw/gridded/CC/CC_monthly
 /data/raw/gridded/ELV/ELV.tif
 /data/raw/gridded/ELV/ELV2.tif
 /data/raw/gridded/LST/DAY
@@ -49,5 +53,6 @@ vignettes/*.pdf
 /data/raw/vectorial
 /data/raw/obs
 /data/output
-
+/data/output
+/data/paper
 

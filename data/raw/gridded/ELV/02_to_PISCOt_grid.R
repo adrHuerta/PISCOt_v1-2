@@ -1,7 +1,7 @@
 rm(list = ls())
 
 reticulate::use_virtualenv("/home/adrian/Documents/Repos/prob_Budyko/venv", 
-                           required = T)
+                           required = TRUE)
 reticulate::repl_python()
 
 # python code

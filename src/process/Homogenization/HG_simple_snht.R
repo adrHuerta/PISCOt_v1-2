@@ -23,7 +23,7 @@ snht_hmg <- function(ts_data,
   snht_result <- snht::snht(data = base_Data$time_serie,
                             period = period,
                             time = base_Data$time,
-                            robust = TRUE,
+                            robust = FALSE,
                             scaled = TRUE)
   
   crit <- qchisq(1 - alpha/(length(ts_data) - period*2), df = 1)
