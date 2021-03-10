@@ -21,7 +21,7 @@ new_y = np.arange(-18.6, 1.21, 0.01)
 
 for files in range(1, 13):
  file = str(files).zfill(2)
- cc_file = xr.open_rasterio(os.path.join(".", "data", "raw", "gridded", "CC", "CC_monthly", "cloud_coverage_" + file + ".tif"))
+ cc_file = xr.open_rasterio(os.path.join(".", "data", "raw", "gridded", "CC", "CC_monthly", "Peru", "cloud_coverage_" + file + ".tif"))
  cc_file = cc_file.drop("band")
  
  # gap filling of empty pixels

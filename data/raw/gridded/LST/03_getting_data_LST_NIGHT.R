@@ -36,8 +36,8 @@ for(month_n in 1:12){
   
   pisco_area <-  ee$Geometry$Rectangle(-81.4 - 0.03,
                                        -18.75 - 0.03,
-                                       -68.05 + 0.03,
-                                       0.95 + 0.03)
+                                       -67.05 + 0.03,
+                                       1.13 + 0.03)
   
     #mod11a2
     ee_image_as_raster(
@@ -51,15 +51,15 @@ for(month_n in 1:12){
     )
     
       # mod11a2_npixels
-      ee_image_as_raster(
-      image = mod11a2_clean_npixels,
-      region = pisco_area,
-      dsn = file.path(".", "data", "raw", "gridded", "LST", "NIGHT", "npixels",
-                      paste(formatC(month_n, width = 2, flag = "0"), ".tif", sep = "")),
-      scale = 1000,
-      via = "drive",
-      container = "LST"
-      )
+      # ee_image_as_raster(
+      # image = mod11a2_clean_npixels,
+      # region = pisco_area,
+      # dsn = file.path(".", "data", "raw", "gridded", "LST", "NIGHT", "npixels",
+      #                 paste(formatC(month_n, width = 2, flag = "0"), ".tif", sep = "")),
+      # scale = 1000,
+      # via = "drive",
+      # container = "LST"
+      # )
       
 }
 

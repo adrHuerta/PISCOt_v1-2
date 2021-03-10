@@ -51,15 +51,15 @@ for(month_n in 1:12){
   )
   
   # mod11a2_npixels
-  ee_image_as_raster(
-    image = mod11a2_clean_npixels,
-    region = pisco_area,
-    dsn = file.path(".", "data", "raw", "gridded", "LST", "DAY", "npixels",
-                    paste(formatC(month_n, width = 2, flag = "0"), ".tif", sep = "")),
-    scale = 1000,
-    via = "drive",
-    container = "LST"
-  )
+  # ee_image_as_raster(
+  #   image = mod11a2_clean_npixels,
+  #   region = pisco_area,
+  #   dsn = file.path(".", "data", "raw", "gridded", "LST", "DAY", "npixels",
+  #                   paste(formatC(month_n, width = 2, flag = "0"), ".tif", sep = "")),
+  #   scale = 1000,
+  #   via = "drive",
+  #   container = "LST"
+  # )
   
 }
 
