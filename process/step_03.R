@@ -26,11 +26,11 @@ qc_data_values_tmin_ERA5_filled <- qc_data$values$tmin
 param_spt <- list(list(lmt_dist = 70, 
                        lmt_elv = 500,
                        lmt_n = 8),
-                  list(lmt_dist = 70, 
-                       lmt_elv = 1000,
-                       lmt_n = 8),
                   list(lmt_dist = 100, 
-                       lmt_elv = 1000,
+                       lmt_elv = 500,
+                       lmt_n = 8),
+                  list(lmt_dist = 150, 
+                       lmt_elv = 5500,
                        lmt_n = 8))
 
 # gap-filling 

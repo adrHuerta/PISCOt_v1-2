@@ -54,5 +54,5 @@ vignettes/*.pdf
 /data/raw/obs
 /data/output
 /data/output
-/data/paper
+/paper/output
 

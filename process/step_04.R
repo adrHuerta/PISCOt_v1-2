@@ -23,14 +23,14 @@ qc_monthly_values_tmax_ERA5_hmg <- monthly_tmax
 qc_monthly_values_tmin_ERA5_hmg <- monthly_tmin
 
 # three spatial steps (just to make the loop)
-param_spt <- list(list(lmt_dist = 100, 
-                       lmt_elv = 500,
+param_spt <- list(list(lmt_dist = 1000, 
+                       lmt_elv = 1000,
                        lmt_n = 8),
-                  list(lmt_dist = 100, 
-                       lmt_elv = 500,
+                  list(lmt_dist = 1000, 
+                       lmt_elv = 1000,
                        lmt_n = 8),
-                  list(lmt_dist = 100, 
-                       lmt_elv = 500,
+                  list(lmt_dist = 1000, 
+                       lmt_elv = 1000,
                        lmt_n = 8))
 
 # monthly hmg 

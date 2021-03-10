@@ -1,4 +1,4 @@
-# library(xts)
+library(xts)
 "%>%" = magrittr::`%>%`
 list.files("./src/process/QC", full.names = TRUE) %>%
   sapply(source) %>% 
@@ -128,21 +128,21 @@ QC_data <- lapply(QC_data, `[[`, "qc")
 # QC 06
 
 # creating enhanced qc plots
-# raw_xy_file$ID %>%
-#   lapply(function(x){
-# 
-#     ID_station <- x %>% as.character()
-#     plot_title = paste(ID_station, "-", raw_xy_file$NAM[match(x, raw_xy_file$ID)], sep = "")
-# 
-#     get_pRcs_temp(xts_obj = QC_data[[ ID_station ]]) %>%
-#       enhanced_qc_plot(get_pRcs_temp_output = .,
-#                        title_plt = plot_title) %>%
-#       ggplot2::ggsave(filename = file.path(enhanced_qc_path, paste(plot_title, ".jpg", sep = "")),
-#                       plot = .,
-#                       width = 20, height = 7,
-#                       dpi = 150)
-# 
-#   })
+raw_xy_file$ID %>%
+  lapply(function(x){
+
+    ID_station <- x %>% as.character()
+    plot_title = paste(ID_station, "-", raw_xy_file$NAM[match(x, raw_xy_file$ID)], sep = "")
+
+    get_pRcs_temp(xts_obj = QC_data[[ ID_station ]]) %>%
+      enhanced_qc_plot(get_pRcs_temp_output = .,
+                       title_plt = plot_title) %>%
+      ggplot2::ggsave(filename = file.path(enhanced_qc_path, paste(plot_title, ".jpg", sep = "")),
+                      plot = .,
+                      width = 20, height = 7,
+                      dpi = 150)
+
+  })
 
 # order to be applied: visual inspection 
 visual_enhanced_qc <- source("./data/processed/obs/enhanced_qc/visual_enhanced_qc.R")$value
@@ -150,24 +150,24 @@ visual_enhanced_qc <- source("./data/processed/obs/enhanced_qc/visual_enhanced_q
 QC_data <- apply_visual_qc(data_list = QC_data,
                            list_of_qc_expr = visual_enhanced_qc)
 
-saveRDS(object = QC_data[["non_qc"]] %>% .[sapply(., nrow) %>% unlist() != 0],
+saveRDS(object = QC_data[["non_qc"]] %>% .[(sapply(., length) %>% unlist()) != 0],
         file = file.path(non_qc_out_path, "non_QC06.RDS"))
 
 # are changes ok?
-# raw_xy_file$ID %>%
-#   lapply(function(x){
-# 
-#     ID_station <- x %>% as.character()
-#     plot_title = paste(ID_station, "-", raw_xy_file$NAM[match(x, raw_xy_file$ID)], sep = "")
-#     get_pRcs_temp(xts_obj = QC_data[["qc"]][[ ID_station ]]) %>%
-#       enhanced_qc_plot(get_pRcs_temp_output = .,
-#                        title_plt = plot_title) %>%
-#       ggplot2::ggsave(filename = file.path(enhanced_qc_path, paste(plot_title, "_2.jpg", sep = "")),
-#                       plot = .,
-#                       width = 20, height = 7,
-#                       dpi = 150)
-# 
-#   })
+raw_xy_file$ID %>%
+  lapply(function(x){
+
+    ID_station <- x %>% as.character()
+    plot_title = paste(ID_station, "-", raw_xy_file$NAM[match(x, raw_xy_file$ID)], sep = "")
+    get_pRcs_temp(xts_obj = QC_data[["qc"]][[ ID_station ]]) %>%
+      enhanced_qc_plot(get_pRcs_temp_output = .,
+                       title_plt = plot_title) %>%
+      ggplot2::ggsave(filename = file.path(enhanced_qc_path, paste(plot_title, "_2.jpg", sep = "")),
+                      plot = .,
+                      width = 20, height = 7,
+                      dpi = 150)
+
+  })
 
 QC_data <- QC_data[["qc"]]
 

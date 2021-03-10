@@ -49,7 +49,8 @@ ERA5_tmax <- parallel::mclapply(ERA5_tmax, function(time_serie){
   
   # simple QC (QC 02) plus gap-filling (using daily climatology) 
   
-  model_qm <- extVal_check(xts_obj = cbind(model_qm, NA) %>% setNames(c("tmax", "tmin")))$qc$tmax
+  model_qm <- extVal_check(xts_obj = cbind(model_qm, NA) %>% setNames(c("tmax", "tmin")),
+                           ext_lim_factor = 3)$qc$tmax
   model_qm <- daily_climatology_filling(ts_data = model_qm)
   colnames(model_qm) <- colnames(time_serie)
   
@@ -79,7 +80,8 @@ ERA5_tmin <- parallel::mclapply(ERA5_tmin, function(time_serie){
                                       ts_model = time_serie)
   
   # simple QC (QC 02) plus gap-filling (using daily climatology) 
-  model_qm <- extVal_check(xts_obj = cbind(NA, model_qm) %>% setNames(c("tmax", "tmin")))$qc$tmin
+  model_qm <- extVal_check(xts_obj = cbind(NA, model_qm) %>% setNames(c("tmax", "tmin")),
+                           ext_lim_factor = 3)$qc$tmin
   model_qm <- daily_climatology_filling(ts_data = model_qm)
   colnames(model_qm) <- colnames(time_serie)
   
