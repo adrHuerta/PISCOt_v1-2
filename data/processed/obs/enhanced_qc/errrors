@@ -1,74 +1,59 @@
-# BO004074 NMH
-# BR082704 1980 (tmin and tmax)
-# EC000139 1985 (tmax) see after hmg
-# EC000146 1980 (tmax tmin)
-# PE100021 1995 (tmax tmin)
-PE100021 see after hmg
-PE100046 see after hmg
-PE100070 see after hmg
-# PE100119 outlier
-PE100128 see after hmg
-PE100139 see after hmg
-PE100150 see after hmg
-# PE102009 (tmin) see after hmg
-# PE103031 (tmin tmax) see after hmg
-PE103040 see after hmg 
-PE103041 see after hmg 
-PE103042 see after hmg 
-PE103044 see after hmg 
+PE100104
+PE103038
 PE103046 see after hmg (tmin before 2000)
-# PE103049 see after hmg (tmax)
-PE104056 see after hmg
-PE105016 see after hmg
-PE105022 see after hmg
-PE105025 see after hmg
-PE105056 see after hmg
-PE105067 see after hmg
-PE105068 see after hmg
-PE106010 see after hmg
-# PE106018 (tmax) see after hmg
-# PE106053 tmax
-PE106057 see after hmg
-PE107005 see after hmg
-PE107006 see after hmg
-PE107036 see after hmg
-# PE109001 tmax
-# PE110017 1992 tmax tmin
-PE110020 see after hmg
---------
-PE110027 see after hmg
-PE111005 see after hmg
-PE111023 tmin see after hmg
-PE111026 see after hmg
-# PE111027 tmin 1980
-# PE111028 tmax 1980
-PE112059 see after hmg
-PE112142 see after hmg
-# PE113021 tmax tmin
-PE113045 see after hmg
-PE113037 see after hmg
-# PE113081 tmax
-PE113116 see after hmg
-PE114018 see after hmg
-PE114020 see after hmg
-PE114043 see after hmg
-PE115015 see after hmg
-PE115019 see after hmg
-PE115025 see after hmg
-PE115027 see after hmg
-PE115035 see after hmg
-PE115041 see after hmg
-# PE115049 tmax 
-# PE115052 tmax see after hmg
-# PE115078 tmax tmin
-# PE115092 tmax see after hmg
-PE115128 see after hmg
-PE116006 see after hmg
-PE116014 see after hmg
-PE116017 see after hmg
-# PE116020 tmax tmin
-# PE116049 tmin
-# PE116060 tmin see after hmg 
-PE117019 see after hmg
-# PE117041 tmin
-PE117043 see after hmg
+PE103048 (outlier)
+PE104056 ndel
+PE104071
+PE105062
+PE105065
+PE105070
+PE105074
+PE105079
+PE105103
+PE106010
+PE106013 see after hmg ##
+PE106014 see after hmg ## PE106032
+PE106043
+PE106052
+PE106056 ndel
+PE106058 ndel
+PE106071 ndel
+PE106112 outlier
+PE106121 ndel
+PE107002
+PE107010
+PE107012
+PE107017 ndel
+PE107057 ndel
+PE108028
+PE108046 outlier
+PE109019
+PE109020
+PE109022
+PE111046
+PE111097
+PE112060
+PE112083
+PE113010 outlier
+PE113019
+PE113022
+PE113029
+PE113058
+PE113059
+PE113116
+PE114033
+PE114006
+PE114030
+PE114033
+PE114034
+PE114050
+PE115015 ndel
+PE115019 see after hmg ## PE115033
+PE115049
+PE115051
+PE115085
+PE106009
+PE116029
+PE117013
+PE117014
+

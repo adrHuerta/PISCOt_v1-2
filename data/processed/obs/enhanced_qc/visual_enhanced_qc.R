@@ -40,7 +40,7 @@ list(
   PE117006 = c("tmin['1987/1992'] <- NA"),
   # Less-Great stations
   BO001012 = c("tmin['/1981'] <- NA"),
-  BO004074 = c("tmin['/1981'] <- NA",
+  BO004074 = c("tmin['/1996'] <- NA", # NEW CHANGE tmin['/1981'] <- NA
                "tmax['1981'] <- NA"), # NMH
   BR082704 = c("tmin['/1974'] <- NA",
                "tmin['1982/1988'] <- NA",
@@ -97,8 +97,8 @@ list(
   PE109032 = c("tmin['/1999'] <- NA"),
   PE110017 = c("tmin['2000/'] <- NA",
                "tmax['2000/'] <- NA"),
-  PE110027 = c("tmin['2001/2005'] <- NA",
-               "tmax['2001/2005'] <- NA"),
+  PE110027 = c("tmin['2001/2006'] <- NA",
+               "tmax['2001/2006'] <- NA"),
   PE111020 = c("tmin['2000/2001'] <- NA",
                "tmax['2000/2001'] <- NA"),
   PE111046 = c("tmin['/1997'] <- NA",
@@ -115,10 +115,10 @@ list(
                "tmin['1968/1969'] <- NA"),
   PE113022 = c("tmin['/1993'] <- NA",
                "tmax['/1993'] <- NA"),
-  PE113034 = c("tmin['1980/1983'] <- NA",
-               "tmax['1980/1983'] <- NA"),
-  PE113037 = c("tmin['/1970'] <- NA",
-               "tmax['/1970'] <- NA"),
+  PE113034 = c("tmin['1980/1985'] <- NA", # NEW CHANGE tmin['1980/1983'] <- NA
+               "tmax['1980/1984'] <- NA"), # NEW CHANGE tmax['1980/1983'] <- NA
+  PE113037 = c("tmin['/1970'] <- NA", "tmin['1976/1982'] <- NA", # NEW CHANGE
+               "tmax['/1970'] <- NA", "tmax['1979/1982'] <- NA"), # NEW CHANGE
   PE113044 = c("tmin['1970/1992'] <- NA",
                "tmax['1970/1997'] <- NA"),
   PE114030 = c("tmin['/1998'] <- NA",
@@ -138,7 +138,7 @@ list(
   PE115018 = c("tmin['1965/1968'] <- NA"),
   PE115019 = c("tmin['/1968'] <- NA",
                "tmin['1983/1986'] <- NA",
-               "tmin['1998/1999'] <- NA"),
+               "tmin['1998/1999'] <- NA", "tmax['1989/1992'] <- NA"), # NEW CHANGE
   PE115024 = c("tmin['/1968'] <- NA"),
   PE115033 = c("tmax['1977/1985'] <- NA"),
   PE115037 = c("tmin['1963'] <- NA",
@@ -186,7 +186,7 @@ list(
                "tmin['2010/2011'] <- NA",
                "tmax['/1970'] <- NA",
                "tmax['1981/1984'] <- NA"
-               ),
+  ),
   EC000162 = c("tmin['/1971'] <- NA",
                "tmin['2000/2001'] <- NA",
                "tmax['/1971'] <- NA"),
@@ -198,10 +198,10 @@ list(
                "tmin['1994/1996'] <- NA",
                "tmax['/1965'] <- NA",
                "tmax['2005/2007'] <- NA"),
-  PE103040 = c("tmin['/1967'] <- NA",
-               "tmax['/1967'] <- NA",
-               "tmax['1986/1988'] <- NA",
-               "tmax['2015/2016'] <- NA"),
+  PE103040 = c("tmin['/1967'] <- NA", "tmin['1996'] <- NA", # NEW CHANGE
+               "tmax['/1967'] <- NA", 
+               "tmax['1978/1988'] <- NA"), # NEW CHANGE tmax['1986/1988'] <- NA
+  #            "tmax['2015/2016'] <- NA")
   PE103046 = c("tmin['/1993'] <- NA",
                "tmax['/1993'] <- NA",
                "tmin['1999/2001'] <- NA"),
@@ -211,7 +211,7 @@ list(
   PE105054 = c("tmin['1969/1971'] <- NA",
                "tmin['2005'] <- NA",
                "tmax['1998/2001'] <- NA"),
-  PE105056 = c("tmin['/1977'] <- NA"),
+  PE105056 = c("tmin['/1977'] <- NA", "tmin[tmin > 19] <- NA"), # NEW CHANGE
   PE105075 = c("tmin['/2004'] <- NA",
                "tmin['2017/'] <- NA",
                "tmin[tmin < 12.5] <- NA",
@@ -251,10 +251,10 @@ list(
   PE109022 = c("tmin['/2001'] <- NA",
                "tmax['/2001'] <- NA"),
   PE110025 = c("tmin[tmin > 18] <- NA", ###
-               "tmin['/1976'] <- NA",
+               "tmin['/1976'] <- NA", "tmin['1995/1996'] <- NA", # NEW CHANGE
                "tmin['2001/2003'] <- NA",
                "tmin[tmin < -5] <- NA",
-               "tmax['/1976'] <- NA",
+               "tmax['/1976'] <- NA", "tmax['1986/1996'] <- NA", # NEW CHANGE
                "tmax['2001/2003'] <- NA"),
   PE111028 = c("tmin['1964'] <- NA",
                "tmin['1981/1986'] <- NA",
@@ -269,10 +269,10 @@ list(
                "tmax['2010/2014'] <- NA"),
   PE117002 = c("tmin['/1960'] <- NA",
                "tmax['/1960'] <- NA"),
-  # PE116060 = c("tmin['/2000'] <- NA", # NMH
-  #              "tmax['1976/1980'] <- NA",
-  #              "tmax['1983'] <- NA",
-  #              "tmax['1987'] <- NA"),
+  PE116060 = c("tmin['/2000'] <- NA", # NMH # NEW CHANGE
+               "tmax['1976/1980'] <- NA",   # NEW CHANGE
+               "tmax['1983'] <- NA",        # NEW CHANGE
+               "tmax['1987'] <- NA"),       # NEW CHANGE
   PE115092 = c("tmin['/2008'] <- NA", # NHM
                "tmax['2011/2013'] <- NA"),
   PE113016 = c("tmin['/1991'] <- NA",
@@ -310,8 +310,8 @@ list(
                "tmax['/2003'] <- NA"),
   PE102009 = c("tmin['2003/2005'] <- NA",
                "tmin['2007/2008'] <- NA"),
-  PE103042 = c("tmin['2007/2009'] <- NA",
-               "tmax['2007/2009'] <- NA"),
+  # PE103042 = c("tmin['2007/2009'] <- NA", # NEW CHANGE
+  #              "tmax['2007/2009'] <- NA"), # NEW CHANGE
   PE103049 = c("tmin['1994/1995'] <- NA", ###
                "tmin['2005/2008'] <- NA",
                "tmax['1976/1985'] <- NA"), # 1976/1995
@@ -378,7 +378,7 @@ list(
                "tmax['/1963'] <- NA",
                "tmax['1973/1980'] <- NA"),
   PE117019 = c("tmin['1969/1996'] <- NA",
-               "tmin['2014/2015'] <- NA",
+               "tmin['2014/2015'] <- NA", "tmin['2010/2013'] <- NA", # NEW CHANGE
                "tmax['2008/2016'] <- NA"),
   PE100070 = c("tmin['2010/2014'] <- NA",
                "tmin['1982/1983'] <- NA",
@@ -455,8 +455,8 @@ list(
                "tmax['2004/2015'] <- NA"),
   PE107005 = c("tmax['2008/'][tmax['2008/'] > 27] <- NA"), # NDD
   PE107006 = c("tmin['/1985'] <- NA", # NMH
-               "tmin[tmin > 18] <- NA",
-               "tmax['1986/1998'] <- NA"),
+               "tmin[tmin > 18] <- NA"),
+  # "tmax['1986/1998'] <- NA"), # NEW CHANGE
   PE107010 = c("tmin['1974/1983'] <- tmin['1974/1983'] + 2.5", # NDD
                "tmin['2017/2019'] <- NA",
                "tmax['2017/2020'] <- NA"),
@@ -491,9 +491,9 @@ list(
                "tmax['2003/2020'] <- NA"),
   PE113038 = c("tmax['2014/2020'] <- NA"), # ADD NDD
   PE113067 = c("tmin['2001/2020'] <- NA", # ADD NDD
-               "tmax['2001/2020'] <- NA"),        
+               "tmax['2001/2020'] <- NA"),
   PE113086 = c("tmin['2002/2020'] <- NA", # ADD NDD
-               "tmax['2002/2020'] <- NA"),  
+               "tmax['2002/2020'] <- NA"),
   PE113087 = c("tmin['2002/2020'] <- NA", # ADD NDD
                "tmax['2002/2020'] <- NA"),
   PE114049 = c("tmin['2000/2020'] <- NA", # ADD NDD
@@ -520,13 +520,13 @@ list(
   PE115021 = c("tmin['/2002'] <- NA", # NDD NMH
                "tmin['2017/2020'] <- NA",
                "tmax['1984/2002'] <- NA"),
-  PE115020 = c("tmin['/1966'] <- NA", # NDD 
+  PE115020 = c("tmin['/1966'] <- NA", # NDD
                "tmin['1986/2020'] <- NA",
                "tmax['/1985'] <- NA"),
   PE113082 = c("tmin['/2014'] <- NA", # NMH
                "tmax['2006/2007'] <- NA"),
   PE109038 = c("tmin['2004/2020'] <- NA"), #NDD ADD
-  PE112067 = c("tmin['/1997'] <- NA", # NDD 
+  PE112067 = c("tmin['/1997'] <- NA", # NDD
                "tmin['2015/2020'] <- NA",
                "tmax['/1995'] <- NA"),
   PE112060 = c("tmax['1998/2020'] <- NA"), # NDD NMH
@@ -551,5 +551,15 @@ list(
   BO004074 = c("tmin['/1995'] <- NA"), # NMH
   PE113081 = c("tmax['2001'] <- NA"),
   PE116049 = c("tmin['2002'] <- NA"),
-  PE117041 = c("tmin['2001'] <- NA")
-     )
+  PE117041 = c("tmin['2001'] <- NA"),
+  PE115035 = c("tmin['/1995'] <- NA"), # NMH NEW CHANGE
+  PE117043 = c("tmin['/2011-11-01'] <- tmin['/2011-11-01'] + 6"),  # NEW CHANGE
+  PE107008 = c("tmin['1980/1981'] <- NA",  # NEW CHANGE
+               "tmax['1980/1981'] <- NA"),  # NEW CHANGE
+  PE107036 = c("tmin['/2007-11-04'] <- tmin['/2007-11-04'] + 4",  # NEW CHANGE
+               "tmin[tmin < 6] <- NA"),  # NEW CHANGE
+  PE100046 = c("tmax['/1994'] <- NA"),  # NEW CHANGE
+  PE100139 = c("tmax['1989/1992'] <- NA"),  # NEW CHANGE
+  PE115025 = c("tmin['/1997'] <- NA"),  # NEW CHANGE
+  PE115128 = c("tmin[tmin < 2.5] <- NA")  # NEW CHANGE
+)
