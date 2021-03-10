@@ -6,7 +6,11 @@
 library(raster)
 "%>%" = magrittr::`%>%`
 
-PISCO_BBOX <- c(-81.4 - 0.03, -68.05 + 0.03, -18.75 - 0.03, 0.95 + 0.03)
+PISCO_BBOX <- c(-81.4 - 0.03, 
+                -67.05 + 0.03, 
+                -18.75 - 0.03, 
+                1.13 + 0.03)
+
 CLOUD_FOLDER <- "./data/raw/gridded/CC/CC_monthly/"
 
 # Link of the files

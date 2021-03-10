@@ -14,10 +14,10 @@ ee_Initialize(email = "adrhuerta@gmail.com")
 gmted2010 <- ee$Image('USGS/GMTED2010')
 
 # adding 0.03° to avoid any error in the contours after regridding
-pisco_area <-  ee$Geometry$Rectangle(-81.4 - 0.03, 
-                                     -18.6 - 0.03, 
-                                     -67.2 + 0.03, 
-                                     1.2 + 0.03)
+pisco_area <-  ee$Geometry$Rectangle(-81.4 - 0.03,
+                                     -18.75 - 0.03,
+                                     -67.05 + 0.03,
+                                     1.13 + 0.03)
 
 ee_image_as_raster(
     image = gmted2010,
