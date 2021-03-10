@@ -3,6 +3,9 @@ rm(list = ls())
 library(xts)
 "%>%" = magrittr::`%>%`
 
+# n cores
+n_cores = 6
+
 source("./src/process/QC/QC_spatial_neighbors.R")
 source('./src/process/QC/QC_int_consistency_check_temp.R')
 source("./src/process/GapFilling/GF_build_neigh_matrix.R")
@@ -60,7 +63,7 @@ for(xi in seq_along(param_spt)){
                     
                      response
                      
-                   }, mc.cores = 5) -> qc_monthly_values_tmax_ERA5_hmg
+                     }, mc.cores = n_cores) -> qc_monthly_values_tmax_ERA5_hmg
   
   qc_monthly_values_tmax_ERA5_hmg <- do.call("cbind", qc_monthly_values_tmax_ERA5_hmg)
   colnames(qc_monthly_values_tmax_ERA5_hmg) <- qc_data$xyz$ID
@@ -88,8 +91,8 @@ for(xi in seq_along(param_spt)){
                        }
 
                        response
-
-                     }, mc.cores = 5) -> qc_monthly_values_tmin_ERA5_hmg
+                       
+                       }, mc.cores = n_cores) -> qc_monthly_values_tmin_ERA5_hmg
 
   qc_monthly_values_tmin_ERA5_hmg <- do.call("cbind", qc_monthly_values_tmin_ERA5_hmg)
   colnames(qc_monthly_values_tmin_ERA5_hmg) <- qc_data$xyz$ID

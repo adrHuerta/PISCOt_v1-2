@@ -4,6 +4,9 @@ list.files("./src/process/QC", full.names = TRUE) %>%
   sapply(source) %>% 
   invisible()
 
+# n cores
+n_cores = 6
+
 # output 
 enhanced_qc_path = "./data/processed/obs/enhanced_qc/plots"
 non_qc_out_path = "./data/processed/obs/non_qc_output"
@@ -47,8 +50,8 @@ dir(raw_obs_dir, full.names = TRUE) %>%
   parallel::mclapply(function(x){
   
     rclimdex_2_xts(data_frame = read.table(x, sep = " "))
-     
-  }, mc.cores = 6) -> QC_data
+    
+    }, mc.cores = n_cores) -> QC_data
 
 
 saveRDS(object = lapply(QC_data, `[[`, "non_qc") %>% .[lapply(., nrow) != 0],
@@ -66,7 +69,7 @@ QC_data %>%
     
     extVal_check(xts_obj = x)
     
-  }, mc.cores = 6) -> QC_data
+    }, mc.cores = n_cores) -> QC_data
 
 saveRDS(object = lapply(QC_data, `[[`, "non_qc") %>% .[lapply(., nrow) != 0],
         file = file.path(non_qc_out_path, "non_QC02.RDS"))
@@ -81,7 +84,7 @@ QC_data %>%
     
     inCons_check(xts_obj = x)
     
-    }, mc.cores = 6) -> QC_data
+    }, mc.cores = n_cores) -> QC_data
 
 saveRDS(object = lapply(QC_data, `[[`, "non_qc") %>% .[lapply(., nrow) != 0],
         file = file.path(non_qc_out_path, "non_QC03.RDS"))
@@ -96,7 +99,7 @@ QC_data %>%
     
     temCoh_check(xts_obj = x)
     
-  }, mc.cores = 6) -> QC_data
+    }, mc.cores = n_cores) -> QC_data
 
 saveRDS(object = lapply(QC_data, `[[`, "non_qc") %>% .[lapply(., nrow) != 0],
         file = file.path(non_qc_out_path, "non_QC04.RDS"))
@@ -117,7 +120,7 @@ raw_xy_file$ID %>%
     sptCohrc_check(nghrs_stations = z,
                    xts_list_database = QC_data)
     
-  }, mc.cores = 6) -> QC_data
+    }, mc.cores = n_cores) -> QC_data
 
 
 saveRDS(object = lapply(QC_data, `[[`, "non_qc") %>% .[lapply(., nrow) != 0],

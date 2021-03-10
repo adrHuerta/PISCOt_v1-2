@@ -3,6 +3,9 @@ rm(list = ls())
 library(xts)
 "%>%" = magrittr::`%>%`
 
+# n cores
+n_cores = 6
+
 source("./src/process/QC/QC_spatial_neighbors.R")
 source("./src/process/GapFilling/GF_build_neigh_matrix.R")
 source("./src/process/GapFilling/GF_std_dep_imputation.R")
@@ -47,7 +50,7 @@ for(xi in seq_along(param_spt)){
                                       time_series_database = qc_data_values_tmax_ERA5_filled) %>%
                          std_dep_imputation(stat_data = .) %>%
                          .$filled # model + available data
-                     }, mc.cores = 5) %>%
+                     }, mc.cores = n_cores) %>%
     do.call("cbind", .) %>%
     setNames(obs_xyz$ID) -> tmax_ERA5_to_be_filled
   
@@ -65,7 +68,7 @@ for(xi in seq_along(param_spt)){
                                       time_series_database = qc_data_values_tmin_ERA5_filled) %>%
                          std_dep_imputation(stat_data = .) %>%
                          .$filled # model + available data
-                     }, mc.cores = 5) %>%
+                     }, mc.cores = n_cores) %>%
     do.call("cbind", .) %>%
     setNames(obs_xyz$ID) -> tmin_ERA5_to_be_filled
   

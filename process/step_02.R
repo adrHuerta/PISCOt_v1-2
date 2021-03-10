@@ -1,6 +1,9 @@
 rm(list = ls())
 "%>%" = magrittr::`%>%`
 
+# n cores
+n_cores = 6
+
 source("./src/process/GapFilling/GF_dreqm.R")
 source('./src/process/QC/QC_extreme_value_check.R')
 source('./src/process/GapFilling/GF_daily_climatology_filling.R')
@@ -67,7 +70,7 @@ ERA5_tmax <- parallel::mclapply(ERA5_tmax, function(time_serie){
     
   }
   
-  }, mc.cores = 5) %>% 
+  }, mc.cores = n_cores) %>% 
   do.call("cbind", .)
   
 ERA5_tmin <- parallel::mclapply(ERA5_tmin, function(time_serie){
@@ -98,7 +101,7 @@ ERA5_tmin <- parallel::mclapply(ERA5_tmin, function(time_serie){
     
   }
   
-}, mc.cores = 5) %>% 
+  }, mc.cores = n_cores) %>%
   do.call("cbind", .)
 
 ## merging ERA5 data
