@@ -42,6 +42,11 @@ std_dep_imputation_daily <- function(stat_data)
       
     }
     
+    lower_max_value <- round(quantile(Tt, .25, na.rm = TRUE) - sd(Tt, na.rm = TRUE)*2.5, 2)
+    upper_max_value <- round(quantile(Tt, .75, na.rm = TRUE) + sd(Tt, na.rm = TRUE)*2.5, 2)
+    Ttj[!is.na(Ttj)][Ttj[!is.na(Ttj)] < lower_max_value] <- lower_max_value
+    Ttj[!is.na(Ttj)][Ttj[!is.na(Ttj)] > upper_max_value] <- upper_max_value
+    
     data_base_filled <- data.frame(Tt = as.numeric(Tt), Ttj = as.numeric(Ttj))
     data_base_filled <- transform(data_base_filled, new = ifelse(is.na(Tt) & is.numeric(Ttj), Ttj, Tt))
     
