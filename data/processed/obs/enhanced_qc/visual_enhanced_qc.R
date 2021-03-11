@@ -561,5 +561,6 @@ list(
   PE100046 = c("tmax['/1994'] <- NA"),  # NEW CHANGE
   PE100139 = c("tmax['1989/1992'] <- NA"),  # NEW CHANGE
   PE115025 = c("tmin['/1997'] <- NA"),  # NEW CHANGE
-  PE115128 = c("tmin[tmin < 2.5] <- NA")  # NEW CHANGE
+  PE115128 = c("tmin[tmin < 2.5] <- NA"),  # NEW CHANGE,
+  PE113010 = c("tmin[tmin < 2.5] <- NA")# NEW CHANGE
 )
