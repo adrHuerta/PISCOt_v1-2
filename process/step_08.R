@@ -39,18 +39,20 @@ for(i in 1:10){
                                      var = "tmax",
                                      covs_list = covs_list_tmax,
                                      obs = qc_data)
-  RK(obs_cov_data = tmax_i,
-     resFitting = 10) %>%
+  
+  (RK(obs_cov_data = tmax_i, resFitting = 10) + tmax_i$covs$CL) %>%
     raster::writeRaster(x = ., 
                         filename = file.path(output_anomalies, 
                                              sprintf("%s/tmax_%s.nc", "tmax",  date_i)))
+  
+  
   
   tmin_i <- make_Anomaly_coVariables(day_date = date_i,
                                      var = "tmin",
                                      covs_list = covs_list_tmin,
                                      obs = qc_data)
-  RK(obs_cov_data = tmin_i,
-     resFitting = 10) %>%
+  
+  (RK(obs_cov_data = tmin_i, resFitting = 10) + tmin_i$covs$CL) %>%
     raster::writeRaster(x = ., 
                         filename = file.path(output_anomalies, 
                                              sprintf("%s/tmin_%s.nc", "tmin",  date_i)))

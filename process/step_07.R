@@ -4,10 +4,12 @@ library(xts)
 library(raster)
 "%>%" = magrittr::`%>%`
 
+source('./src/process/Merging/MG_normal_anomaly_values.R')
+
 OBS_data <- readRDS("./data/processed/obs/qc_output/OBS.RDS")
 
 # normals values based on grid
-# to aproxximate the obs value as much as possible
+# to approximate the obs value as much as possible
 
 tmax_normals <- file.path("./data/processed/gridded/Normals", 
                           sprintf("%s/tmax_%02d.nc", "tmax",  1:12)) %>%

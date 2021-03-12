@@ -10,7 +10,7 @@ make_Normal_coVariables <- function(month_value,
   
   covs_data <- raster::brick(raster::stack(raster::stack(covs_dynamic),
                                            raster::stack(covs_list$static)))
-  covs_data <- (covs_data - raster::cellStats(covs_data, mean)) / raster::cellStats(covs_data, sd)
+  # covs_data <- (covs_data - raster::cellStats(covs_data, mean)) / raster::cellStats(covs_data, sd)
   
   # obs
   obs_data <- cbind(obs$xyz, obs$values[[var]][month_value, ])
@@ -39,7 +39,7 @@ make_Anomaly_coVariables <- function(day_date,
   
   covs_data <- raster::brick(raster::stack(raster::stack(covs_dynamic),
                                            raster::stack(covs_list$static)))
-  covs_data <- (covs_data - raster::cellStats(covs_data, mean)) / raster::cellStats(covs_data, sd)
+  # covs_data <- (covs_data - raster::cellStats(covs_data, mean)) / raster::cellStats(covs_data, sd)
   
   # obs
   obs_data <- cbind(obs$xyz, as.numeric(obs$values[[var]][as.Date(day_date)]))
