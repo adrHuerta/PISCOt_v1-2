@@ -12,7 +12,7 @@ GWRK <- function(obs_cov_data,
   # residual kriging interpolation
   residual_grid <- OK_interpolation(obs_point_data = obs_cov_data$obs,
                                     model_grid_data = model_grid,
-                                    resFitting = resFitting)
+                                    resFitting = resFitting/2)
   # merging
   model_grid + residual_grid
   
@@ -111,65 +111,65 @@ OK_interpolation <- function(obs_point_data,
 }
 
 
-IDW_interpolation <- function(obs_cov_data,
-                              coef_spatial_model,
-                              resFitting = 10)
-{
-
-  # getting residuals
-  temp_model_ag <- raster::aggregate(model_grid_data, resFitting)
-  residual_sp <- extract(temp_model_ag,
-                         obs_point_data, cellnumber = FALSE, sp = TRUE)
-  residual_sp$residual <- residual_sp$OBS - residual_sp$MODEL
-  
-  # idw
-  gs <- gstat::gstat(formula = residual ~ 1, 
-                     locations = adr, 
-                     nmax = Inf, 
-                     set = list(idp = 2))
-  response <- raster::interpolate(temp_model_ag, gs)
-  response <- raster::disaggregate(response, 
-                                   resFitting, 
-                                   method = "bilinear")
-  
-  round(response, 2)
-  
-}
-
-IDWopt_interpolation <- function(obs_cov_data,
-                                 coef_spatial_model,
-                                 resFitting = 10,
-                                 idpR = seq(0.8, 3.5, 0.1))
-{
-  
-  # getting residuals
-  temp_model_ag <- raster::aggregate(model_grid_data, resFitting)
-  residual_sp <- extract(temp_model_ag,
-                         obs_point_data, cellnumber = FALSE, sp = TRUE)
-  residual_sp$residual <- residual_sp$OBS - residual_sp$MODEL
-  
-  # searching of best parameter 
-  idpRange <- idpR
-  mse <- rep(NA, length(idpRange))
-  for (i in 1:length(idpRange)) {
-    mse[i] <- mean(gstat::krige.cv(residual ~ 1, residual_sp, nfold = nrow(residual_sp),
-                                   nmax = Inf, set = list(idp = idpRange[i]), verbose = F)$residual^2)
-  }
-  
-  # best parameter 
-  poss <- which(mse %in% min(mse))
-  bestparam <- idpRange[poss]
-  
-  # idw
-  gs <- gstat::gstat(formula = residual ~ 1, 
-                     locations = adr, 
-                     nmax = Inf, 
-                     set = list(idp = bestparam))
-  response <- raster::interpolate(temp_model_ag, gs)
-  response <- raster::disaggregate(response, 
-                                   resFitting, 
-                                   method = "bilinear")
-  
-  round(response, 2)
-  
-}
+# IDW_interpolation <- function(obs_cov_data,
+#                               coef_spatial_model,
+#                               resFitting = 10)
+# {
+# 
+#   # getting residuals
+#   temp_model_ag <- raster::aggregate(model_grid_data, resFitting)
+#   residual_sp <- extract(temp_model_ag,
+#                          obs_point_data, cellnumber = FALSE, sp = TRUE)
+#   residual_sp$residual <- residual_sp$OBS - residual_sp$MODEL
+#   
+#   # idw
+#   gs <- gstat::gstat(formula = residual ~ 1, 
+#                      locations = adr, 
+#                      nmax = Inf, 
+#                      set = list(idp = 2))
+#   response <- raster::interpolate(temp_model_ag, gs)
+#   response <- raster::disaggregate(response, 
+#                                    resFitting, 
+#                                    method = "bilinear")
+#   
+#   round(response, 2)
+#   
+# }
+# 
+# IDWopt_interpolation <- function(obs_cov_data,
+#                                  coef_spatial_model,
+#                                  resFitting = 10,
+#                                  idpR = seq(0.8, 3.5, 0.1))
+# {
+#   
+#   # getting residuals
+#   temp_model_ag <- raster::aggregate(model_grid_data, resFitting)
+#   residual_sp <- extract(temp_model_ag,
+#                          obs_point_data, cellnumber = FALSE, sp = TRUE)
+#   residual_sp$residual <- residual_sp$OBS - residual_sp$MODEL
+#   
+#   # searching of best parameter 
+#   idpRange <- idpR
+#   mse <- rep(NA, length(idpRange))
+#   for (i in 1:length(idpRange)) {
+#     mse[i] <- mean(gstat::krige.cv(residual ~ 1, residual_sp, nfold = nrow(residual_sp),
+#                                    nmax = Inf, set = list(idp = idpRange[i]), verbose = F)$residual^2)
+#   }
+#   
+#   # best parameter 
+#   poss <- which(mse %in% min(mse))
+#   bestparam <- idpRange[poss]
+#   
+#   # idw
+#   gs <- gstat::gstat(formula = residual ~ 1, 
+#                      locations = adr, 
+#                      nmax = Inf, 
+#                      set = list(idp = bestparam))
+#   response <- raster::interpolate(temp_model_ag, gs)
+#   response <- raster::disaggregate(response, 
+#                                    resFitting, 
+#                                    method = "bilinear")
+#   
+#   round(response, 2)
+#   
+# }

@@ -30,3 +30,16 @@ get_anomaly_values <- function(daily_time_serie)
   daily_time_serie - mean_ts
   
 }
+
+get_anomaly_values2 <- function(daily_time_serie,
+                                monthly_values)
+{
+  
+  mean_ts <- daily_time_serie
+  for(i in 1:12){
+    mean_ts[xts::.indexmon(mean_ts) %in% (i - 1)] <- monthly_values[i]
+  }
+  
+  round(daily_time_serie - mean_ts, 2)
+  
+}

@@ -67,15 +67,15 @@ all(colnames(new_value_tmin) == new_xyz@data$ID)
 normal_tmax <- lapply(new_value_tmax, function(x) get_monthly_normals(daily_time_serie = x)) %>%
   do.call("cbind", .)
 
-anomaly_tmax <- lapply(new_value_tmax, function(x) get_anomaly_values(daily_time_serie = x)) %>%
-  do.call("cbind", .)
+# anomaly_tmax <- lapply(new_value_tmax, function(x) get_anomaly_values(daily_time_serie = x)) %>%
+#   do.call("cbind", .)
 
 #tmin
 normal_tmin <- lapply(new_value_tmin, function(x) get_monthly_normals(daily_time_serie = x)) %>%
   do.call("cbind", .)
 
-anomaly_tmin <- lapply(new_value_tmin, function(x) get_anomaly_values(daily_time_serie = x)) %>%
-  do.call("cbind", .)
+# anomaly_tmin <- lapply(new_value_tmin, function(x) get_anomaly_values(daily_time_serie = x)) %>%
+#   do.call("cbind", .)
 
 # save data
 
@@ -84,7 +84,7 @@ saveRDS(object = list(values = list(tmax = normal_tmax,
                       xyz = new_xyz),
         file = "./data/processed/obs/qc_output/Normals_OBS.RDS")
 
-saveRDS(object = list(values = list(tmax = anomaly_tmax,
-                                    tmin = anomaly_tmin),
+saveRDS(object = list(values = list(tmax = new_value_tmax,
+                                    tmin = new_value_tmin),
                       xyz = new_xyz),
-        file = "./data/processed/obs/qc_output/Anomalies_OBS.RDS")
+        file = "./data/processed/obs/qc_output/OBS.RDS")
