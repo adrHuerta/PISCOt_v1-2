@@ -8,7 +8,7 @@ source('./src/process/Merging/MG_GWRK.R')
 
 # obs
 qc_data <- readRDS("./data/processed/obs/qc_output/Normals_OBS.RDS")
-stats_above_alt <- qc_data$xyz@data[qc_data$xyz@data$ALT > 500, "ID"]
+stats_above_alt <- qc_data$xyz@data[qc_data$xyz@data$ALT > 250, "ID"]
 
 # gridded
 LST_day <- raster::brick("data/processed/gridded/LST_DAY.nc")

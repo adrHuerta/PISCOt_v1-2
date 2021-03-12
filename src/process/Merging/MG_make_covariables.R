@@ -15,10 +15,10 @@ make_Normal_coVariables <- function(month_value,
   # obs
   obs_data <- cbind(obs$xyz, obs$values[[var]][month_value, ])
   obs_data <- obs_data[, ncol(obs_data)]
-  names(obs_data) <- c("Temp")
+  names(obs_data) <- c("OBS")
   
   # formula
-  formula_lm <- as.formula(paste("Temp ~ ",  paste(names(covs_data), collapse = "+")))
+  formula_lm <- as.formula(paste("OBS ~ ",  paste(names(covs_data), collapse = "+")))
   
   list(covs = covs_data, obs = obs_data, formula_lm = formula_lm)
   
