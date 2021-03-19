@@ -22,7 +22,7 @@ tmin_normals <- file.path("./data/processed/gridded/Normals",
   lapply(function(x) raster::raster(x)) %>%
   raster::brick()
 
-tdi <- raster::raster("./data/processed/gridded/TDI.nc")
+tdi <- raster::raster("./data/processed/gridded/co_variables/TDI.nc")
 
 # making list of covs
 covs_list_tmax <- list(dynamic = list(CL = tmax_normals),
