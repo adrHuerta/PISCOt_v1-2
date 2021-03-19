@@ -54,13 +54,13 @@ for(i in 1:12){
                        data.frame(ID = assessment(cv_i)$ID,
                                   value = raster::extract(tmax_i_gridded, to_extract_value))
                        
-                     }, mc.cores = 5) -> tmax_cv_i
+                     }, mc.cores = 10) -> tmax_cv_i
   
   saveRDS(object = do.call("rbind", tmax_cv_i),
           file = file.path(output_normals, sprintf("%s/tmax_spcv_%02d.RDS", "tmax",  i)))
   
   
-  parallel::mclapply(stations_CV,
+  parallel::mclapply(folds$splits,
                      function(cv_i){
                        
                        assessment_cv <- assessment(cv_i)$ID
@@ -81,7 +81,7 @@ for(i in 1:12){
                        data.frame(ID = assessment(cv_i)$ID,
                                   value = raster::extract(tmin_i_gridded, to_extract_value))
                        
-                     }, mc.cores = 5) -> tmin_cv_i
+                     }, mc.cores = 10) -> tmin_cv_i
   
   saveRDS(object = do.call("rbind", tmax_cv_i),
           file = file.path(output_normals, sprintf("%s/tmin_spcv_%02d.RDS", "tmin",  i)))
@@ -115,13 +115,13 @@ for(i in 1:12){
                        data.frame(ID = assessment(cv_i)$ID,
                                   value = raster::extract(tmax_i_gridded, to_extract_value))
                        
-                     }, mc.cores = 5) -> tmax_cv_i
+                     }, mc.cores = 10) -> tmax_cv_i
   
   saveRDS(object = do.call("rbind", tmax_cv_i),
           file = file.path(output_normals, sprintf("%s/tmax_nospcv_%02d.RDS", "tmax",  i)))
   
   
-  parallel::mclapply(stations_CV,
+  parallel::mclapply(folds$splits,
                      function(cv_i){
                        
                        assessment_cv <- assessment(cv_i)$ID
@@ -142,7 +142,7 @@ for(i in 1:12){
                        data.frame(ID = assessment(cv_i)$ID,
                                   value = raster::extract(tmin_i_gridded, to_extract_value))
                        
-                     }, mc.cores = 5) -> tmin_cv_i
+                     }, mc.cores = 10) -> tmin_cv_i
   
   saveRDS(object = do.call("rbind", tmax_cv_i),
           file = file.path(output_normals, sprintf("%s/tmin_nospcv_%02d.RDS", "tmin",  i)))
