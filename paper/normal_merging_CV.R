@@ -1,6 +1,7 @@
 rm(list = ls())
 
 library(raster)
+library(spatialsample)
 "%>%" = magrittr::`%>%`
 
 source('./src/process/Merging/MG_make_covariables.R')
@@ -26,21 +27,22 @@ covs_list_tmax <- list(dynamic = list(LST = LST_day),
 covs_list_tmin <- list(dynamic = list(LST = LST_night),
                        static = list(DEM = DEM, X = X, Y = Y))
 
-#
-stations_CV <- qc_data$xyz[qc_data$xyz@data$filter_qc70 != 0, ]$ID
+# kfold validation (spatial)
+set.seed(2020+1)
+folds <- spatial_clustering_cv(qc_data$xyz@data, coords = c("LON", "LAT"), v = 10)
 
-# 
 for(i in 1:12){
   
-  parallel::mclapply(stations_CV,
+  parallel::mclapply(folds$splits,
                      function(cv_i){
                        
-                       cv_i <- match(cv_i, qc_data$xyz@data$ID)
-                       to_extract_value  <- qc_data$xyz[cv_i,]
+                       assessment_cv <- assessment(cv_i)$ID
+                       assessment_cv <- match(assessment_cv, qc_data$xyz@data$ID)
+                       to_extract_value  <- qc_data$xyz[assessment_cv, ]
                        
                        qc_data_cv <- qc_data
-                       qc_data_cv$values$tmax <- qc_data_cv$values$tmax[,-cv_i]
-                       qc_data_cv$xyz <- qc_data_cv$xyz[-cv_i,]
+                       qc_data_cv$values$tmax <- qc_data_cv$values$tmax[,-assessment_cv]
+                       qc_data_cv$xyz <- qc_data_cv$xyz[-assessment_cv,]
                        
                        tmax_i <- make_Normal_coVariables(month_value = i,
                                                          var = "tmax",
@@ -48,23 +50,26 @@ for(i in 1:12){
                                                          obs = qc_data_cv)
                        
                        tmax_i_gridded <- GWRK(obs_cov_data = tmax_i, resFitting = 10)
-                       raster::extract(tmax_i_gridded, to_extract_value)
+                       
+                       data.frame(ID = assessment(cv_i)$ID,
+                                  value = raster::extract(tmax_i_gridded, to_extract_value))
                        
                      }, mc.cores = 5) -> tmax_cv_i
   
-  saveRDS(object = unlist(tmax_cv_i),
-          file = file.path(output_normals, sprintf("%s/tmax_%02d.RDS", "tmax",  i)))
+  saveRDS(object = do.call("rbind", tmax_cv_i),
+          file = file.path(output_normals, sprintf("%s/tmax_spcv_%02d.RDS", "tmax",  i)))
   
   
   parallel::mclapply(stations_CV,
                      function(cv_i){
                        
-                       cv_i <- match(cv_i, qc_data$xyz@data$ID)
-                       to_extract_value  <- qc_data$xyz[cv_i,]
+                       assessment_cv <- assessment(cv_i)$ID
+                       assessment_cv <- match(assessment_cv, qc_data$xyz@data$ID)
+                       to_extract_value  <- qc_data$xyz[assessment_cv, ]
                        
                        qc_data_cv <- qc_data
-                       qc_data_cv$values$tmin <- qc_data_cv$values$tmin[,-cv_i]
-                       qc_data_cv$xyz <- qc_data_cv$xyz[-cv_i,]
+                       qc_data_cv$values$tmin <- qc_data_cv$values$tmin[,-assessment_cv]
+                       qc_data_cv$xyz <- qc_data_cv$xyz[-assessment_cv,]
                        
                        tmin_i <- make_Normal_coVariables(month_value = i,
                                                          var = "tmin",
@@ -72,11 +77,74 @@ for(i in 1:12){
                                                          obs = qc_data_cv)
                        
                        tmin_i_gridded <- GWRK(obs_cov_data = tmin_i, resFitting = 10)
-                       raster::extract(tmin_i_gridded, to_extract_value)
+                       
+                       data.frame(ID = assessment(cv_i)$ID,
+                                  value = raster::extract(tmin_i_gridded, to_extract_value))
                        
                      }, mc.cores = 5) -> tmin_cv_i
   
-  saveRDS(object = unlist(tmin_cv_i),
-          file = file.path(output_normals, sprintf("%s/tmin_%02d.RDS", "tmin",  i)))
+  saveRDS(object = do.call("rbind", tmax_cv_i),
+          file = file.path(output_normals, sprintf("%s/tmin_spcv_%02d.RDS", "tmin",  i)))
   
   }
+
+# kfold validation (no spatial)
+set.seed(2020+1)
+folds <- rsample::vfold_cv(qc_data$xyz@data, v = 10)
+
+for(i in 1:12){
+  
+  parallel::mclapply(folds$splits,
+                     function(cv_i){
+                       
+                       assessment_cv <- assessment(cv_i)$ID
+                       assessment_cv <- match(assessment_cv, qc_data$xyz@data$ID)
+                       to_extract_value  <- qc_data$xyz[assessment_cv, ]
+                       
+                       qc_data_cv <- qc_data
+                       qc_data_cv$values$tmax <- qc_data_cv$values$tmax[,-assessment_cv]
+                       qc_data_cv$xyz <- qc_data_cv$xyz[-assessment_cv,]
+                       
+                       tmax_i <- make_Normal_coVariables(month_value = i,
+                                                         var = "tmax",
+                                                         covs_list = covs_list_tmax,
+                                                         obs = qc_data_cv)
+                       
+                       tmax_i_gridded <- GWRK(obs_cov_data = tmax_i, resFitting = 10)
+                       
+                       data.frame(ID = assessment(cv_i)$ID,
+                                  value = raster::extract(tmax_i_gridded, to_extract_value))
+                       
+                     }, mc.cores = 5) -> tmax_cv_i
+  
+  saveRDS(object = do.call("rbind", tmax_cv_i),
+          file = file.path(output_normals, sprintf("%s/tmax_nospcv_%02d.RDS", "tmax",  i)))
+  
+  
+  parallel::mclapply(stations_CV,
+                     function(cv_i){
+                       
+                       assessment_cv <- assessment(cv_i)$ID
+                       assessment_cv <- match(assessment_cv, qc_data$xyz@data$ID)
+                       to_extract_value  <- qc_data$xyz[assessment_cv, ]
+                       
+                       qc_data_cv <- qc_data
+                       qc_data_cv$values$tmin <- qc_data_cv$values$tmin[,-assessment_cv]
+                       qc_data_cv$xyz <- qc_data_cv$xyz[-assessment_cv,]
+                       
+                       tmin_i <- make_Normal_coVariables(month_value = i,
+                                                         var = "tmin",
+                                                         covs_list = covs_list_tmin,
+                                                         obs = qc_data_cv)
+                       
+                       tmin_i_gridded <- GWRK(obs_cov_data = tmin_i, resFitting = 10)
+                       
+                       data.frame(ID = assessment(cv_i)$ID,
+                                  value = raster::extract(tmin_i_gridded, to_extract_value))
+                       
+                     }, mc.cores = 5) -> tmin_cv_i
+  
+  saveRDS(object = do.call("rbind", tmax_cv_i),
+          file = file.path(output_normals, sprintf("%s/tmin_nospcv_%02d.RDS", "tmin",  i)))
+  
+}
