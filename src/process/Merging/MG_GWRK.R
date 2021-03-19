@@ -45,7 +45,7 @@ GWR_model_fitting <- function(obs_cov_data,
                                     adaptive = TRUE,
                                     longlat = TRUE,
                                     regression.points = newpts, 
-                                    parallel.method = "cluster")
+                                    parallel.method = FALSE)
     
     gwr_coefs <- brick(
       lapply(c("Intercept", names(cov_data)),
