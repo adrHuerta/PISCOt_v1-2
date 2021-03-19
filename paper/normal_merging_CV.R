@@ -52,7 +52,8 @@ for(i in 1:12){
                        tmax_i_gridded <- GWRK(obs_cov_data = tmax_i, resFitting = 10)
                        
                        data.frame(ID = assessment(cv_i)$ID,
-                                  value = raster::extract(tmax_i_gridded, to_extract_value))
+                                  model = raster::extract(tmax_i_gridded, to_extract_value),
+                                  date = i)
                        
                      }, mc.cores = 10) -> tmax_cv_i
   
@@ -79,7 +80,8 @@ for(i in 1:12){
                        tmin_i_gridded <- GWRK(obs_cov_data = tmin_i, resFitting = 10)
                        
                        data.frame(ID = assessment(cv_i)$ID,
-                                  value = raster::extract(tmin_i_gridded, to_extract_value))
+                                  model = raster::extract(tmin_i_gridded, to_extract_value),
+                                  date = i)
                        
                      }, mc.cores = 10) -> tmin_cv_i
   
@@ -113,7 +115,8 @@ for(i in 1:12){
                        tmax_i_gridded <- GWRK(obs_cov_data = tmax_i, resFitting = 10)
                        
                        data.frame(ID = assessment(cv_i)$ID,
-                                  value = raster::extract(tmax_i_gridded, to_extract_value))
+                                  model = raster::extract(tmax_i_gridded, to_extract_value),
+                                  date = i)
                        
                      }, mc.cores = 10) -> tmax_cv_i
   
@@ -140,7 +143,8 @@ for(i in 1:12){
                        tmin_i_gridded <- GWRK(obs_cov_data = tmin_i, resFitting = 10)
                        
                        data.frame(ID = assessment(cv_i)$ID,
-                                  value = raster::extract(tmin_i_gridded, to_extract_value))
+                                  model = raster::extract(tmin_i_gridded, to_extract_value),
+                                  date = i)
                        
                      }, mc.cores = 10) -> tmin_cv_i
   
