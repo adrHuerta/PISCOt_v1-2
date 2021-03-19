@@ -85,7 +85,7 @@ for(i in 1:12){
                        
                      }, mc.cores = 10) -> tmin_cv_i
   
-  saveRDS(object = do.call("rbind", tmax_cv_i),
+  saveRDS(object = do.call("rbind", tmin_cv_i),
           file = file.path(output_normals, sprintf("%s/tmin_spcv_%02d.RDS", "tmin",  i)))
   
   }
@@ -148,7 +148,7 @@ for(i in 1:12){
                        
                      }, mc.cores = 10) -> tmin_cv_i
   
-  saveRDS(object = do.call("rbind", tmax_cv_i),
+  saveRDS(object = do.call("rbind", tmin_cv_i),
           file = file.path(output_normals, sprintf("%s/tmin_nospcv_%02d.RDS", "tmin",  i)))
   
 }

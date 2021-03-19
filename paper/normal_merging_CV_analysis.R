@@ -50,7 +50,17 @@ tmin_obs <- reshape2::melt(qc_data$values$tmin) %>% setNames(c("date", "ID", "ob
 # cv 
 output_normals <- "./paper/others/normals"
 tmax_spcv <- file.path(output_normals, sprintf("%s/tmax_spcv_%02d.RDS", "tmax",  1:12)) %>%
-  lapply(function(x){
-    
+  lapply(function(x) readRDS(x)) %>% do.call("rbind", .)
 
-  })
+tmin_spcv <- file.path(output_normals, sprintf("%s/tmin_spcv_%02d.RDS", "tmin",  1:12)) %>%
+  lapply(function(x) readRDS(x)) %>% do.call("rbind", .)
+
+tmax_nospcv <- file.path(output_normals, sprintf("%s/tmax_nospcv_%02d.RDS", "tmax",  1:12)) %>%
+  lapply(function(x) readRDS(x)) %>% do.call("rbind", .)
+
+tmin_nospcv <- file.path(output_normals, sprintf("%s/tmin_nospcv_%02d.RDS", "tmin",  1:12)) %>%
+  lapply(function(x) readRDS(x)) %>% do.call("rbind", .)
+
+
+merge(tmin_nospcv, tmin_obs, by = c("ID", "date")) -> adr2
+plot(adr2$obs, adr2$model)
