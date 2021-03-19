@@ -9,5 +9,5 @@ projection(tdi) = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0
 names(tdi) = "TDI"
 
 writeRaster(tdi, 
-            filename = file.path(".", "data", "processed", "gridded", "TDI.nc"),
+            filename = file.path(".", "data", "processed", "gridded", "co_variables", "TDI.nc"),
             format = "CDF")

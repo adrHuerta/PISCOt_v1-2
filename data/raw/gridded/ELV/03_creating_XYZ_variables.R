@@ -18,16 +18,16 @@ names(yvar) = "Y"
 
 
 writeRaster(elv, 
-            filename = file.path(".", "data", "processed", "gridded", "DEM.nc"),
+            filename = file.path(".", "data", "processed", "gridded", "co_variables", "DEM.nc"),
             format = "CDF",
             overwrite = TRUE)
 
 writeRaster(xvar,
-            filename = file.path(".", "data", "processed", "gridded", "X.nc"),
+            filename = file.path(".", "data", "processed", "gridded", "co_variables", "X.nc"),
             format = "CDF",
             overwrite = TRUE)
 
 writeRaster(yvar, 
-            filename = file.path(".", "data", "processed", "gridded", "Y.nc"),
+            filename = file.path(".", "data", "processed", "gridded", "co_variables", "Y.nc"),
             format = "CDF",
             overwrite = TRUE)

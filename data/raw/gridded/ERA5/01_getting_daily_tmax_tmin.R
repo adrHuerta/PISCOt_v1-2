@@ -117,9 +117,9 @@ ERA5_t2m_tmin = cdo.daymin(input=ERA5_t2m)
 xr.open_dataset(ERA5_t2m_tmax).\
 drop("time_bnds").\
 sel(time=slice("1960-01-01", "2019-12-31")).\
-to_netcdf("./data/processed/gridded/ERA5_t2m_tmax_1960_2019.nc")
+to_netcdf("./data/processed/gridded/co_variables/ERA5_t2m_tmax_1960_2019.nc")
 
 xr.open_dataset(ERA5_t2m_tmin).\
 drop("time_bnds").\
 sel(time=slice("1960-01-01", "2019-12-31")).\
-to_netcdf("./data/processed/gridded/ERA5_t2m_tmin_1960_2019.nc")
+to_netcdf("./data/processed/gridded/co_variables/ERA5_t2m_tmin_1960_2019.nc")
