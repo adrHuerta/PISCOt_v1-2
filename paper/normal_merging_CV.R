@@ -51,13 +51,14 @@ for(i in 1:12){
                        
                        tmax_i_gridded <- GWRK(obs_cov_data = tmax_i, resFitting = 10)
                        
-                       data.frame(ID = assessment(cv_i)$ID,
-                                  model = raster::extract(tmax_i_gridded, to_extract_value),
-                                  date = i)
+                       extracted_valued <- raster::extract(tmax_i_gridded, to_extract_value)
+                       extracted_valued <- matrix(extracted_valued, nrow = 1, ncol = length(extracted_valued))
+                       colnames(extracted_valued) <- assessment(cv_i)$ID
+                       extracted_valued
                        
                      }, mc.cores = 10) -> tmax_cv_i
   
-  saveRDS(object = do.call("rbind", tmax_cv_i),
+  saveRDS(object = do.call("cbind", tmax_cv_i) %>% .[, match(qc_data$xyz@data$ID, colnames(.))],
           file = file.path(output_normals, sprintf("%s/tmax_spcv_%02d.RDS", "tmax",  i)))
   
   
@@ -79,13 +80,14 @@ for(i in 1:12){
                        
                        tmin_i_gridded <- GWRK(obs_cov_data = tmin_i, resFitting = 10)
                        
-                       data.frame(ID = assessment(cv_i)$ID,
-                                  model = raster::extract(tmin_i_gridded, to_extract_value),
-                                  date = i)
+                       extracted_valued <- raster::extract(tmin_i_gridded, to_extract_value)
+                       extracted_valued <- matrix(extracted_valued, nrow = 1, ncol = length(extracted_valued))
+                       colnames(extracted_valued) <- assessment(cv_i)$ID
+                       extracted_valued
                        
                      }, mc.cores = 10) -> tmin_cv_i
   
-  saveRDS(object = do.call("rbind", tmin_cv_i),
+  saveRDS(object = do.call("cbind", tmin_cv_i) %>% .[, match(qc_data$xyz@data$ID, colnames(.))],
           file = file.path(output_normals, sprintf("%s/tmin_spcv_%02d.RDS", "tmin",  i)))
   
   }
@@ -114,13 +116,14 @@ for(i in 1:12){
                        
                        tmax_i_gridded <- GWRK(obs_cov_data = tmax_i, resFitting = 10)
                        
-                       data.frame(ID = assessment(cv_i)$ID,
-                                  model = raster::extract(tmax_i_gridded, to_extract_value),
-                                  date = i)
+                       extracted_valued <- raster::extract(tmax_i_gridded, to_extract_value)
+                       extracted_valued <- matrix(extracted_valued, nrow = 1, ncol = length(extracted_valued))
+                       colnames(extracted_valued) <- assessment(cv_i)$ID
+                       extracted_valued
                        
                      }, mc.cores = 10) -> tmax_cv_i
   
-  saveRDS(object = do.call("rbind", tmax_cv_i),
+  saveRDS(object = do.call("cbind", tmax_cv_i) %>% .[, match(qc_data$xyz@data$ID, colnames(.))],
           file = file.path(output_normals, sprintf("%s/tmax_nospcv_%02d.RDS", "tmax",  i)))
   
   
@@ -142,13 +145,14 @@ for(i in 1:12){
                        
                        tmin_i_gridded <- GWRK(obs_cov_data = tmin_i, resFitting = 10)
                        
-                       data.frame(ID = assessment(cv_i)$ID,
-                                  model = raster::extract(tmin_i_gridded, to_extract_value),
-                                  date = i)
+                       extracted_valued <- raster::extract(tmin_i_gridded, to_extract_value)
+                       extracted_valued <- matrix(extracted_valued, nrow = 1, ncol = length(extracted_valued))
+                       colnames(extracted_valued) <- assessment(cv_i)$ID
+                       extracted_valued
                        
                      }, mc.cores = 10) -> tmin_cv_i
   
-  saveRDS(object = do.call("rbind", tmin_cv_i),
+  saveRDS(object = do.call("cbind", tmin_cv_i) %>% .[, match(qc_data$xyz@data$ID, colnames(.))],
           file = file.path(output_normals, sprintf("%s/tmin_nospcv_%02d.RDS", "tmin",  i)))
   
 }
