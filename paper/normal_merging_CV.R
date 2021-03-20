@@ -28,8 +28,9 @@ covs_list_tmin <- list(dynamic = list(LST = LST_night),
                        static = list(DEM = DEM, X = X, Y = Y))
 
 # kfold validation (spatial)
+stations_CV <- qc_data$xyz
 set.seed(2020+1)
-folds <- spatial_clustering_cv(qc_data$xyz@data, coords = c("LON", "LAT"), v = 10)
+folds <- spatial_clustering_cv(stations_CV@data, coords = c("LON", "LAT"), v = 10)
 
 for(i in 1:12){
   
@@ -58,7 +59,7 @@ for(i in 1:12){
                        
                      }, mc.cores = 10) -> tmax_cv_i
   
-  saveRDS(object = do.call("cbind", tmax_cv_i) %>% .[, match(qc_data$xyz@data$ID, colnames(.))],
+  saveRDS(object = do.call("cbind", tmax_cv_i) %>% .[, match(stations_CV@data$ID, colnames(.))],
           file = file.path(output_normals, sprintf("%s/tmax_spcv_%02d.RDS", "tmax",  i)))
   
   
@@ -87,14 +88,14 @@ for(i in 1:12){
                        
                      }, mc.cores = 10) -> tmin_cv_i
   
-  saveRDS(object = do.call("cbind", tmin_cv_i) %>% .[, match(qc_data$xyz@data$ID, colnames(.))],
+  saveRDS(object = do.call("cbind", tmin_cv_i) %>% .[, match(stations_CV@data$ID, colnames(.))],
           file = file.path(output_normals, sprintf("%s/tmin_spcv_%02d.RDS", "tmin",  i)))
   
   }
 
 # kfold validation (no spatial)
 set.seed(2020+1)
-folds <- rsample::vfold_cv(qc_data$xyz@data, v = 10)
+folds <- rsample::vfold_cv(stations_CV@data, v = 10)
 
 for(i in 1:12){
   
@@ -123,7 +124,7 @@ for(i in 1:12){
                        
                      }, mc.cores = 10) -> tmax_cv_i
   
-  saveRDS(object = do.call("cbind", tmax_cv_i) %>% .[, match(qc_data$xyz@data$ID, colnames(.))],
+  saveRDS(object = do.call("cbind", tmax_cv_i) %>% .[, match(stations_CV@data$ID, colnames(.))],
           file = file.path(output_normals, sprintf("%s/tmax_nospcv_%02d.RDS", "tmax",  i)))
   
   
@@ -152,7 +153,7 @@ for(i in 1:12){
                        
                      }, mc.cores = 10) -> tmin_cv_i
   
-  saveRDS(object = do.call("cbind", tmin_cv_i) %>% .[, match(qc_data$xyz@data$ID, colnames(.))],
+  saveRDS(object = do.call("cbind", tmin_cv_i) %>% .[, match(stations_CV@data$ID, colnames(.))],
           file = file.path(output_normals, sprintf("%s/tmin_nospcv_%02d.RDS", "tmin",  i)))
   
 }

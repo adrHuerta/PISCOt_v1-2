@@ -2,6 +2,7 @@ rm(list = ls())
 
 library(xts)
 library(raster)
+library(spatialsample)
 "%>%" = magrittr::`%>%`
 
 source('./src/process/Merging/MG_make_covariables.R')
@@ -32,47 +33,55 @@ covs_list_tmax <- list(dynamic = list(CL = tmax_normals),
 covs_list_tmin <- list(dynamic = list(CL = tmin_normals),
                        static = list(TDI = tdi))
 
-#
-stations_CV <- qc_data$xyz[qc_data$xyz@data$filter_qc70 != 0, ]$ID
+# kfold validation (spatial)
+stations_CV <- qc_data$xyz[qc_data$xyz@data$filter_qc70 != 0, ]
+set.seed(2020+1)
+folds <- spatial_clustering_cv(stations_CV@data, coords = c("LON", "LAT"), v = 10)
 
 #
 for(i in 1:10){
   
   date_i <- time(qc_data$values$tmax)[i]
   
-  parallel::mclapply(stations_CV,
+  parallel::mclapply(folds$splits,
                      function(cv_i){
                        
-                       cv_i <- match(cv_i, qc_data$xyz@data$ID)
-                       to_extract_value  <- qc_data$xyz[cv_i,]
+                       assessment_cv <- assessment(cv_i)$ID
+                       assessment_cv <- match(assessment_cv, qc_data$xyz@data$ID)
+                       to_extract_value  <- qc_data$xyz[assessment_cv, ]
                        
                        qc_data_cv <- qc_data
-                       qc_data_cv$values$tmax <- qc_data_cv$values$tmax[,-cv_i]
-                       qc_data_cv$xyz <- qc_data_cv$xyz[-cv_i,]
-                       
+                       qc_data_cv$values$tmax <- qc_data_cv$values$tmax[,-assessment_cv]
+                       qc_data_cv$xyz <- qc_data_cv$xyz[-assessment_cv,]
+
                        tmax_i <- make_Anomaly_coVariables(day_date = date_i,
                                                           var = "tmax",
                                                           covs_list = covs_list_tmax,
                                                           obs = qc_data_cv)
                        
                        tmax_i_gridded <- RK(obs_cov_data = tmax_i, resFitting = 10) + tmax_i$covs$CL
-                       raster::extract(tmax_i_gridded, to_extract_value)
                        
-                     }, mc.cores = 5) -> tmax_cv_i
+                       extracted_valued <- raster::extract(tmax_i_gridded, to_extract_value)
+                       extracted_valued <- matrix(extracted_valued, nrow = 1, ncol = length(extracted_valued))
+                       colnames(extracted_valued) <- assessment(cv_i)$ID
+                       extracted_valued
+                       
+                     }, mc.cores = 2) -> tmax_cv_i
   
-  saveRDS(object = unlist(tmax_cv_i),
+  saveRDS(object = do.call("cbind", tmax_cv_i) %>% .[, match(stations_CV@data$ID, colnames(.))],
           file = file.path(output_anomalies, sprintf("%s/tmax_%s.RDS", "tmax",  date_i)))
   
   
   parallel::mclapply(stations_CV,
                      function(cv_i){
                        
-                       cv_i <- match(cv_i, qc_data$xyz@data$ID)
-                       to_extract_value  <- qc_data$xyz[cv_i,]
+                       assessment_cv <- assessment(cv_i)$ID
+                       assessment_cv <- match(assessment_cv, qc_data$xyz@data$ID)
+                       to_extract_value  <- qc_data$xyz[assessment_cv, ]
                        
                        qc_data_cv <- qc_data
-                       qc_data_cv$values$tmin <- qc_data_cv$values$tmin[,-cv_i]
-                       qc_data_cv$xyz <- qc_data_cv$xyz[-cv_i,]
+                       qc_data_cv$values$tmin <- qc_data_cv$values$tmin[,-assessment_cv]
+                       qc_data_cv$xyz <- qc_data_cv$xyz[-assessment_cv,]
                        
                        tmin_i <- make_Anomaly_coVariables(day_date = date_i,
                                                           var = "tmin",
@@ -81,12 +90,16 @@ for(i in 1:10){
                        
                        
                        tmin_i_gridded <- (RK(obs_cov_data = tmin_i, resFitting = 10) + tmin_i$covs$CL)
-                       raster::extract(tmin_i_gridded, to_extract_value)
+                       
+                       extracted_valued <- raster::extract(tmin_i_gridded, to_extract_value)
+                       extracted_valued <- matrix(extracted_valued, nrow = 1, ncol = length(extracted_valued))
+                       colnames(extracted_valued) <- assessment(cv_i)$ID
+                       extracted_valued
                        
                      }, mc.cores = 5) -> tmin_cv_i
   
   
-  saveRDS(object = unlist(tmin_cv_i),
+  saveRDS(object =do.call("cbind", tmin_cv_i) %>% .[, match(stations_CV@data$ID, colnames(.))],
           file = file.path(output_anomalies, sprintf("%s/tmin_%s.RDS", "tmin",  date_i)))
 
 }
