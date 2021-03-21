@@ -1,5 +1,6 @@
 RK <- function(obs_cov_data,
-               resFitting = 10)
+               resFitting = 10,
+               extentArea = NULL)
   {
   
   # lm fitting model
@@ -10,11 +11,29 @@ RK <- function(obs_cov_data,
                                  coef_model = lm_coefs$coefs)
   
   # residual kriging interpolation
-  residual_grid <- OK_interpolation(obs_point_data = obs_cov_data$obs,
-                                    model_grid_data = model_grid,
-                                    resFitting = resFitting/2)
+  if(isTRUE(is.null(extentArea))){
+    
+    
+    residual_grid <- OK_interpolation(obs_point_data = obs_cov_data$obs,
+                                      model_grid_data = model_grid,
+                                      resFitting = resFitting/2)
+    
+    model_grid + residual_grid
+    
+
+  } else {
+    
+    
+    residual_grid <- OK_interpolation2(obs_point_data = obs_cov_data$obs,
+                                       model_grid_data = model_grid,
+                                       resFitting = resFitting/2,
+                                       extentArea = extentArea)
+    
+  }
+  
+
   # merging
-  model_grid + residual_grid
+  suppressWarnings(model_grid + residual_grid)
   
   }
 
@@ -62,6 +81,36 @@ OK_interpolation <- function(obs_point_data,
   
   # ok
   gridded_location <- as(temp_model_ag, 'SpatialGrid')
+  gs <- gstat::gstat(formula = residual ~ 1, 
+                     locations = residual_sp, 
+                     model = variogram_fit$var_model)
+  kp <- raster::predict(gs, gridded_location)
+  response <- raster::disaggregate(raster::brick(kp)[["var1.pred"]], 
+                                   resFitting, 
+                                   method = "bilinear")
+  response <- raster::crop(response, model_grid_data)
+  
+  round(response, 2)
+}
+
+
+OK_interpolation2 <- function(obs_point_data,
+                              model_grid_data,
+                              resFitting = 10,
+                              extentArea)
+{
+  
+  # getting residuals
+  temp_model_ag <- raster::aggregate(model_grid_data, resFitting)
+  residual_sp <- extract(temp_model_ag,
+                         obs_point_data, cellnumber = FALSE, sp = TRUE)
+  residual_sp$residual <- residual_sp$OBS - residual_sp$MODEL
+  
+  # variogram autofit
+  variogram_fit <- automap::autofitVariogram(residual ~ 1, input_data = residual_sp)
+  
+  # ok
+  gridded_location <- as(raster::crop(temp_model_ag, extentArea), 'SpatialGrid')
   gs <- gstat::gstat(formula = residual ~ 1, 
                      locations = residual_sp, 
                      model = variogram_fit$var_model)
