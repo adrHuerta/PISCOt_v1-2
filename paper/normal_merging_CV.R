@@ -50,9 +50,11 @@ for(i in 1:12){
                                                          covs_list = covs_list_tmax,
                                                          obs = qc_data_cv)
                        
-                       tmax_i_gridded <- GWRK(obs_cov_data = tmax_i, resFitting = 10)
+                       # tmax_i_gridded <- GWRK(obs_cov_data = tmax_i, resFitting = 10)
+                       tmax_i_gridded2 <- GWRK(obs_cov_data = tmax_i, resFitting = 10,
+                                              extentArea = raster::extent(to_extract_value) + c(-1, 1, -1, 1))
                        
-                       extracted_valued <- raster::extract(tmax_i_gridded, to_extract_value)
+                       extracted_valued <- raster::extract(tmax_i_gridded2, to_extract_value)
                        extracted_valued <- matrix(extracted_valued, nrow = 1, ncol = length(extracted_valued))
                        colnames(extracted_valued) <- assessment(cv_i)$ID
                        extracted_valued
@@ -79,9 +81,11 @@ for(i in 1:12){
                                                          covs_list = covs_list_tmin,
                                                          obs = qc_data_cv)
                        
-                       tmin_i_gridded <- GWRK(obs_cov_data = tmin_i, resFitting = 10)
+                       # tmin_i_gridded <- GWRK(obs_cov_data = tmin_i, resFitting = 10)
+                       tmin_i_gridded2 <- GWRK(obs_cov_data = tmin_i, resFitting = 10,
+                                               extentArea = raster::extent(to_extract_value) + c(-1, 1, -1, 1))
                        
-                       extracted_valued <- raster::extract(tmin_i_gridded, to_extract_value)
+                       extracted_valued <- raster::extract(tmin_i_gridded2, to_extract_value)
                        extracted_valued <- matrix(extracted_valued, nrow = 1, ncol = length(extracted_valued))
                        colnames(extracted_valued) <- assessment(cv_i)$ID
                        extracted_valued
@@ -115,9 +119,11 @@ for(i in 1:12){
                                                          covs_list = covs_list_tmax,
                                                          obs = qc_data_cv)
                        
-                       tmax_i_gridded <- GWRK(obs_cov_data = tmax_i, resFitting = 10)
+                       # tmax_i_gridded <- GWRK(obs_cov_data = tmax_i, resFitting = 10)
+                       tmax_i_gridded2 <- GWRK(obs_cov_data = tmax_i, resFitting = 10,
+                                               extentArea = raster::extent(to_extract_value) + c(-1, 1, -1, 1))
                        
-                       extracted_valued <- raster::extract(tmax_i_gridded, to_extract_value)
+                       extracted_valued <- raster::extract(tmax_i_gridded2, to_extract_value)
                        extracted_valued <- matrix(extracted_valued, nrow = 1, ncol = length(extracted_valued))
                        colnames(extracted_valued) <- assessment(cv_i)$ID
                        extracted_valued
@@ -144,9 +150,11 @@ for(i in 1:12){
                                                          covs_list = covs_list_tmin,
                                                          obs = qc_data_cv)
                        
-                       tmin_i_gridded <- GWRK(obs_cov_data = tmin_i, resFitting = 10)
+                       #tmin_i_gridded <- GWRK(obs_cov_data = tmin_i, resFitting = 10)
+                       tmin_i_gridded2 <- GWRK(obs_cov_data = tmin_i, resFitting = 10,
+                                               extentArea = raster::extent(to_extract_value) + c(-1, 1, -1, 1))
                        
-                       extracted_valued <- raster::extract(tmin_i_gridded, to_extract_value)
+                       extracted_valued <- raster::extract(tmin_i_gridded2, to_extract_value)
                        extracted_valued <- matrix(extracted_valued, nrow = 1, ncol = length(extracted_valued))
                        colnames(extracted_valued) <- assessment(cv_i)$ID
                        extracted_valued
