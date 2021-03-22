@@ -12,8 +12,8 @@ shp_peru = file.path(".", "data", "raw", "vectorial", "Departamentos.shp") %>%
 shp_sa = file.path(".", "data", "raw", "vectorial", "Sudamérica.shp") %>% 
   raster::shapefile()
 
-####### points for spcv/nospcv #######
 stations_CV <- qc_data$xyz
+####### points for spcv/nospcv #######
 set.seed(2020+1)
 folds_spcv <- spatial_clustering_cv(stations_CV@data, coords = c("LON", "LAT"), v = 10)
 folds_nospcv <- rsample::vfold_cv(stations_CV@data, v = 10)
@@ -44,8 +44,8 @@ c(plt1, plt2) %>%
 
 ####### statistics for spcv/nospcv #######
 
-tmax_obs <- qc_data$values$tmax
-tmin_obs <- qc_data$values$tmin
+tmax_obs <- qc_data$values$tmax[, stations_CV@data$ID]
+tmin_obs <- qc_data$values$tmin[, stations_CV@data$ID]
 
 # cv 
 output_normals <- "./paper/others/normals"
@@ -75,7 +75,7 @@ tmax_spcv_stat_warm <- parallel::mcmapply(function(obs, model){
 obs = data.frame(tmax_obs[warm_months, ]),
 model = data.frame(tmax_spcv[warm_months, ]), SIMPLIFY = FALSE, mc.cores = 5) %>%
   do.call("rbind", .) %>%
-  data.frame(., var = "Tmax", cv = "spcv", season = "Oct.-Mar.") %>% cbind(., qc_data$xyz@data[, c("ID", "LON", "LAT")])
+  data.frame(., var = "Tmax", cv = "spcv", season = "Oct.-Mar.") %>% cbind(., stations_CV@data[, c("ID", "LON", "LAT")])
 
 tmax_spcv_stat_cold <- parallel::mcmapply(function(obs, model){
   
@@ -86,7 +86,7 @@ tmax_spcv_stat_cold <- parallel::mcmapply(function(obs, model){
 obs = data.frame(tmax_obs[cold_months, ]),
 model = data.frame(tmax_spcv[cold_months, ]), SIMPLIFY = FALSE, mc.cores = 5) %>%
   do.call("rbind", .) %>%
-  data.frame(., var = "Tmax", cv = "spcv", season = "Apr.-Sep.")  %>% cbind(., qc_data$xyz@data[, c("ID", "LON", "LAT")])
+  data.frame(., var = "Tmax", cv = "spcv", season = "Apr.-Sep.")  %>% cbind(., stations_CV@data[, c("ID", "LON", "LAT")])
 
 tmin_spcv_stat_warm <- parallel::mcmapply(function(obs, model){
   
@@ -97,7 +97,7 @@ tmin_spcv_stat_warm <- parallel::mcmapply(function(obs, model){
 obs = data.frame(tmin_obs[warm_months, ]),
 model = data.frame(tmin_spcv[warm_months, ]), SIMPLIFY = FALSE, mc.cores = 5) %>%
   do.call("rbind", .) %>%
-  data.frame(., var = "Tmin", cv = "spcv", season = "Oct.-Mar.") %>% cbind(., qc_data$xyz@data[, c("ID", "LON", "LAT")])
+  data.frame(., var = "Tmin", cv = "spcv", season = "Oct.-Mar.") %>% cbind(., stations_CV@data[, c("ID", "LON", "LAT")])
 
 tmin_spcv_stat_cold <- parallel::mcmapply(function(obs, model){
   
@@ -108,7 +108,7 @@ tmin_spcv_stat_cold <- parallel::mcmapply(function(obs, model){
 obs = data.frame(tmin_obs[cold_months, ]),
 model = data.frame(tmin_spcv[cold_months, ]), SIMPLIFY = FALSE, mc.cores = 5) %>%
   do.call("rbind", .) %>%
-  data.frame(., var = "Tmin", cv = "spcv", season = "Apr.-Sep.") %>% cbind(., qc_data$xyz@data[, c("ID", "LON", "LAT")])
+  data.frame(., var = "Tmin", cv = "spcv", season = "Apr.-Sep.") %>% cbind(., stations_CV@data[, c("ID", "LON", "LAT")])
 
 
 # nospcv
@@ -121,7 +121,7 @@ tmax_nospcv_stat_warm <- parallel::mcmapply(function(obs, model){
   obs = data.frame(tmax_obs[warm_months, ]),
   model = data.frame(tmax_nospcv[warm_months, ]), SIMPLIFY = FALSE, mc.cores = 5) %>%
   do.call("rbind", .) %>%
-  data.frame(., var = "Tmax", cv = "nospcv", season = "Oct.-Mar.") %>% cbind(., qc_data$xyz@data[, c("ID", "LON", "LAT")])
+  data.frame(., var = "Tmax", cv = "nospcv", season = "Oct.-Mar.") %>% cbind(., stations_CV@data[, c("ID", "LON", "LAT")])
 
 tmax_nospcv_stat_cold <- parallel::mcmapply(function(obs, model){
   
@@ -132,7 +132,7 @@ tmax_nospcv_stat_cold <- parallel::mcmapply(function(obs, model){
 obs = data.frame(tmax_obs[cold_months, ]),
 model = data.frame(tmax_nospcv[cold_months, ]), SIMPLIFY = FALSE, mc.cores = 5) %>%
   do.call("rbind", .) %>%
-  data.frame(., var = "Tmax", cv = "nospcv", season = "Apr.-Sep.") %>% cbind(., qc_data$xyz@data[, c("ID", "LON", "LAT")])
+  data.frame(., var = "Tmax", cv = "nospcv", season = "Apr.-Sep.") %>% cbind(., stations_CV@data[, c("ID", "LON", "LAT")])
 
 tmin_nospcv_stat_warm <- parallel::mcmapply(function(obs, model){
   
@@ -143,7 +143,7 @@ tmin_nospcv_stat_warm <- parallel::mcmapply(function(obs, model){
 obs = data.frame(tmin_obs[warm_months, ]),
 model = data.frame(tmin_nospcv[warm_months, ]), SIMPLIFY = FALSE, mc.cores = 5) %>%
   do.call("rbind", .) %>%
-  data.frame(., var = "Tmin", cv = "nospcv", season = "Oct.-Mar.") %>% cbind(., qc_data$xyz@data[, c("ID", "LON", "LAT")])
+  data.frame(., var = "Tmin", cv = "nospcv", season = "Oct.-Mar.") %>% cbind(., stations_CV@data[, c("ID", "LON", "LAT")])
 
 tmin_nospcv_stat_cold <- parallel::mcmapply(function(obs, model){
   
@@ -154,7 +154,7 @@ tmin_nospcv_stat_cold <- parallel::mcmapply(function(obs, model){
 obs = data.frame(tmin_obs[cold_months, ]),
 model = data.frame(tmin_nospcv[cold_months, ]), SIMPLIFY = FALSE, mc.cores = 5) %>%
   do.call("rbind", .) %>%
-  data.frame(., var = "Tmin", cv = "nospcv", season = "Apr.-Sep.") %>% cbind(., qc_data$xyz@data[, c("ID", "LON", "LAT")])
+  data.frame(., var = "Tmin", cv = "nospcv", season = "Apr.-Sep.") %>% cbind(., stations_CV@data[, c("ID", "LON", "LAT")])
 
 normals_cv <-
   rbind(tmax_spcv_stat_warm,
