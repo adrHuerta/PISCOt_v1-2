@@ -39,7 +39,7 @@ set.seed(2020+1)
 folds <- spatial_clustering_cv(stations_CV@data, coords = c("LON", "LAT"), v = 10)
 
 #
-for(i in 1:10){
+for(i in 1:500){
   
   date_i <- time(qc_data$values$tmax)[i]
   
@@ -73,10 +73,10 @@ for(i in 1:10){
                      }, mc.cores = 10) -> tmax_cv_i
   
   saveRDS(object = do.call("cbind", tmax_cv_i) %>% .[, match(stations_CV@data$ID, colnames(.))],
-          file = file.path(output_anomalies, sprintf("%s/tmax_%s.RDS", "tmax",  date_i)))
+          file = file.path(output_anomalies, sprintf("%s/tmax_spcv_%s.RDS", "tmax",  date_i)))
   
   
-  parallel::mclapply(stations_CV,
+  parallel::mclapply(folds$splits,
                      function(cv_i){
                        
                        assessment_cv <- assessment(cv_i)$ID
@@ -107,6 +107,6 @@ for(i in 1:10){
   
   
   saveRDS(object =do.call("cbind", tmin_cv_i) %>% .[, match(stations_CV@data$ID, colnames(.))],
-          file = file.path(output_anomalies, sprintf("%s/tmin_%s.RDS", "tmin",  date_i)))
+          file = file.path(output_anomalies, sprintf("%s/tmin_spcv_%s.RDS", "tmin",  date_i)))
 
 }
