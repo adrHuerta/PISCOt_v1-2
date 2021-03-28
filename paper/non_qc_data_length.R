@@ -74,16 +74,16 @@ non_qc_data$non_QC06 %>% lapply(function(x) x[x$var == "tmin", ]$date) %>% Reduc
 
 to_fill <- xts::xts(,seq(as.Date("1927-03-01"), as.Date("2020-03-23"), by = "day"))
 
-QC1_ts <- xts::merge.xts(QC1_ts, to_fill)
-QC2_ts_tmax <- xts::merge.xts(QC2_ts_tmax, to_fill)
-QC2_ts_tmin <- xts::merge.xts(QC2_ts_tmin, to_fill)
-QC3_ts <- xts::merge.xts(QC3_ts, to_fill)
-QC4_ts_tmax <- xts::merge.xts(QC4_ts_tmax, to_fill)
-QC4_ts_tmin <- xts::merge.xts(QC4_ts_tmin, to_fill)
-QC5_ts_tmax <- xts::merge.xts(QC5_ts_tmax, to_fill)
-QC5_ts_tmin <- xts::merge.xts(QC5_ts_tmin, to_fill)
-QC6_ts_tmax <- xts::merge.xts(QC6_ts_tmax, to_fill)
-QC6_ts_tmin <- xts::merge.xts(QC6_ts_tmin, to_fill)
+QC1_ts <- xts::merge.xts(QC1_ts, to_fill); QC1_ts <- QC1_ts["/2019"]
+QC2_ts_tmax <- xts::merge.xts(QC2_ts_tmax, to_fill); QC2_ts_tmax <- QC2_ts_tmax["/2019"] 
+QC2_ts_tmin <- xts::merge.xts(QC2_ts_tmin, to_fill); QC2_ts_tmin <- QC2_ts_tmin["/2019"]
+QC3_ts <- xts::merge.xts(QC3_ts, to_fill); QC3_ts <- QC3_ts["/2019"]
+QC4_ts_tmax <- xts::merge.xts(QC4_ts_tmax, to_fill); QC4_ts_tmax <- QC4_ts_tmax["/2019"]
+QC4_ts_tmin <- xts::merge.xts(QC4_ts_tmin, to_fill); QC4_ts_tmin <- QC4_ts_tmin["/2019"]
+QC5_ts_tmax <- xts::merge.xts(QC5_ts_tmax, to_fill); QC5_ts_tmax <- QC5_ts_tmax["/2019"]
+QC5_ts_tmin <- xts::merge.xts(QC5_ts_tmin, to_fill); QC5_ts_tmin <- QC5_ts_tmin["/2019"]
+QC6_ts_tmax <- xts::merge.xts(QC6_ts_tmax, to_fill); QC6_ts_tmax <- QC6_ts_tmax["/2019"]
+QC6_ts_tmin <- xts::merge.xts(QC6_ts_tmin, to_fill); QC6_ts_tmin <- QC6_ts_tmin["/2019"]
 
 xyplot(QC1_ts, cex = .5, type = "p", col = "black", auto.key = FALSE) -> p1
 xyplot(cbind(QC2_ts_tmax, QC2_ts_tmin), superpose = TRUE, type = "p", cex = c(.5, .15), col = c("tomato", "royalblue"), auto.key = FALSE) -> p2
@@ -92,12 +92,14 @@ xyplot(cbind(QC4_ts_tmax, QC4_ts_tmin), superpose = TRUE, type = "p", cex = c(.5
 xyplot(cbind(QC5_ts_tmax, QC5_ts_tmin), superpose = TRUE, type = "p", cex = c(.5, .15), col = c("tomato", "royalblue"), auto.key = FALSE) -> p5
 xyplot(cbind(QC6_ts_tmax, QC6_ts_tmin), superpose = TRUE, type = "p", cex = c(.5, .15), col = c("tomato", "royalblue"), auto.key = FALSE) -> p6
 
-c(qc1=p1, qc2=p2, qc3=p3, qc4=p4, qc5=p5, qc6=p6,layout=c(2,3)) %>%
+c("(i) Obvious errors" = p1, "(ii) Extreme values" = p2, 
+  "(iii) Internal consistency" = p3, "(iv) Temporal coherence"= p4, 
+  "(v) Spatial coherence" = p5, "(vi) Visual Inspection" = p6, layout = c(2,3)) %>%
   update(xlab = "", ylab = "Number of deleted data",
          par.settings = mytheme) -> pfinal
 
 jpeg(filename = file.path(".", "paper", "output", "Fig_non_qc_data_lenght.jpg"),
      width = 1700, height = 1000, units = "px",
-     res = 200)
+     res = 175)
 print(pfinal)
 dev.off()

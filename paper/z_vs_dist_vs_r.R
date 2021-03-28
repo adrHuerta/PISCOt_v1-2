@@ -174,10 +174,10 @@ xyplot(value  ~ Var2 | variable, groups = Var1, type = c("l"), lwd = 3,
                        cex.title = 1,
                        cex = .8),
        par.settings = list(superpose.line = list(lwd = 3)),
-       xlab = "Distance (km)", ylab = "Correlation", ylim = c(0.5, 0.875),
+       xlab = "Distance (km)", ylab = "Correlation coefficient", ylim = c(0.5, 0.875),
        data = aggregate(response_cor[c("Tmin", "Tmax")], 
                         by = response_cor[c("Var1", "Var2")],
-                        FUN = function(x) mean(x, na.rm = TRUE)) %>%
+                        FUN = function(x) median(x, na.rm = TRUE)) %>%
          reshape2::melt()) %>%
   update(par.settings = mytheme,
          layout = c(1, 2))-> p0

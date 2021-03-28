@@ -256,17 +256,19 @@ plt_spcv_dr <- values_cv %>% subset(cv == "spcv") %>%
     vjust   = -1
   )
 
+library(patchwork)
+
 (plt_spcv_bias +
     theme(plot.margin=margin(l=-0.8,unit="cm")))  +  
   (plt_spcv_MAE + theme(strip.background.y = element_blank(), strip.text.y = element_blank()) + 
      theme(plot.margin=margin(l=-0.8,unit="cm")))
 
-ggsave(file.path(".", "paper", "output", "Fig_values_spcv.jpg"),
+ggsave(file.path(".", "paper", "output", "Fig_values_spcv2.jpg"),
        dpi = 250, scale = 1,
        width = 9.5, height = 7, units = "in")
 
 plt_spcv_dr
 
-ggsave(file.path(".", "paper", "output", "Fig_values_spcv_dr.jpg"),
+ggsave(file.path(".", "paper", "output", "Fig_values_spcv_dr2.jpg"),
        dpi = 250, scale = 1,
        width = 4.5, height = 6, units = "in")
