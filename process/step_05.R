@@ -12,7 +12,7 @@ qc_data <- readRDS("./data/processed/obs/qc_output/QC_GF_HG_data.RDS")
 
 # grid data
 gridded_data <- raster::brick("./data/processed/gridded/co_variables/DEM.nc")[[1]]
-gridded_data_a <- raster::aggregate(gridded_data, 1)
+gridded_data_a <- raster::aggregate(gridded_data, 5)
 
 # data to sp
 xyz_sp <- sp::SpatialPointsDataFrame(coords = qc_data$xyz[, c("LON", "LAT")],

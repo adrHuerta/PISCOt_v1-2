@@ -1,6 +1,7 @@
 rm(list = ls())
 
 library(raster)
+library(gstat)
 "%>%" = magrittr::`%>%`
 
 source('./src/process/Merging/MG_make_covariables.R')
@@ -15,7 +16,6 @@ qc_data <- readRDS("./data/processed/obs/qc_output/Normals_OBS.RDS")
 # gridded
 LST_day <- raster::brick("data/processed/gridded/co_variables/LST_DAY.nc")
 LST_night <- raster::brick("data/processed/gridded/co_variables/LST_NIGHT.nc")
-CC <- raster::brick("data/processed/gridded/co_variables/CC.nc")
 DEM <- raster::raster("data/processed/gridded/co_variables/DEM.nc")
 X <- raster::raster("data/processed/gridded/co_variables/X.nc")
 Y <- raster::raster("data/processed/gridded/co_variables/Y.nc")
