@@ -13,6 +13,7 @@ shp_sa = file.path(".", "data", "raw", "vectorial", "Sudamérica.shp") %>%
   raster::shapefile()
 
 stations_CV <- qc_data$xyz
+
 ####### points for spcv/nospcv #######
 set.seed(2020+1)
 folds_spcv <- spatial_clustering_cv(stations_CV@data, coords = c("LON", "LAT"), v = 10)
@@ -38,8 +39,8 @@ plt2 <- lattice::xyplot(LAT ~ LON, groups = kfold, data = do.call("rbind", exp) 
 
 c(plt1, plt2) %>%
   update(ylim = c(-18.575, 1.275), xlim = c(-81.325, -67.175), xlab = "", ylab = "") +
-  latticeExtra::layer(sp.polygons(shp_peru, fill = NA, col = "gray50"), under = TRUE, superpose = FALSE) +
-  latticeExtra::layer(sp.polygons(shp_sa, fill = NA, col = "gray50"), under = TRUE, superpose = FALSE)
+  latticeExtra::layer(sp::sp.polygons(shp_peru, fill = NA, col = "gray50"), under = TRUE, superpose = FALSE) +
+  latticeExtra::layer(sp::sp.polygons(shp_sa, fill = NA, col = "gray50"), under = TRUE, superpose = FALSE)
 
 
 ####### statistics for spcv/nospcv #######
@@ -166,8 +167,14 @@ normals_cv <-
       tmin_nospcv_stat_warm,
       tmin_nospcv_stat_cold) %>%
   transform(ID = rownames(.),
-            bias = cut(MB, breaks = c(-Inf, -3, -2, -1, 1, 2, 3, Inf), right = FALSE),
-            MAE = cut(MGE, breaks = c(0, .5, 1, 1.5, 2, 2.5, 3, Inf), right = FALSE)) 
+            bias = cut(MB, 
+                       breaks = c(-Inf, -3, -2, -1, 1, 2, 3, Inf),
+                       labels = c("< -3", "-3 - -2", "-2 - -1", "-1 - 1", "1 - 2", "2 - 3", "> 3"), 
+                       right = FALSE),
+            MAE = cut(MGE, 
+                      breaks = c(0, .5, 1, 1.5, 2, 2.5, 3, Inf),
+                      labels = c("0 - .5", ".5 - 1", "1 - 1.5", "1.5 - 2", "2 - 2.5", "2.5 - 3", "> 3"), 
+                      right = FALSE)) 
 
 # stats
 overall_values <- aggregate(. ~ season + var + cv, data = normals_cv[, c(2, 3, 4, 5, 6)], FUN = function(x) round(mean(x), 2))
@@ -190,7 +197,7 @@ plt_nospcv_bias <- normals_cv %>% subset(cv == "nospcv") %>%
   geom_point(aes(x = LON, y = LAT, color = bias), shape = 19, size = 2) + 
   facet_grid(season~var, switch = "y") + 
   #scale_fill_manual(values = cols1) + 
-  scale_color_manual(values = cols1) +
+  scale_color_manual(values = cols1, drop = FALSE) +
   theme_bw() + 
   theme(axis.title = element_blank(),
         axis.text = element_blank(),
@@ -204,7 +211,10 @@ plt_nospcv_bias <- normals_cv %>% subset(cv == "nospcv") %>%
         legend.spacing.x = unit(.1, 'cm'),
         legend.spacing.y = unit(.05, 'cm'),
         legend.margin=margin(0,0,0,0),
-        legend.box.margin=margin(-5,-5,-5,-5)
+        legend.box.margin=margin(-5,-5,-5,-5),
+        legend.text = element_text(
+          margin = margin(l = 4, r = 4, unit = "pt"),
+          hjust = 0)
   ) +
   guides(color = guide_legend(override.aes = list(size = 3),
                               nrow = 1, byrow = TRUE,
@@ -231,7 +241,7 @@ plt_nospcv_MAE <- normals_cv %>% subset(cv == "nospcv") %>%
   geom_point(aes(x = LON, y = LAT, color = MAE), shape = 19, size = 2) + 
   facet_grid(season~var, switch = "y") + 
   #scale_fill_manual(values = cols2) + 
-  scale_color_manual(values = cols2) +
+  scale_color_manual(values = cols2, drop = FALSE) +
   theme_bw() + 
   theme(axis.title = element_blank(),
         axis.text = element_blank(),
@@ -245,7 +255,10 @@ plt_nospcv_MAE <- normals_cv %>% subset(cv == "nospcv") %>%
         legend.spacing.x = unit(.1, 'cm'),
         legend.spacing.y = unit(.05, 'cm'),
         legend.margin=margin(0,0,0,0),
-        legend.box.margin=margin(-5,-5,-5,-5)
+        legend.box.margin=margin(-5,-5,-5,-5),
+        legend.text = element_text(
+          margin = margin(l = 4, r = 4, unit = "pt"),
+          hjust = 0)
   ) +
   guides(color = guide_legend(override.aes = list(size = 3),
                               nrow = 1, byrow = TRUE,
@@ -271,7 +284,7 @@ plt_spcv_bias <- normals_cv %>% subset(cv == "spcv") %>%
   geom_point(aes(x = LON, y = LAT, color = bias), shape = 19, size = 2) + 
   facet_grid(season~var, switch = "y") + 
   #scale_fill_manual(values = cols1) + 
-  scale_color_manual(values = cols1) +
+  scale_color_manual(values = cols1, drop = FALSE) +
   theme_bw() + 
   theme(axis.title = element_blank(),
         axis.text = element_blank(),
@@ -285,7 +298,10 @@ plt_spcv_bias <- normals_cv %>% subset(cv == "spcv") %>%
         legend.spacing.x = unit(.1, 'cm'),
         legend.spacing.y = unit(.05, 'cm'),
         legend.margin=margin(0,0,0,0),
-        legend.box.margin=margin(-5,-5,-5,-5)
+        legend.box.margin=margin(-5,-5,-5,-5),
+        legend.text = element_text(
+          margin = margin(l = 4, r = 4, unit = "pt"),
+          hjust = 0)
   ) +
   guides(color = guide_legend(override.aes = list(size = 3),
                               nrow = 1, byrow = TRUE,
@@ -312,7 +328,7 @@ plt_spcv_MAE <- normals_cv %>% subset(cv == "spcv") %>%
   geom_point(aes(x = LON, y = LAT, color = MAE), shape = 19, size = 2) + 
   facet_grid(season~var, switch = "y") + 
   #scale_fill_manual(values = cols2) + 
-  scale_color_manual(values = cols2) +
+  scale_color_manual(values = cols2, drop = FALSE) +
   theme_bw() + 
   theme(axis.title = element_blank(),
         axis.text = element_blank(),
@@ -326,7 +342,10 @@ plt_spcv_MAE <- normals_cv %>% subset(cv == "spcv") %>%
         legend.spacing.x = unit(.1, 'cm'),
         legend.spacing.y = unit(.05, 'cm'),
         legend.margin=margin(0,0,0,0),
-        legend.box.margin=margin(-5,-5,-5,-5)
+        legend.box.margin=margin(-5,-5,-5,-5),
+        legend.text = element_text(
+          margin = margin(l = 4, r = 4, unit = "pt"),
+          hjust = 0)
   ) +
   guides(color = guide_legend(override.aes = list(size = 3),
                               nrow = 1, byrow = TRUE,

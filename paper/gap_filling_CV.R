@@ -282,6 +282,10 @@ rbind(AV_tmax,
       CV_tmax,
       CV_tmin) -> results
 
+results$Type <- factor(results$Type,
+                       levels = c("AV", "CV"),
+                       labels = c("Available data", "10-years data"))
+
 results3 <- aggregate(results, list(Variables = results$Var, 
                                     Experiment = results$Type), function(x) round(mean(x), 2))
 results3_2 <- aggregate(results, list(Variables = results$Var, 
@@ -300,8 +304,8 @@ merge(results3[results3$Variables == "Tmax",],
       by = c("Experiment")) %>%
   write.csv(file.path(".", "paper", "output", "Tab_gap_filling_CV.csv"))
 
-library(lattice)
-library(sp)
+# library(lattice)
+# library(sp)
 
 merge(results,
       obs_xyz[, c("ID", "LON", "LAT")],
@@ -311,14 +315,6 @@ merge(results,
                           labels = c("< .5", ".5 - .6", ".6 - .7", ".7 - .8", ".8 - .9","> .9"),
                           right = FALSE))-> results2
 
-results2$Type <- factor(results2$Type,
-                        levels = c("AV", "CV"),
-                        labels = c("V", "CV"))
-results2$Var <- factor(results2$Var,
-                       levels = c("Tmin", "Tmax")) # to change position
-
-# coordinates(results2) <- ~LON+LAT
-# proj4string(results2) <- CRS("+init=epsg:28992")
 
 shp_peru = file.path(".", "data", "raw", "vectorial", "Departamentos.shp") %>% 
   raster::shapefile() 
@@ -326,14 +322,14 @@ shp_peru = file.path(".", "data", "raw", "vectorial", "Departamentos.shp") %>%
 shp_sa = file.path(".", "data", "raw", "vectorial", "Sudamérica.shp") %>% 
   raster::shapefile()
 
-font.settings <- list(fontfamily = "helvetica")
-mytheme <- list(strip.background = list(col = 'gray95'), 
-                strip.border = list(col = 'black'),
-                par.xlab.text = font.settings,
-                par.ylab.text = font.settings,
-                axis.text = font.settings,
-                sub.text = font.settings,
-                add.text = font.settings)
+# font.settings <- list(fontfamily = "helvetica")
+# mytheme <- list(strip.background = list(col = 'gray95'), 
+#                 strip.border = list(col = 'black'),
+#                 par.xlab.text = font.settings,
+#                 par.ylab.text = font.settings,
+#                 axis.text = font.settings,
+#                 sub.text = font.settings,
+#                 add.text = font.settings)
 
 # a1 <- spplot(subset(results2, Var == "Tmax" & Type == "AV"), c("IOA_cut"), cex = .75, key.space = list(x = 1.125, y = 0.5, corner = c(.5,.5)))
 # a2 <- spplot(subset(results2, Var == "Tmin" & Type == "AV"), c("IOA_cut"), cex = .75,key.space = list(x = 1.125, y = 0.5, corner = c(.5,.5)))
@@ -347,25 +343,80 @@ mytheme <- list(strip.background = list(col = 'gray95'),
 #   latticeExtra::layer(sp.polygons(shp_sa, fill = NA, col = "gray50"), under = TRUE, superpose = FALSE) -> plot_dr
 
 
-cols <- rev(colorRampPalette(ochRe::ochre_palettes$healthy_reef)(6))
+# cols <- rev(colorRampPalette(ochRe::ochre_palettes$healthy_reef)(6))
+# 
+# plot_dr <- xyplot(LAT ~ LON | Type + Var, group = IOA_cut, data = results2,
+#                   key=list(space = "right",
+#                            points = list(col = cols, pch = 20, cex = 2),
+#                            text =list(levels(results2$IOA_cut))),
+#                   par.settings = list(
+#                     superpose.symbol = list(pch = 20,
+#                                             cex = 1.25,
+#                                             col = cols))) %>%
+#   update(par.settings = mytheme, ylim = c(-18.575, 1.275), xlim = c(-81.325, -67.175), xlab = "", ylab = "") +
+#   latticeExtra::layer(sp.polygons(shp_peru, fill = NA, col = "gray50"), under = TRUE, superpose = FALSE) +
+#   latticeExtra::layer(sp.polygons(shp_sa, fill = NA, col = "gray50"), under = TRUE, superpose = FALSE)
+# 
+# 
+# jpeg(filename = file.path(".", "paper", "output", "Fig_gap_filling_CV.jpg"),
+#      width = 1300, height = 1700, units = "px",
+#      res = 200)
+# print(plot_dr)
+# dev.off()
 
-plot_dr <- xyplot(LAT ~ LON | Type + Var, group = IOA_cut, data = results2,
-                  key=list(space = "right",
-                           points = list(col = cols, pch = 20, cex = 2),
-                           text =list(levels(results2$IOA_cut))),
-                  par.settings = list(
-                    superpose.symbol = list(pch = 20,
-                                            cex = 1.25,
-                                            col = cols))) %>%
-  update(par.settings = mytheme, ylim = c(-18.575, 1.275), xlim = c(-81.325, -67.175), xlab = "", ylab = "") +
-  latticeExtra::layer(sp.polygons(shp_peru, fill = NA, col = "gray50"), under = TRUE, superpose = FALSE) +
-  latticeExtra::layer(sp.polygons(shp_sa, fill = NA, col = "gray50"), under = TRUE, superpose = FALSE)
+# stats
+colnames(results3)[c(1, 2)] <- c("Var", "Type")
 
+library(ggplot2)
 
-jpeg(filename = file.path(".", "paper", "output", "Fig_gap_filling_CV.jpg"),
-     width = 1300, height = 1700, units = "px",
-     res = 200)
-print(plot_dr)
-dev.off()
+# plots
+cols3 <- rev(colorRampPalette(c("#4682B4", "gray90", "#B47846"))(6))
 
-# fun::shutdown()
+plt_dr <- results2 %>%
+  ggplot() + 
+  geom_polygon(data = shp_sa %>% broom::tidy(),
+               aes(x = long, y = lat, group = group),
+               fill = NA, colour = "gray20", size = 0.3) +
+  geom_polygon(data = shp_peru %>% broom::tidy(),
+               aes(x = long, y = lat, group = group),
+               fill = NA, colour = "gray20", size = 0.3) + 
+  geom_point(aes(x = LON, y = LAT, color = IOA_cut), shape = 19, size = 2) + 
+  facet_grid(Type~Var, switch = "y") + 
+  #scale_fill_manual(values = cols1) + 
+  scale_color_manual(values = cols3, drop = FALSE) +
+  theme_bw() + 
+  theme(axis.title = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.background = element_blank(),
+        panel.border = element_rect(colour = "black", fill = NA),
+        strip.text = element_text(size = 12),
+        legend.position="bottom",
+        legend.spacing.x = unit(.1, 'cm'),
+        legend.spacing.y = unit(.05, 'cm'),
+        legend.margin=margin(0,0,0,0),
+        legend.box.margin=margin(-5,-5,-5,-5),
+        legend.text = element_text(
+          margin = margin(l = 3, r = 3, unit = "pt"),
+          hjust = 0)
+  ) +
+  guides(color = guide_legend(override.aes = list(size = 3),
+                              nrow = 1, byrow = TRUE,
+                              label.position = "bottom",
+                              title = expression(italic(d[r])))) +
+  xlab("") + ylab("") + 
+  coord_quickmap(expand = c(0, 0), ylim = c(-18.575, 1.275), xlim = c(-81.325, -67.175)) + 
+  
+  geom_text(
+    data    = results3 %>% .[, c("Type","Var", "dr")],
+    mapping = aes(x = -Inf, y = -Inf, label = paste("Overall:", dr, sep = " ")), size = 4,
+    hjust   = -0.1,
+    vjust   = -1
+  )
+
+plt_dr
+ggsave(filename = file.path(".", "paper", "output", "Fig_gap_filling_CV.jpg"),
+       dpi = 250, scale = 1,
+       width = 7, height = 7, units = "in")

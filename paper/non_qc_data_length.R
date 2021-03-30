@@ -99,7 +99,7 @@ c("(i) Obvious errors" = p1, "(ii) Extreme values" = p2,
          par.settings = mytheme) -> pfinal
 
 jpeg(filename = file.path(".", "paper", "output", "Fig_non_qc_data_lenght.jpg"),
-     width = 1700, height = 1000, units = "px",
+     width = 8, height = 5, units = "in",
      res = 175)
 print(pfinal)
 dev.off()

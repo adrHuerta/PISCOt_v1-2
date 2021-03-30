@@ -195,8 +195,7 @@ xyplot(Dist  ~ Var2, groups = Var1, type = c("l"), lwd = 3,
 
 
 jpeg(filename = file.path(".", "paper", "output", "Fig_z_vs_dist_vs_r.jpg"),
-     width = 2000, height = 1200, units = "px",
-     res = 200)
+     width = 10, height = 5.75, units = "in",
+     res = 150)
 print(cowplot::plot_grid(p3, p0,  labels = c("a)", "b)")))
 dev.off()
-

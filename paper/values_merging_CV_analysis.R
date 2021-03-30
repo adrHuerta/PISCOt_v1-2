@@ -120,9 +120,18 @@ values_cv <-
         tmin_spcv_stat_warm,
         tmin_spcv_stat_cold) %>%
   transform(ID = rownames(.),
-            bias = cut(MB, breaks = c(-Inf, -3, -2, -1, 1, 2, 3, Inf), right = FALSE),
-            MAE = cut(MGE, breaks = c(0, .5, 1, 1.5, 2, 2.5, 3, Inf), right = FALSE),
-            dr = cut(IOA, breaks = c(-Inf, .5, .6, .7, .8, Inf), right = FALSE)) 
+            bias = cut(MB, 
+                       breaks = c(-Inf, -3, -2, -1, 1, 2, 3, Inf),
+                       labels = c("< -3", "-3 - -2", "-2 - -1", "-1 - 1", "1 - 2", "2 - 3", "> 3"),
+                       right = FALSE),
+            MAE = cut(MGE, 
+                      breaks = c(0, .5, 1, 1.5, 2, 2.5, 3, Inf),
+                      labels = c("0 - .5", ".5 - 1", "1 - 1.5", "1.5 - 2", "2 - 2.5", "2.5 - 3", "> 3"), 
+                      right = FALSE),
+            dr = cut(IOA, 
+                     breaks = c(-Inf, .5, .6, .7, .8, .9, Inf),
+                     labels = c("< .5", ".5 - .6", ".6 - .7", ".7 - .8", ".8 - .9","> .9"), 
+                     right = FALSE)) 
 
 # stats
 overall_values <- aggregate(. ~ season + var + cv, data = values_cv[, c(1, 2, 3, 4, 5, 6)], FUN = function(x) round(mean(x), 2))
@@ -130,7 +139,7 @@ overall_values <- aggregate(. ~ season + var + cv, data = values_cv[, c(1, 2, 3,
 # plots
 cols1 <- colorRampPalette(c("#4682B4", "gray90", "#B47846"))(7)
 cols2 <- colorRampPalette(c("#4682B4", "gray90", "#B47846"))(7)
-cols3 <- rev(colorRampPalette(c("#4682B4", "gray90", "#B47846"))(4))
+cols3 <- rev(colorRampPalette(c("#4682B4", "gray90", "#B47846"))(6))
 
 
 library(ggplot2)
@@ -146,7 +155,7 @@ plt_spcv_bias <- values_cv %>% subset(cv == "spcv") %>%
   geom_point(aes(x = LON, y = LAT, color = bias), shape = 19, size = 2) + 
   facet_grid(season~var, switch = "y") + 
   #scale_fill_manual(values = cols1) + 
-  scale_color_manual(values = cols1) +
+  scale_color_manual(values = cols1, drop = FALSE) +
   theme_bw() + 
   theme(axis.title = element_blank(),
         axis.text = element_blank(),
@@ -160,7 +169,10 @@ plt_spcv_bias <- values_cv %>% subset(cv == "spcv") %>%
         legend.spacing.x = unit(.1, 'cm'),
         legend.spacing.y = unit(.05, 'cm'),
         legend.margin=margin(0,0,0,0),
-        legend.box.margin=margin(-5,-5,-5,-5)
+        legend.box.margin=margin(-5,-5,-5,-5),
+        legend.text = element_text(
+          margin = margin(l = 4, r = 4, unit = "pt"),
+          hjust = 0)
   ) +
   guides(color = guide_legend(override.aes = list(size = 3),
                               nrow = 1, byrow = TRUE,
@@ -187,7 +199,7 @@ plt_spcv_MAE <- values_cv %>% subset(cv == "spcv") %>%
   geom_point(aes(x = LON, y = LAT, color = MAE), shape = 19, size = 2) + 
   facet_grid(season~var, switch = "y") + 
   #scale_fill_manual(values = cols2) + 
-  scale_color_manual(values = cols2) +
+  scale_color_manual(values = cols2, drop = FALSE) +
   theme_bw() + 
   theme(axis.title = element_blank(),
         axis.text = element_blank(),
@@ -201,7 +213,10 @@ plt_spcv_MAE <- values_cv %>% subset(cv == "spcv") %>%
         legend.spacing.x = unit(.1, 'cm'),
         legend.spacing.y = unit(.05, 'cm'),
         legend.margin=margin(0,0,0,0),
-        legend.box.margin=margin(-5,-5,-5,-5)
+        legend.box.margin=margin(-5,-5,-5,-5),
+        legend.text = element_text(
+          margin = margin(l = 4, r = 4, unit = "pt"),
+          hjust = 0)
   ) +
   guides(color = guide_legend(override.aes = list(size = 3),
                               nrow = 1, byrow = TRUE,
@@ -227,7 +242,7 @@ plt_spcv_dr <- values_cv %>% subset(cv == "spcv") %>%
                fill = NA, colour = "gray20", size = 0.3) + 
   geom_point(aes(x = LON, y = LAT, color = dr), shape = 19, size = 2) + 
   facet_grid(season~var, switch = "y") + 
-  scale_color_manual(values = cols3) +
+  scale_color_manual(values = cols3, drop = FALSE) +
   theme_bw() + 
   theme(axis.title = element_blank(),
         axis.text = element_blank(),
@@ -241,7 +256,10 @@ plt_spcv_dr <- values_cv %>% subset(cv == "spcv") %>%
         legend.spacing.x = unit(.1, 'cm'),
         legend.spacing.y = unit(.05, 'cm'),
         legend.margin=margin(0,0,0,0),
-        legend.box.margin=margin(-5,-5,-5,-5)
+        legend.box.margin=margin(-5,-5,-5,-5),
+        legend.text = element_text(
+          margin = margin(l = 3, r = 3, unit = "pt"),
+          hjust = 0)
   ) +
   guides(color = guide_legend(override.aes = list(size = 3),
                               nrow = 1, byrow = TRUE,
@@ -263,12 +281,12 @@ library(patchwork)
   (plt_spcv_MAE + theme(strip.background.y = element_blank(), strip.text.y = element_blank()) + 
      theme(plot.margin=margin(l=-0.8,unit="cm")))
 
-ggsave(file.path(".", "paper", "output", "Fig_values_spcv2.jpg"),
+ggsave(file.path(".", "paper", "output", "Fig_values_spcv.jpg"),
        dpi = 250, scale = 1,
        width = 9.5, height = 7, units = "in")
 
 plt_spcv_dr
 
-ggsave(file.path(".", "paper", "output", "Fig_values_spcv_dr2.jpg"),
+ggsave(file.path(".", "paper", "output", "Fig_values_spcv_dr.jpg"),
        dpi = 250, scale = 1,
-       width = 4.5, height = 6, units = "in")
+       width = 7, height = 7, units = "in")
