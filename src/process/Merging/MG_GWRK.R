@@ -120,7 +120,7 @@ OK_interpolation <- function(obs_point_data,
   kp <- raster::predict(gs, gridded_location)
   response <- raster::disaggregate(raster::brick(kp)[["var1.pred"]], 
                                    resFitting, 
-                                   method = "bilinear")
+                                   method = "")
   response <- raster::crop(response, model_grid_data)
   
   round(response, 2)
@@ -149,7 +149,7 @@ OK_interpolation2 <- function(obs_point_data,
   kp <- raster::predict(gs, gridded_location)
   response <- raster::disaggregate(raster::brick(kp)[["var1.pred"]], 
                                    resFitting, 
-                                   method = "bilinear")
+                                   method = "")
   response <- raster::crop(response, model_grid_data)
   
   round(response, 2)

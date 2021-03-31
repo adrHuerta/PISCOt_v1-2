@@ -84,12 +84,11 @@ OK_interpolation <- function(obs_point_data,
   kp <- raster::predict(gs, gridded_location)
   response <- raster::disaggregate(raster::brick(kp)[["var1.pred"]], 
                                    resFitting, 
-                                   method = "bilinear")
+                                   method = "")
   response <- raster::crop(response, model_grid_data)
   
   round(response, 2)
 }
-
 
 OK_interpolation2 <- function(obs_point_data,
                               model_grid_data,
@@ -114,11 +113,12 @@ OK_interpolation2 <- function(obs_point_data,
   kp <- raster::predict(gs, gridded_location)
   response <- raster::disaggregate(raster::brick(kp)[["var1.pred"]], 
                                    resFitting, 
-                                   method = "bilinear")
+                                   method = "")
   response <- raster::crop(response, model_grid_data)
   
   round(response, 2)
 }
+
 
 autofitVariogramPISCOp <- function (formula, input_data, model = c("Sph", "Exp", "Gau", 
                                                                    "Ste"), kappa = c(0.05, seq(0.2, 2, 0.1), 5, 10), fix.values = c(NA, 
