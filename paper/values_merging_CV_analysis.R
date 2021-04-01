@@ -264,7 +264,7 @@ plt_spcv_dr <- values_cv %>% subset(cv == "spcv") %>%
   guides(color = guide_legend(override.aes = list(size = 3),
                               nrow = 1, byrow = TRUE,
                               label.position = "bottom",
-                              title="dr")) +
+                              title = expression(italic(d[r])))) +
   xlab("") + ylab("") + 
   coord_quickmap(expand = c(0, 0), ylim = c(-18.575, 1.275), xlim = c(-81.325, -67.175))   + 
   geom_text(
