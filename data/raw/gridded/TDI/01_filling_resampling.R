@@ -29,7 +29,7 @@ tdi_filled = tdi_filled.reindex(y = new_y, x = new_x, method = "nearest")
 
 # clipping (deleting ocean pixels)
 shp = gpd.read_file(os.path.join(".", "data", "raw", "vectorial", "Sudamérica.shp"))
-tdi_filled = tdi_filled.rio.clip(shp.geometry.buffer(.25), tdi_filled.rio.crs)
+tdi_filled = tdi_filled.rio.clip(shp.geometry.buffer(.15), tdi_filled.rio.crs)
 tdi_filled = tdi_filled.where(tdi_filled >= 0.00)
 
 # saving

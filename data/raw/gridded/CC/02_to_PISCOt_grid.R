@@ -31,7 +31,7 @@ for files in range(1, 13):
  cc_file_filled = cc_file_filled.reindex(y = new_y, x = new_x, method = "nearest")
  
  # clipping (deleting ocean pixels)
- cc_file_filled = cc_file_filled.rio.clip(shp.geometry.buffer(.25), cc_file_filled.rio.crs)
+ cc_file_filled = cc_file_filled.rio.clip(shp.geometry.buffer(.15), cc_file_filled.rio.crs)
  
  # saving
  cc_file_filled.rio.to_raster(os.path.join(".", "data", "raw", "gridded", "CC", "CC_monthly", "cloud_coverage_" + file + "_2.tif"))

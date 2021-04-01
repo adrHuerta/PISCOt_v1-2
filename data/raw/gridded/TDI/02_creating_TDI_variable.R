@@ -10,4 +10,5 @@ names(tdi) = "TDI"
 
 writeRaster(tdi, 
             filename = file.path(".", "data", "processed", "gridded", "co_variables", "TDI.nc"),
-            format = "CDF")
+            format = "CDF",
+            overwrite = TRUE)

@@ -35,8 +35,8 @@ for files in range(1, 13):
   lst_day_filled = lst_day_filled.reindex(y = new_y, x = new_x, method = "nearest")
   lst_night_filled = lst_night_filled.reindex(y = new_y, x = new_x, method = "nearest")
   
-  lst_day_filled = lst_day_filled.rio.clip(shp.geometry.buffer(.25), lst_day_filled.rio.crs)
-  lst_night_filled = lst_night_filled.rio.clip(shp.geometry.buffer(.25), lst_night_filled.rio.crs)
+  lst_day_filled = lst_day_filled.rio.clip(shp.geometry.buffer(.15), lst_day_filled.rio.crs)
+  lst_night_filled = lst_night_filled.rio.clip(shp.geometry.buffer(.15), lst_night_filled.rio.crs)
   
   lst_day_filled.rio.to_raster(os.path.join(".", "data", "raw", "gridded", "LST", "DAY", file + "_2.tif"))
   lst_night_filled.rio.to_raster(os.path.join(".", "data", "raw", "gridded", "LST", "NIGHT", file + "_2.tif"))

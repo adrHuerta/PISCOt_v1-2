@@ -29,8 +29,10 @@ names(lst_night) = paste("LST_NIGHT_", formatC(1:12, width = 2, flag = "0"), sep
 
 writeRaster(lst_day, 
             filename = file.path(".", "data", "processed", "gridded", "co_variables", "LST_DAY.nc"),
-            format = "CDF")
+            format = "CDF",
+            overwrite = TRUE)
 
 writeRaster(lst_night, 
             filename = file.path(".", "data", "processed", "gridded", "co_variables", "LST_NIGHT.nc"),
-            format = "CDF")
+            format = "CDF",
+            overwrite = TRUE)

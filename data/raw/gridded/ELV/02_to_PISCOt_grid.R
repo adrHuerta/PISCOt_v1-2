@@ -28,7 +28,7 @@ elv_filled = elv_filled.reindex(y = new_y, x = new_x, method = "nearest")
 
 # clipping (deleting ocean pixels)
 shp = gpd.read_file(os.path.join(".", "data", "raw", "vectorial", "Sudamérica.shp"))
-elv_filled = elv_filled.rio.clip(shp.geometry.buffer(.25), elv_filled.rio.crs)
+elv_filled = elv_filled.rio.clip(shp.geometry.buffer(.15), elv_filled.rio.crs)
 
 # saving
 elv_filled.rio.to_raster(os.path.join(".", "data", "raw", "gridded", "ELV", "ELV2.tif"))
