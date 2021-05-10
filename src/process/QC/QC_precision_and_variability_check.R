@@ -43,6 +43,32 @@ get_dec_from_xts <- function(xts_obj)
 }
 
 
+#----------------------------------------------------------------------
+get_VarMean_change_point <- function(xts_obj)
+  {
+  
+  changepoint::cpt.var(as.numeric(xts_obj),
+                       penalty = "MBIC",
+                       pen.value = 0.05,
+                       method = "AMOC",
+                       class = TRUE,
+                       minseglen = 365*5) -> change_var
+  
+  changepoint::cpt.mean(as.numeric(xts_obj),
+                       penalty = "MBIC",
+                       pen.value = 0.05,
+                       method = "AMOC",
+                       class = TRUE,
+                       minseglen = 365*5) -> change_mean
+  
+  change_var <- time(xts_obj)[changepoint::cpts(change_var)]
+  change_mean <- time(xts_obj)[changepoint::cpts(change_mean)]
+  
+  return(c(change_var = change_var,
+           change_mean = change_mean))
+  
+  }
+
 
 #----------------------------------------------------------------------
 # get_pRcs_temp - distribution calculation of decimal values
@@ -59,7 +85,9 @@ get_pRcs_temp <- function(xts_obj)
   
   return(list(xts_obj = list(tmax = tmax, tmin = tmin),
               prcs_xts_obj = list(tmin = get_dec_from_xts(xts_obj = tmin),
-                                  tmax = get_dec_from_xts(xts_obj = tmax))))
+                                  tmax = get_dec_from_xts(xts_obj = tmax)),
+              varmean_change = list(tmin = get_VarMean_change_point(xts_obj = tmin["1981/"]),
+                                    tmax = get_VarMean_change_point(xts_obj = tmax["1981/"]))))
   
 }
 
@@ -71,7 +99,8 @@ get_pRcs_temp <- function(xts_obj)
 # nested function - main routine
 # df_data : a data frame time series (tmax and tmin)
 
-var_plot <- function(df_data)
+var_plot <- function(df_data,
+                     step_changes)
   {
   
   if(dim(df_data)[1] != 0){
@@ -82,6 +111,10 @@ var_plot <- function(df_data)
       ggplot2::xlab("") + ggplot2::ylab(paste("value ", "(", unique(df_data$series), ")", sep = "")) + 
       ggplot2::scale_x_date(date_minor_breaks = "1 year") + 
       ggplot2::theme_bw() +
+      ggplot2::geom_vline(ggplot2::aes(xintercept = as.Date(step_changes["change_var"])),
+                          colour = "red", alpha = .2, size = 2) +
+      ggplot2::geom_vline(ggplot2::aes(xintercept = as.Date(step_changes["change_mean"])),
+                          colour = "blue", alpha = .2, size = 2) +
       ggplot2::theme(axis.text.y = ggplot2::element_text(angle = 90, hjust = 0.5), 
                      axis.title.x = ggplot2::element_blank()) -> pp1
     
@@ -175,8 +208,10 @@ enhanced_qc_plot <- function(get_pRcs_temp_output,
   
   tmax_plt_pr <- get_pRcs_temp_output$prcs_xts_obj[["tmax"]] %>% prcs_plot()
   tmin_plt_pr <- get_pRcs_temp_output$prcs_xts_obj[["tmin"]] %>% prcs_plot()
-  tmax_plt_vr <- get_pRcs_temp_output$xts_obj[["tmax"]] %>% broom::tidy() %>% var_plot()
-  tmin_plt_vr <- get_pRcs_temp_output$xts_obj[["tmin"]] %>% broom::tidy() %>% var_plot()
+  tmax_plt_vr <- get_pRcs_temp_output$xts_obj[["tmax"]] %>% broom::tidy() %>% var_plot(df_data = .,
+                                                                                       step_changes = get_pRcs_temp_output$varmean_change$tmax)
+  tmin_plt_vr <- get_pRcs_temp_output$xts_obj[["tmin"]] %>% broom::tidy() %>% var_plot(df_data = .,
+                                                                                       step_changes = get_pRcs_temp_output$varmean_change$tmin)
   
   ggpubr::ggarrange(tmin_plt_vr, tmax_plt_vr, 
                     tmin_plt_pr, tmax_plt_pr, ncol = 2, nrow = 2) %>% # in row order as matrix(1:4, ncol = 2, byrow = T)

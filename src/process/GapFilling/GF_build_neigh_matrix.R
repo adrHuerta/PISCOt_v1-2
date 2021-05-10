@@ -10,7 +10,9 @@
 # iii) otherwise, is not added
 
 build_neigh_matrix <- function(id_stations,
-                               time_series_database)
+                               time_series_database,
+                               param_neigh = list(r_cor = NA, 
+                                                  n_daily_cycle = NA))
 {
   
   matrix_data <- time_series_database[, id_stations[1]]
@@ -29,7 +31,7 @@ build_neigh_matrix <- function(id_stations,
     at_leat_any_data <- at_leat_any_data[, -match("02-29", colnames(at_leat_any_data))]
    
     
-    if(all(at_leat_any_data < 5)){
+    if(all(at_leat_any_data < param_neigh$n_daily_cycle)){
       
       matrix_data <- matrix_data[, -match(n_station, colnames(matrix_data))]
       
@@ -38,7 +40,7 @@ build_neigh_matrix <- function(id_stations,
       # how is the correlation?
       rcor_neigh = round(cor(matrix_data[, c(id_stations[1], n_station)], use = "pairwise.complete.obs")[2], 1)
     
-      if(rcor_neigh < .6){
+      if(rcor_neigh < param_neigh$r_cor){
         
         matrix_data <- matrix_data[, -match(n_station, colnames(matrix_data))]
         
@@ -66,7 +68,8 @@ build_neigh_matrix <- function(id_stations,
 # ii) otherwise, build_neigh_matrix is applied
 
 build_matrix <- function(id_stations,
-                         time_series_database)
+                         time_series_database,
+                         param_neigh = list(r_cor = 0.6, n_daily_cycle = 5))
 {
   
   if(length(id_stations) < 2){
@@ -76,7 +79,9 @@ build_matrix <- function(id_stations,
   } else {
     
     build_neigh_matrix(id_stations,
-                       time_series_database)
+                       time_series_database,
+                       param_neigh = list(r_cor = param_neigh$r_cor, 
+                                          n_daily_cycle = param_neigh$n_daily_cycle))
     
   }
   
