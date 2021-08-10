@@ -7,7 +7,7 @@ library(gstat)
 source('./src/process/Merging/MG_make_covariables.R')
 source('./src/process/Merging/MG_RK.R')
 
-output_anomalies <- "./data/processed/gridded/Anomalies"
+output_anomalies <- "./data/processed/gridded/Values"
 
 # obs
 qc_data <- readRDS("./data/processed/obs/qc_output/Anomalies_OBS.RDS")
@@ -54,7 +54,8 @@ for(i in 1:10){
   (RK(obs_cov_data = tmax_i, resFitting = 10) + tmax_normals[[month_value_i]]) %>%
     raster::writeRaster(x = ., 
                         filename = file.path(output_anomalies, 
-                                             sprintf("%s/tmax_%s.nc", "tmax",  date_i)))
+                                             sprintf("%s/tmax_%s.nc", "tmax",  date_i)),
+                        datatype = 'FLT4S', force_v4 = TRUE, compression = 7)
   
   
   
@@ -66,5 +67,7 @@ for(i in 1:10){
   (RK(obs_cov_data = tmin_i, resFitting = 10) + tmin_normals[[month_value_i]]) %>%
     raster::writeRaster(x = ., 
                         filename = file.path(output_anomalies, 
-                                             sprintf("%s/tmin_%s.nc", "tmin",  date_i)))
-}
+                                             sprintf("%s/tmin_%s.nc", "tmin",  date_i)),
+                        datatype = 'FLT4S', force_v4 = TRUE, compression = 7)
+  
+  }

@@ -38,7 +38,8 @@ for(i in 1:12){
        resFitting = 10) %>%
     raster::writeRaster(x = ., 
                         filename = file.path(output_normals, 
-                                             sprintf("%s/tmax_%02d.nc", "tmax",  i)))
+                                             sprintf("%s/tmax_%02d.nc", "tmax",  i)),
+                        datatype = 'FLT4S', force_v4 = TRUE, compression = 7)
   
   tmin_i <- make_Normal_coVariables(month_value = i,
                                     var = "tmin",
@@ -48,5 +49,7 @@ for(i in 1:12){
        resFitting = 10) %>%
     raster::writeRaster(x = ., 
                         filename = file.path(output_normals, 
-                                             sprintf("%s/tmin_%02d.nc", "tmin",  i)))
-}
+                                             sprintf("%s/tmin_%02d.nc", "tmin",  i)),
+                        datatype = 'FLT4S', force_v4 = TRUE, compression = 7)
+
+  }
