@@ -18,4 +18,5 @@ names(cloud_cover) = paste("CC_", formatC(1:12, width = 2, flag = "0"), sep = ""
 writeRaster(cloud_cover, 
             filename = file.path(".", "data", "processed", "gridded", "co_variables", "CC.nc"),
             format = "CDF",
-            overwrite = TRUE)
+            overwrite = TRUE,
+            datatype = 'FLT4S', force_v4 = TRUE, compression = 7)

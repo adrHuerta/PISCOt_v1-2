@@ -20,14 +20,17 @@ names(yvar) = "Y"
 writeRaster(elv, 
             filename = file.path(".", "data", "processed", "gridded", "co_variables", "DEM.nc"),
             format = "CDF",
-            overwrite = TRUE)
+            overwrite = TRUE,
+            datatype = 'FLT4S', force_v4 = TRUE, compression = 7)
 
 writeRaster(xvar,
             filename = file.path(".", "data", "processed", "gridded", "co_variables", "X.nc"),
             format = "CDF",
-            overwrite = TRUE)
+            overwrite = TRUE,
+            datatype = 'FLT4S', force_v4 = TRUE, compression = 7)
 
 writeRaster(yvar, 
             filename = file.path(".", "data", "processed", "gridded", "co_variables", "Y.nc"),
             format = "CDF",
-            overwrite = TRUE)
+            overwrite = TRUE,
+            datatype = 'FLT4S', force_v4 = TRUE, compression = 7)
