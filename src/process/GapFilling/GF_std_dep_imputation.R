@@ -1,12 +1,14 @@
-# std_dep_imputation_daily - daily imputation using standardized values (departure-based) 
+# std_dep_imputation_daily - daily imputation using standardized values + bias-correction (departure-based) 
 # nested function - main routine
 # stat_data: Time series (matrix), first column is the target
 
 # Note:
 # The approach follows the steps of https://link.springer.com/article/10.1007/s00704-017-2082-0 
 # which is similar to https://journals.ametsoc.org/view/journals/apme/34/2/1520-0450-34_2_371.xml
-# But, it is applied for each day (except for 02-28 where 02-29 is added), so
-# it preserves the daily climatology
+# But, it is applied for each day (except for 02-28 where 02-29 is added), 
+# so it preserves the daily climatology
+# and applies a bias-correction to the model data as recommended
+# by https://journals.ametsoc.org/view/journals/clim/aop/JCLI-D-21-0067.1/JCLI-D-21-0067.1.xml
 
 std_dep_imputation_daily <- function(stat_data)
 {
@@ -15,7 +17,7 @@ std_dep_imputation_daily <- function(stat_data)
   dailyVar <- sort(unique(format(time(stat_data), format = "%m-%d")))
   dailyVar <- as.list(dailyVar[dailyVar != "02-29"])
   dailyVar[[match("02-28", dailyVar)]] <- c("02-28", "02-29") # making 02-29 "part of" 02-28
- 
+  
   rest_all_orig <- list()
   rest_all_model <- list()
   rest_all_filled <- list()
@@ -29,7 +31,7 @@ std_dep_imputation_daily <- function(stat_data)
     Tj <- zoo::coredata(data_base_w[, -1]) # neighbours
     Wj <- apply(Tj, 2, function(x) ((1 + 0.01) / (sd(Tt - x, na.rm = TRUE) + 0.01 ))^2 ) # adding 0.01 to avoid artifacts
     Zj <- apply(Tj, 2, function(x) (x - mean(x, na.rm = TRUE))/sd(x, na.rm = TRUE))
-
+    
     Ttj <- Tt
     for(i in 1:length(Tt)){
       
@@ -47,20 +49,45 @@ std_dep_imputation_daily <- function(stat_data)
     Ttj[!is.na(Ttj)][Ttj[!is.na(Ttj)] < lower_max_value] <- lower_max_value
     Ttj[!is.na(Ttj)][Ttj[!is.na(Ttj)] > upper_max_value] <- upper_max_value
     
-    data_base_filled <- data.frame(Tt = as.numeric(Tt), Ttj = as.numeric(Ttj))
-    data_base_filled <- transform(data_base_filled, new = ifelse(is.na(Tt) & is.numeric(Ttj), Ttj, Tt))
-    
-    rest_all_orig[[j]] <- xts::xts(data_base_filled$Tt, time(data_base_w))
-    rest_all_model[[j]] <- xts::xts(data_base_filled$Ttj, time(data_base_w))
-    rest_all_filled[[j]] <- xts::xts(data_base_filled$new, time(data_base_w))
-    
+    rest_all_orig[[j]] <- xts::xts(Tt, time(data_base_w))
+    rest_all_model[[j]] <- xts::xts(Ttj, time(data_base_w))
   }
   
-  do.call("cbind",
-          list(original = do.call("rbind", rest_all_orig),
-               model = do.call("rbind", rest_all_model),
-               filled = do.call("rbind", rest_all_filled))
-  )
+  orig_ts = do.call("rbind", rest_all_orig)
+  model_ts = do.call("rbind", rest_all_model)
+  
+  # model ts with no data from dates of obs
+  obs_mod_df <- data.frame(obs = as.numeric(orig_ts),
+                           mod = as.numeric(model_ts),
+                           mod_cc = as.numeric(model_ts),
+                           time = time(orig_ts))
+  
+  obs_mod_df_mod <- transform(obs_mod_df,
+                              mod2cc = ifelse(is.na(obs) & !is.na(mod), 1, 0))
+
+  # to numeric
+  orig_ts_v <- obs_mod_df_mod$obs
+  model_ts_no_with_obs_v <- obs_mod_df_mod[obs_mod_df_mod$mod2cc == 1, "mod"]
+  orig_ts_v[orig_ts_v >= quantile(orig_ts_v, 1, na.rm = TRUE)] <- NA
+  orig_ts_v[orig_ts_v <= quantile(orig_ts_v, 0, na.rm = TRUE)] <- NA
+  orig_ts_v <- orig_ts_v[!is.na(orig_ts_v)]
+  
+  # bias-correction of model ts with no data from dates of obs (model corrected)
+  qm_fit <- qmap::fitQmapRQUANT(orig_ts_v, model_ts_no_with_obs_v, qstep = 0.1, nboot = 1, wet.day = FALSE)
+  model_cc <- qmap::doQmapRQUANT(model_ts_no_with_obs_v, qm_fit, type = "tricub")
+  obs_mod_df_mod[obs_mod_df_mod$mod2cc == 1, "mod_cc"] <- model_cc
+  
+  # 
+  obs_mod_df_mod <- transform(obs_mod_df_mod,
+                              new = ifelse(is.na(obs) & is.numeric(mod_cc), mod_cc, obs),
+                              new_no_cc = ifelse(is.na(obs) & is.numeric(mod), mod, obs))
+  
+  #
+  to_output <- xts::xts(obs_mod_df_mod[, c("obs", "mod", "mod_cc", "new", "new_no_cc")], 
+                        as.Date(obs_mod_df_mod[, "time"])) 
+  colnames(to_output) <- c("original", "model", "model_bc", "filled", "filled_no_bc")
+    
+  to_output
 }
 
 
