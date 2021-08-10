@@ -50,9 +50,9 @@ vignettes/*.pdf
 /data/raw/gridded/LST/NIGHT
 /data/raw/gridded/TDI/TDI.tif
 /data/raw/gridded/TDI/TDI2.tif
+/data/raw/gridded/WS_WORLDCLIM
 /data/raw/vectorial
 /data/raw/obs
-/data/output
 /data/output
 /paper/output
 /paper/others
