@@ -18,30 +18,28 @@ IDs_no_Peru <- qc_data$xyz[(qc_data$xyz$filter_qc == 1) & (qc_data$xyz$SRC != "S
 
 # getting ERA5 time series from XY points
 
-ERA5_tmax <- raster::brick("./data/processed/gridded/ERA5_t2m_tmax_1960_2019.nc")
-ERA5_tmin <- raster::brick("./data/processed/gridded/ERA5_t2m_tmin_1960_2019.nc")
+ERA5land_tmax <- raster::brick("./data/processed/gridded/co_variables/ERA5land_tmax_1981_2019.nc")
+ERA5land_tmin <- raster::brick("./data/processed/gridded/co_variables/ERA5land_tmin_1981_2019.nc")
 
-gridded_points <- raster::extract(ERA5_tmax[[1]] + 0,
+gridded_points <- raster::extract(ERA5land_tmax[[1]] + 0,
                                   era_qc_data_xy[, c("LON", "LAT")],
                                   cellnumbers = TRUE) %>% .[, "cells"]
 
-ERA5_tmax <- ERA5_tmax[gridded_points] %>% 
+ERA5land_tmax <- ERA5land_tmax[gridded_points] %>% 
   t %>%
   round(2) %>%
-  xts::xts(., seq(as.Date("1960-01-01"), as.Date("2019-12-31"), by = "day")) %>%
-  .['1981/2019'] %>%
+  xts::xts(., seq(as.Date("1981-01-01"), as.Date("2019-12-31"), by = "day")) %>%
   setNames(era_qc_data_xy$ID)
 
-ERA5_tmin <- ERA5_tmin[gridded_points] %>% 
+ERA5land_tmin <- ERA5land_tmin[gridded_points] %>% 
   t %>%
   round(2) %>%
-  xts::xts(., seq(as.Date("1960-01-01"), as.Date("2019-12-31"), by = "day")) %>% 
-  .['1981/2019'] %>%
+  xts::xts(., seq(as.Date("1981-01-01"), as.Date("2019-12-31"), by = "day")) %>% 
   setNames(era_qc_data_xy$ID)
   
-## Bias-Correction (BC) of ERA5 time series
+## Bias-Correction (BC) of ERA5land time series
 
-ERA5_tmax <- parallel::mclapply(ERA5_tmax, function(time_serie){
+ERA5land_tmax <- parallel::mclapply(ERA5land_tmax, function(time_serie){
 
   stations_x <- gsub("ERA5_", "", colnames(time_serie))
   obs_x <- qc_data$values$tmax[, stations_x]
@@ -73,7 +71,7 @@ ERA5_tmax <- parallel::mclapply(ERA5_tmax, function(time_serie){
   }, mc.cores = n_cores) %>% 
   do.call("cbind", .)
   
-ERA5_tmin <- parallel::mclapply(ERA5_tmin, function(time_serie){
+ERA5land_tmin <- parallel::mclapply(ERA5land_tmin, function(time_serie){
   
   stations_x <- gsub("ERA5_", "", colnames(time_serie))
   obs_x <- qc_data$values$tmin[, stations_x]
@@ -104,10 +102,10 @@ ERA5_tmin <- parallel::mclapply(ERA5_tmin, function(time_serie){
   }, mc.cores = n_cores) %>%
   do.call("cbind", .)
 
-## merging ERA5 data
-stations_filter <- Reduce(intersect, list(names(ERA5_tmax), names(ERA5_tmin))) # 0.6 <- 188/ 0.7 <- 130
-qc_data$values$tmax <- cbind(qc_data$values$tmax, ERA5_tmax[, stations_filter]) 
-qc_data$values$tmin <- cbind(qc_data$values$tmin, ERA5_tmin[, stations_filter])
+## merging ERA5land data
+stations_filter <- Reduce(intersect, list(names(ERA5land_tmax), names(ERA5land_tmin))) # 0.6 <- 200
+qc_data$values$tmax <- cbind(qc_data$values$tmax, ERA5land_tmax[, stations_filter]) 
+qc_data$values$tmin <- cbind(qc_data$values$tmin, ERA5land_tmin[, stations_filter])
 qc_data$xyz <- rbind(qc_data$xyz, era_qc_data_xy[match(stations_filter, era_qc_data_xy$ID), ])
 rownames(qc_data$xyz) <- NULL
 
