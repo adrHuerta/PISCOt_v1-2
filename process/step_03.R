@@ -10,6 +10,7 @@ source("./src/process/QC/QC_spatial_neighbors.R")
 source("./src/process/GapFilling/GF_build_neigh_matrix.R")
 source("./src/process/GapFilling/GF_std_dep_imputation.R")
 source("./src/process/GapFilling/GF_daily_climatology_filling.R")
+source("./src/process/GapFilling/GF_dreqm.R")
 
 
 qc_data <- readRDS("./data/processed/obs/qc_output/QC_(plusERA5)_data.RDS")
@@ -36,7 +37,7 @@ param_spt <- list(list(lmt_dist = 70,
                        lmt_elv = 5500,
                        lmt_n = 8))
 
-# gap-filling 
+# gap-filling
 for(xi in seq_along(param_spt)){
   
   parallel::mclapply(obs_xyz$ID,
