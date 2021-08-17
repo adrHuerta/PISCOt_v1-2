@@ -47,22 +47,31 @@ get_dec_from_xts <- function(xts_obj)
 get_VarMean_change_point <- function(xts_obj)
   {
   
-  changepoint::cpt.var(as.numeric(xts_obj),
-                       penalty = "MBIC",
-                       pen.value = 0.05,
-                       method = "AMOC",
-                       class = TRUE,
-                       minseglen = 365*5) -> change_var
-  
-  changepoint::cpt.mean(as.numeric(xts_obj),
-                       penalty = "MBIC",
-                       pen.value = 0.05,
-                       method = "AMOC",
-                       class = TRUE,
-                       minseglen = 365*5) -> change_mean
-  
-  change_var <- time(xts_obj)[changepoint::cpts(change_var)]
-  change_mean <- time(xts_obj)[changepoint::cpts(change_mean)]
+  if(sum(!is.na(xts_obj)) < (365*5)){
+    
+    change_var <- NA
+    change_mean <- NA
+    
+  } else {
+    
+    changepoint::cpt.var(as.numeric(xts_obj),
+                         penalty = "MBIC",
+                         pen.value = 0.05,
+                         method = "AMOC",
+                         class = TRUE,
+                         minseglen = 365*5) -> change_var
+    
+    changepoint::cpt.mean(as.numeric(xts_obj),
+                          penalty = "MBIC",
+                          pen.value = 0.05,
+                          method = "AMOC",
+                          class = TRUE,
+                          minseglen = 365*5) -> change_mean
+    
+    change_var <- time(xts_obj)[changepoint::cpts(change_var)]
+    change_mean <- time(xts_obj)[changepoint::cpts(change_mean)]
+    
+  }
   
   return(c(change_var = change_var,
            change_mean = change_mean))
