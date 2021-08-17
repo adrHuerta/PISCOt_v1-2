@@ -87,7 +87,7 @@ std_dep_imputation_daily <- function(stat_data)
                         as.Date(obs_mod_df_mod[, "time"])) 
   colnames(to_output) <- c("original", "model", "model_bc", "filled", "filled_no_bc")
     
-  to_output
+  round(to_output, 2)
 }
 
 
@@ -106,7 +106,8 @@ std_dep_imputation <- function(stat_data)
   
   if((length(colnames(stat_data)) < 2) | all(!is.na(stat_data[,1]))){
     
-    setNames(cbind(stat_data[, 1], stat_data[, 1], stat_data[, 1]), c("original", "model", "filled"))
+    setNames(cbind(stat_data[, 1], stat_data[, 1], stat_data[, 1], stat_data[, 1], stat_data[, 1]), 
+             c("original", "model", "model_bc", "filled", "filled_no_bc"))
     
   } else {
     
