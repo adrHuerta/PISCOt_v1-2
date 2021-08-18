@@ -72,10 +72,18 @@ std_dep_imputation_daily <- function(stat_data)
   orig_ts_v[orig_ts_v <= quantile(orig_ts_v, 0, na.rm = TRUE)] <- NA
   orig_ts_v <- orig_ts_v[!is.na(orig_ts_v)]
   
-  # bias-correction of model ts with no data from dates of obs (model corrected)
-  qm_fit <- qmap::fitQmapRQUANT(orig_ts_v, model_ts_no_with_obs_v, qstep = 0.1, nboot = 1, wet.day = FALSE)
-  model_cc <- qmap::doQmapRQUANT(model_ts_no_with_obs_v, qm_fit, type = "tricub")
-  obs_mod_df_mod[obs_mod_df_mod$mod2cc == 1, "mod_cc"] <- model_cc
+  if(sum(is.na(model_ts_no_with_obs_v)) == 0){
+    
+    obs_mod_df_mod[, "mod_cc"] <- obs_mod_df_mod$mod_cc
+    
+  } else {
+   
+    # bias-correction of model ts with no data from dates of obs (model corrected)
+    qm_fit <- qmap::fitQmapRQUANT(orig_ts_v, model_ts_no_with_obs_v, qstep = 0.1, nboot = 1, wet.day = FALSE)
+    model_cc <- qmap::doQmapRQUANT(model_ts_no_with_obs_v, qm_fit, type = "tricub")
+    obs_mod_df_mod[obs_mod_df_mod$mod2cc == 1, "mod_cc"] <- model_cc
+    
+  }
   
   # 
   obs_mod_df_mod <- transform(obs_mod_df_mod,
