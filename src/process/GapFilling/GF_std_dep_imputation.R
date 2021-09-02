@@ -68,18 +68,18 @@ std_dep_imputation_daily <- function(stat_data)
   # to numeric
   orig_ts_v <- obs_mod_df_mod$obs
   model_ts_no_with_obs_v <- obs_mod_df_mod[obs_mod_df_mod$mod2cc == 1, "mod"]
-  orig_ts_v[orig_ts_v >= quantile(orig_ts_v, 1, na.rm = TRUE)] <- NA
-  orig_ts_v[orig_ts_v <= quantile(orig_ts_v, 0, na.rm = TRUE)] <- NA
+  #orig_ts_v[orig_ts_v >= quantile(orig_ts_v, 1, na.rm = TRUE)] <- NA
+  #orig_ts_v[orig_ts_v <= quantile(orig_ts_v, 0, na.rm = TRUE)] <- NA
   orig_ts_v <- orig_ts_v[!is.na(orig_ts_v)]
   
-  if(sum(is.na(model_ts_no_with_obs_v)) == 0){
+  if(length(model_ts_no_with_obs_v) < 3){
     
     obs_mod_df_mod[, "mod_cc"] <- obs_mod_df_mod$mod_cc
     
   } else {
    
     # bias-correction of model ts with no data from dates of obs (model corrected)
-    qm_fit <- qmap::fitQmapRQUANT(orig_ts_v, model_ts_no_with_obs_v, qstep = 0.1, nboot = 1, wet.day = FALSE)
+    qm_fit <- qmap::fitQmapRQUANT(orig_ts_v, model_ts_no_with_obs_v, qstep = 0.01, nboot = 1, wet.day = FALSE)
     model_cc <- qmap::doQmapRQUANT(model_ts_no_with_obs_v, qm_fit, type = "tricub")
     obs_mod_df_mod[obs_mod_df_mod$mod2cc == 1, "mod_cc"] <- model_cc
     
@@ -89,7 +89,8 @@ std_dep_imputation_daily <- function(stat_data)
   obs_mod_df_mod <- transform(obs_mod_df_mod,
                               new = ifelse(is.na(obs) & is.numeric(mod_cc), mod_cc, obs),
                               new_no_cc = ifelse(is.na(obs) & is.numeric(mod), mod, obs))
-  
+  obs_mod_df_mod$new[obs_mod_df_mod$new > max(obs_mod_df_mod$obs, na.rm = TRUE)] <- max(obs_mod_df_mod$obs, na.rm = TRUE)
+  obs_mod_df_mod$new[obs_mod_df_mod$new < min(obs_mod_df_mod$obs, na.rm = TRUE)] <- min(obs_mod_df_mod$obs, na.rm = TRUE)
   #
   to_output <- xts::xts(obs_mod_df_mod[, c("obs", "mod", "mod_cc", "new", "new_no_cc")], 
                         as.Date(obs_mod_df_mod[, "time"])) 
