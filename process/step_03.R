@@ -4,7 +4,7 @@ library(xts)
 "%>%" = magrittr::`%>%`
 
 # n cores
-n_cores = 6
+n_cores = 10
 
 source("./src/process/QC/QC_spatial_neighbors.R")
 source("./src/process/GapFilling/GF_build_neigh_matrix.R")

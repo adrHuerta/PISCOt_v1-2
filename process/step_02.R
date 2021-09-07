@@ -2,7 +2,7 @@ rm(list = ls())
 "%>%" = magrittr::`%>%`
 
 # n cores
-n_cores = 6
+n_cores = 10
 
 source("./src/process/GapFilling/GF_dreqm.R")
 source('./src/process/QC/QC_extreme_value_check.R')

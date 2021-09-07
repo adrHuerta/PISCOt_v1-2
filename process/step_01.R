@@ -5,7 +5,7 @@ list.files("./src/process/QC", full.names = TRUE) %>%
   invisible()
 
 # n cores
-n_cores = 6
+n_cores = 10
 
 # output 
 enhanced_qc_path = "./data/processed/obs/enhanced_qc/plots"
