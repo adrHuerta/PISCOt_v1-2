@@ -134,6 +134,8 @@ rownames(qc_data$xyz) <- NULL
 saveRDS(object = qc_data,
         file = "./data/processed/obs/qc_output/QC_GF_data.RDS")
 
+source('./src/process/QC/QC_precision_and_variability_check.R')
+
 qc_data$xyz$ID %>%
   lapply(function(x){
     
