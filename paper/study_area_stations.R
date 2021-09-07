@@ -5,6 +5,9 @@ library(raster)
 library(ggplot2)
 library(cowplot)
 library(ggrepel)
+library(rworldmap)
+library(dplyr)
+library(geosphere)
 
 theme_set(theme_bw() + theme(text = element_text(family = 'helvetica')))
 
@@ -205,7 +208,8 @@ p3 <- ggplot() +
                    box.padding = 0.01, alpha = .5,
                    min.segment.length = unit(0, 'lines'),
                    nudge_x = 1, nudge_y = 1) +
-  coord_quickmap(expand = c(0, 0), ylim = c(-18.575, 1.275), xlim = c(-81.325, -67.175)) + 
+  coord_quickmap(expand = c(0, 0), ylim = c(-18.575, 1.265), xlim = c(-81.325, -67.175)) + 
+  #coord_quickmap(expand = c(0, 0), ylim = c(-18.575, 1.275), xlim = c(-81.325, -67.175)) + 
   #coord_quickmap(expand = F, ylim = c(-18.5, -15), xlim = c(-77, -72)) + 
   labs(x = "Longitude (°)", y = "Latitude (°)") +
   #theme_linedraw() + 
@@ -247,7 +251,44 @@ p3 <- ggplot() +
 #     file.path(".", "paper", "output", "Fig_study_area_stations.jpg"),
 #     dpi = 250, width = 7.25, scale = 1.35)
 
-p3
+worldMap <- getMap()
+world.points <- fortify(worldMap)
+world.points$region <- world.points$id
+
+world.df <- world.points[,c("long","lat","group", "region")]
+
+worldmap <- ggplot() + 
+  geom_polygon(data = world.df, aes(x = long, y = lat, group = group)) +
+  scale_y_continuous(breaks = (-2:2) * 30) +
+  scale_x_continuous(breaks = (-4:4) * 45)
+
+worldmap <- ggplot() + 
+  geom_polygon(data = world.df, aes(x = long, y = lat, group = group)) +
+  scale_y_continuous(breaks = (-2:2) * 30) +
+  scale_x_continuous(breaks = (-4:4) * 45) +
+  geom_polygon(data = world.df[world.df$group == "Peru.1",], aes(x = long, y = lat, group = group), fill = "red", colour = "red") +
+  coord_map("ortho", orientation=c(-24.35, -70, 0))
+worldmap <- worldmap + theme_bw() +  theme(axis.title=element_blank(),
+                               axis.text=element_blank(),
+                               axis.ticks=element_blank(),
+                               panel.grid.major = element_line(colour = "gray70"),
+                               plot.margin=grid::unit(c(0,0,0,0), "mm")) +
+  theme(
+    panel.background = element_rect(fill = "white"), # bg of the panel
+    plot.background = element_rect(fill = "transparent", color = NA), # bg of the plot
+    legend.background = element_rect(fill = "transparent"), # get rid of legend bg
+    legend.box.background = element_rect(fill = "transparent") # get rid of legend panel bg
+  )
+
+library(egg)
+
+p3 + 
+  annotation_custom(
+    ggplotGrob(worldmap), 
+    xmin = -67.175, xmax = -70.75, ymin = -5, ymax = 4
+  ) -> p3
+
+
 ggsave(file.path(".", "paper", "output", "Fig_study_area_stations.jpg"),
        dpi = 300, scale = 1,
        width = 4.5, height = 6, units = "in")
