@@ -91,6 +91,9 @@ std_dep_imputation_daily <- function(stat_data)
                               new_no_cc = ifelse(is.na(obs) & is.numeric(mod), mod, obs))
   obs_mod_df_mod$new[obs_mod_df_mod$new > max(obs_mod_df_mod$obs, na.rm = TRUE)] <- max(obs_mod_df_mod$obs, na.rm = TRUE)
   obs_mod_df_mod$new[obs_mod_df_mod$new < min(obs_mod_df_mod$obs, na.rm = TRUE)] <- min(obs_mod_df_mod$obs, na.rm = TRUE)
+  obs_mod_df_mod$new_no_cc[obs_mod_df_mod$new_no_cc > max(obs_mod_df_mod$obs, na.rm = TRUE)] <- max(obs_mod_df_mod$obs, na.rm = TRUE)
+  obs_mod_df_mod$new_no_cc[obs_mod_df_mod$new_no_cc < min(obs_mod_df_mod$obs, na.rm = TRUE)] <- min(obs_mod_df_mod$obs, na.rm = TRUE)
+  
   #
   to_output <- xts::xts(obs_mod_df_mod[, c("obs", "mod", "mod_cc", "new", "new_no_cc")], 
                         as.Date(obs_mod_df_mod[, "time"])) 
