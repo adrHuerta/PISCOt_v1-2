@@ -158,7 +158,7 @@ qc_data$xyz$ID %>%
                     setNames(c("tmax", "tmin"))) %>%
       enhanced_qc_plot(get_pRcs_temp_output = .,
                        title_plt = plot_title) %>%
-      ggplot2::ggsave(filename = file.path("./data/processed/obs/enhanced_qc/plots", paste(plot_title, "_3.jpg", sep = "")),
+      ggplot2::ggsave(filename = file.path("./data/processed/obs/enhanced_qc/plots", paste(plot_title, "_4.jpg", sep = "")),
                       plot = .,
                       width = 20, height = 7,
                       dpi = 150)
