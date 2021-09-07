@@ -133,3 +133,19 @@ rownames(qc_data$xyz) <- NULL
 
 saveRDS(object = qc_data,
         file = "./data/processed/obs/qc_output/QC_GF_data.RDS")
+
+qc_data$xyz$ID %>%
+  lapply(function(x){
+    
+    ID_station <- x %>% as.character()
+    plot_title = paste(ID_station, "-", qc_data$xyz$NAM[match(x, qc_data$xyz$ID)], sep = "")
+    get_pRcs_temp(xts_obj = cbind(qc_data$values$tmax[, ID_station], qc_data$values$tmin[, ID_station]) %>%
+                    setNames(c("tmax", "tmin"))) %>%
+      enhanced_qc_plot(get_pRcs_temp_output = .,
+                       title_plt = plot_title) %>%
+      ggplot2::ggsave(filename = file.path("./data/processed/obs/enhanced_qc/plots", paste(plot_title, "_3.jpg", sep = "")),
+                      plot = .,
+                      width = 20, height = 7,
+                      dpi = 150)
+    
+  })
