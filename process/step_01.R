@@ -137,7 +137,7 @@ raw_xy_file$ID %>%
     ID_station <- x %>% as.character()
     plot_title = paste(ID_station, "-", raw_xy_file$NAM[match(x, raw_xy_file$ID)], sep = "")
 
-    get_pRcs_temp(xts_obj = QC_data[[ ID_station ]]) %>%
+    get_pRcs_temp(xts_obj = QC_data[[ ID_station ]]["1981/2020"]) %>%
       enhanced_qc_plot(get_pRcs_temp_output = .,
                        title_plt = plot_title) %>%
       ggplot2::ggsave(filename = file.path(enhanced_qc_path, paste(plot_title, ".jpg", sep = "")),
@@ -162,7 +162,7 @@ raw_xy_file$ID %>%
 
     ID_station <- x %>% as.character()
     plot_title = paste(ID_station, "-", raw_xy_file$NAM[match(x, raw_xy_file$ID)], sep = "")
-    get_pRcs_temp(xts_obj = QC_data[["qc"]][[ ID_station ]]) %>%
+    get_pRcs_temp(xts_obj = QC_data[["qc"]][[ ID_station ]]["1981/2020"]) %>%
       enhanced_qc_plot(get_pRcs_temp_output = .,
                        title_plt = plot_title) %>%
       ggplot2::ggsave(filename = file.path(enhanced_qc_path, paste(plot_title, "_2.jpg", sep = "")),
