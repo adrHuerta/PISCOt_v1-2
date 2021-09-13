@@ -7,6 +7,7 @@ source("./src/process/QC/QC_spatial_neighbors.R")
 source("./src/process/GapFilling/GF_build_neigh_matrix.R")
 source("./src/process/GapFilling/GF_std_dep_imputation.R")
 
+n_cores = 10
 
 qc_data <- readRDS("./data/processed/obs/qc_output/QC_(plusERA5)_data.RDS")
 
@@ -51,8 +52,8 @@ for(xi in seq_along(param_spt)){
                          build_matrix(id_stations = .,
                                       time_series_database = qc_data_values_tmax_ERA5_filled) %>%
                          std_dep_imputation(stat_data = .) %>%
-                         .$model
-                     }, mc.cores = 4) %>%
+                         .$model_bc
+                     }, mc.cores = n_cores) %>%
     do.call("cbind", .) %>%
     setNames(obs_xyz$ID) -> tmax_ERA5_to_be_filled
   
@@ -69,8 +70,8 @@ for(xi in seq_along(param_spt)){
                          build_matrix(id_stations = .,
                                       time_series_database = qc_data_values_tmin_ERA5_filled) %>%
                          std_dep_imputation(stat_data = .) %>%
-                         .$model
-                     }, mc.cores = 4) %>%
+                         .$model_bc
+                     }, mc.cores = n_cores) %>%
     do.call("cbind", .) %>%
     setNames(obs_xyz$ID) -> tmin_ERA5_to_be_filled
   
@@ -205,8 +206,8 @@ for(xi in seq_along(param_spt)){
                          build_matrix(id_stations = .,
                                       time_series_database = qc_data_values_tmax_ERA5_filled) %>%
                          std_dep_imputation(stat_data = .) %>%
-                         .$model
-                     }, mc.cores = 4) %>%
+                         .$model_bc
+                     }, mc.cores = n_cores) %>%
     do.call("cbind", .) %>%
     setNames(obs_xyz$ID) -> tmax_ERA5_to_be_filled
   
@@ -223,8 +224,8 @@ for(xi in seq_along(param_spt)){
                          build_matrix(id_stations = .,
                                       time_series_database = qc_data_values_tmin_ERA5_filled) %>%
                          std_dep_imputation(stat_data = .) %>%
-                         .$model
-                     }, mc.cores = 4) %>%
+                         .$model_bc
+                     }, mc.cores = n_cores) %>%
     do.call("cbind", .) %>%
     setNames(obs_xyz$ID) -> tmin_ERA5_to_be_filled
   
@@ -420,3 +421,4 @@ plt_dr
 ggsave(filename = file.path(".", "paper", "output", "Fig_gap_filling_CV.jpg"),
        dpi = 250, scale = 1,
        width = 7, height = 7, units = "in")
+
