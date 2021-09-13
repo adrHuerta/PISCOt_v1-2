@@ -18,14 +18,23 @@
 
 get_dec_from_xts <- function(xts_obj)
 {
+    if(dim(xts_obj)[1] < 1){
     
-    w = abs(xts_obj)
-    w = as.integer((round(w, 1) - 
-                      as.integer(round(w, 1)))*10)
+      data.frame(year = NA,
+                 dec = NA) 
+      
+      
+    } else {
+      
+      w = abs(xts_obj)
+      w = as.integer((round(w, 1) -
+                        as.integer(round(w, 1)))*10)
+      
+      data.frame(year = format(time(xts_obj), "%Y") %>% as.numeric(),
+                 dec = factor(w, levels = seq(9, 0, -1))) 
     
-    data.frame(year = format(time(xts_obj), "%Y") %>% as.numeric(),
-               dec = factor(w, levels = seq(9, 0, -1))) 
-    
+    }
+  
   # format(time(xts_obj), "%Y") %>% 
   #   unique() %>% 
   #   lapply(., function(year){
