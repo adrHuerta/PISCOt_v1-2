@@ -28,13 +28,13 @@ gridded_points <- raster::extract(ERA5land_tmax[[1]] + 0,
 ERA5land_tmax <- ERA5land_tmax[gridded_points] %>% 
   t %>%
   round(2) %>%
-  xts::xts(., seq(as.Date("1981-01-01"), as.Date("2019-12-31"), by = "day")) %>%
+  xts::xts(., seq(as.Date("1981-01-01"), as.Date("2020-12-31"), by = "day")) %>%
   setNames(era_qc_data_xy$ID)
 
 ERA5land_tmin <- ERA5land_tmin[gridded_points] %>% 
   t %>%
   round(2) %>%
-  xts::xts(., seq(as.Date("1981-01-01"), as.Date("2019-12-31"), by = "day")) %>% 
+  xts::xts(., seq(as.Date("1981-01-01"), as.Date("2020-12-31"), by = "day")) %>% 
   setNames(era_qc_data_xy$ID)
   
 ## Bias-Correction (BC) of ERA5land time series
