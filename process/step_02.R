@@ -18,8 +18,8 @@ IDs_no_Peru <- qc_data$xyz[(qc_data$xyz$filter_qc == 1) & (qc_data$xyz$SRC != "S
 
 # getting ERA5 time series from XY points
 
-ERA5land_tmax <- raster::brick("./data/processed/gridded/co_variables/ERA5land_tmax_1981_2019.nc")
-ERA5land_tmin <- raster::brick("./data/processed/gridded/co_variables/ERA5land_tmin_1981_2019.nc")
+ERA5land_tmax <- raster::brick("./data/processed/gridded/co_variables/ERA5land_tmax_1981_2020.nc")
+ERA5land_tmin <- raster::brick("./data/processed/gridded/co_variables/ERA5land_tmin_1981_2020.nc")
 
 gridded_points <- raster::extract(ERA5land_tmax[[1]] + 0,
                                   era_qc_data_xy[, c("LON", "LAT")],
