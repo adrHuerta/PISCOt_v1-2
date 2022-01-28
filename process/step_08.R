@@ -41,7 +41,8 @@ covs_list_tmin <- list(dynamic = list(LST = LST_night),
                        static = list(DEM = DEM, X = X, Y = Y, TDI = tdi))
 
 
-for(i in 1:10){
+parallel::mclapply(1:length(time(qc_data$values$tmax)), 
+                   function(i){
   
   date_i <- time(qc_data$values$tmax)[i]
   month_value_i <- as.numeric(format(as.Date(date_i), "%m"))
@@ -55,7 +56,7 @@ for(i in 1:10){
     raster::writeRaster(x = ., 
                         filename = file.path(output_anomalies, 
                                              sprintf("%s/tmax_%s.nc", "tmax",  date_i)),
-                        datatype = 'FLT4S', force_v4 = TRUE, compression = 7)
+                        datatype = 'FLT4S', force_v4 = TRUE, compression = 7, overwrite = TRUE)
   
   
   
@@ -68,6 +69,5 @@ for(i in 1:10){
     raster::writeRaster(x = ., 
                         filename = file.path(output_anomalies, 
                                              sprintf("%s/tmin_%s.nc", "tmin",  date_i)),
-                        datatype = 'FLT4S', force_v4 = TRUE, compression = 7)
-  
-  }
+                        datatype = 'FLT4S', force_v4 = TRUE, compression = 7, overwrite = TRUE)
+                   }, mc.cores = 10)
