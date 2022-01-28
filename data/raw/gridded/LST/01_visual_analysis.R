@@ -7,12 +7,11 @@ source("./src/data/PISCOt-MOD11A2_DAY.R")
 reticulate::use_virtualenv("/home/adrian/Documents/Repos/prob_Budyko/venv", 
                            required = T)
 
-ee_reattach()
-ee_Initialize(email = "adrhuerta@gmail.com")
+ee_Initialize()
 
 # Read dataset
 mod11a2 <- ee$ImageCollection("MODIS/006/MOD11A2")$
-  filter(ee$Filter$date('2001-01-01', '2019-12-31'))$
+  filter(ee$Filter$date('2001-01-01', '2020-12-31'))$
   filter(ee$Filter$calendarRange(1, field = "month"))       
 
 nimg <- mod11a2$size()$getInfo()
@@ -45,8 +44,8 @@ Map$addLayer(mod11a2_composite_raw, lst_viz, name = "raw_mod11") +
   Map$addLayer(mod11a2_clean_npixels, npixel_viz, name = "clean_npixels")
 
 # #Donwload image
-# pisco_area <-  ee$Geometry$Rectangle(-81.4 - 0.03, 
-#                                      -18.75 - 0.03, 
+# pisco_area <-  ee$Geometry$Rectangle(-81.4 - 0.03,
+#                                      -18.75 - 0.03,
 #                                      -68.05 + 0.03,
 #                                      0.95 + 0.03)
 # mod11a2 <- ee_image_as_raster(
@@ -56,7 +55,7 @@ Map$addLayer(mod11a2_composite_raw, lst_viz, name = "raw_mod11") +
 #   scale = 1000,
 #   via = "getInfo" # for large image use drive
 # )
-# 
+#
 # mod11a2 <- ee_image_as_raster(
 #   image = mod11a2_composite_clean,
 #   region = pisco_area,
