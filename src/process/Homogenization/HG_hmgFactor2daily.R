@@ -13,7 +13,7 @@
 hmgFactor2daily <- function(monthly_ts,
                             monthly_ts_hmg,
                             daily_ts,
-                            period_ts = seq(as.Date("1980-12-15"), as.Date("2020-01-15"), by = "month"))
+                            period_ts = seq(as.Date("1980-12-15"), as.Date("2021-01-15"), by = "month"))
 {
   
   # getting correction factor
@@ -24,7 +24,7 @@ hmgFactor2daily <- function(monthly_ts,
   left_rawfactor_right <- xts::xts(left_rawfactor_right, period_ts)
   
   # NA xts where data is interpolated
-  NAs_ts <- seq(as.Date("1980-12-15"), as.Date("2020-01-15"), by = "day")
+  NAs_ts <- seq(as.Date("1980-12-15"), as.Date("2021-01-15"), by = "day")
   rawfactor2int <- xts(rep(NA, length(NAs_ts)), NAs_ts)
   rawfactor2int <- xts::merge.xts(rawfactor2int, left_rawfactor_right, join='left')[, 2]
   
