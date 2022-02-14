@@ -7,7 +7,7 @@ library(latticeExtra)
 
 font.settings <- list(fontfamily = "helvetica")
 
-mytheme <- list(strip.background = list(col = 'gray95'), 
+mytheme <- list(strip.background = list(col = 'white'), 
                 strip.border = list(col = 'black'),
                 par.xlab.text = font.settings,
                 par.ylab.text = font.settings,
@@ -72,18 +72,18 @@ non_qc_data$non_QC06 %>% lapply(function(x) x[x$var == "tmin", ]$date) %>% Reduc
   table() %>%
   xts(., as.Date(names(.))) -> QC6_ts_tmin
 
-to_fill <- xts::xts(,seq(as.Date("1927-03-01"), as.Date("2020-03-23"), by = "day"))
+to_fill <- xts::xts(,seq(as.Date("1927-03-01"), as.Date("2020-12-31"), by = "day"))
 
-QC1_ts <- xts::merge.xts(QC1_ts, to_fill); QC1_ts <- QC1_ts["/2019"]
-QC2_ts_tmax <- xts::merge.xts(QC2_ts_tmax, to_fill); QC2_ts_tmax <- QC2_ts_tmax["/2019"] 
-QC2_ts_tmin <- xts::merge.xts(QC2_ts_tmin, to_fill); QC2_ts_tmin <- QC2_ts_tmin["/2019"]
-QC3_ts <- xts::merge.xts(QC3_ts, to_fill); QC3_ts <- QC3_ts["/2019"]
-QC4_ts_tmax <- xts::merge.xts(QC4_ts_tmax, to_fill); QC4_ts_tmax <- QC4_ts_tmax["/2019"]
-QC4_ts_tmin <- xts::merge.xts(QC4_ts_tmin, to_fill); QC4_ts_tmin <- QC4_ts_tmin["/2019"]
-QC5_ts_tmax <- xts::merge.xts(QC5_ts_tmax, to_fill); QC5_ts_tmax <- QC5_ts_tmax["/2019"]
-QC5_ts_tmin <- xts::merge.xts(QC5_ts_tmin, to_fill); QC5_ts_tmin <- QC5_ts_tmin["/2019"]
-QC6_ts_tmax <- xts::merge.xts(QC6_ts_tmax, to_fill); QC6_ts_tmax <- QC6_ts_tmax["/2019"]
-QC6_ts_tmin <- xts::merge.xts(QC6_ts_tmin, to_fill); QC6_ts_tmin <- QC6_ts_tmin["/2019"]
+QC1_ts <- xts::merge.xts(QC1_ts, to_fill); QC1_ts <- QC1_ts["/2020"]
+QC2_ts_tmax <- xts::merge.xts(QC2_ts_tmax, to_fill); QC2_ts_tmax <- QC2_ts_tmax["/2020"] 
+QC2_ts_tmin <- xts::merge.xts(QC2_ts_tmin, to_fill); QC2_ts_tmin <- QC2_ts_tmin["/2020"]
+QC3_ts <- xts::merge.xts(QC3_ts, to_fill); QC3_ts <- QC3_ts["/2020"]
+QC4_ts_tmax <- xts::merge.xts(QC4_ts_tmax, to_fill); QC4_ts_tmax <- QC4_ts_tmax["/2020"]
+QC4_ts_tmin <- xts::merge.xts(QC4_ts_tmin, to_fill); QC4_ts_tmin <- QC4_ts_tmin["/2020"]
+QC5_ts_tmax <- xts::merge.xts(QC5_ts_tmax, to_fill); QC5_ts_tmax <- QC5_ts_tmax["/2020"]
+QC5_ts_tmin <- xts::merge.xts(QC5_ts_tmin, to_fill); QC5_ts_tmin <- QC5_ts_tmin["/2020"]
+QC6_ts_tmax <- xts::merge.xts(QC6_ts_tmax, to_fill); QC6_ts_tmax <- QC6_ts_tmax["/2020"]
+QC6_ts_tmin <- xts::merge.xts(QC6_ts_tmin, to_fill); QC6_ts_tmin <- QC6_ts_tmin["/2020"]
 
 xyplot(QC1_ts, cex = .5, type = "p", col = "black", auto.key = FALSE) -> p1
 xyplot(cbind(QC2_ts_tmax, QC2_ts_tmin), superpose = TRUE, type = "p", cex = c(.5, .15), col = c("tomato", "royalblue"), auto.key = FALSE) -> p2
@@ -98,8 +98,8 @@ c("(i) Obvious errors" = p1, "(ii) Extreme values" = p2,
   update(xlab = "", ylab = "Number of deleted data",
          par.settings = mytheme) -> pfinal
 
-jpeg(filename = file.path(".", "paper", "output", "Fig_non_qc_data_lenght.jpg"),
+tiff(filename = file.path(".", "paper", "output", "Fig_non_qc_data_lenght.tiff"),
      width = 8, height = 5, units = "in",
-     res = 175)
+     res = 500)
 print(pfinal)
 dev.off()
