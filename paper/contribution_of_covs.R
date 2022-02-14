@@ -131,7 +131,7 @@ plot_pro_by_cov <- ggplot(subset(all_propor, variable != "ALL"), aes(x = id, y =
 cowplot::plot_grid(plot_all_pro, plot_pro_by_cov,
                    ncol = 1)
 
-ggsave(file.path(".", "paper", "output", "Fig_contributions_of_covs.tiff"),
+ggsave(file.path(".", "paper", "output", "Figure_05_contributions_of_covs.tiff"),
        device = "tiff",
        dpi = 500, scale = 0.75,
        width = 8, height = 6, units = "in")
