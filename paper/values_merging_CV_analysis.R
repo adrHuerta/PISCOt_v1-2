@@ -58,8 +58,8 @@ plt2 %>%
 
 ####### statistics for spcv/nospcv #######
 
-tmax_obs <- qc_data$values$tmax[1:500, stations_CV@data$ID]
-tmin_obs <- qc_data$values$tmin[1:500, stations_CV@data$ID]
+tmax_obs <- qc_data$values$tmax[, stations_CV@data$ID]
+tmin_obs <- qc_data$values$tmin[, stations_CV@data$ID]
 
 # cv
 output_anomalies <- "./paper/others/values"
@@ -70,10 +70,10 @@ output_anomalies <- "./paper/others/values"
 # tmin_spcv <- file.path(output_anomalies, sprintf("%s/tmin_spcv_%s.RDS", "tmin",  time(tmax_obs))) %>%
 #   lapply(function(x) readRDS(x)) %>% do.call("rbind", .)
 
-tmax_nospcv <- file.path(output_anomalies, sprintf("%s/tmax_spcv_%s.RDS", "tmax",  time(tmax_obs))) %>%
+tmax_nospcv <- file.path(output_anomalies, sprintf("%s/tmax_nospcv_%s.RDS", "tmax",  time(tmax_obs))) %>%
   lapply(function(x) readRDS(x)) %>% do.call("rbind", .)
 
-tmin_nospcv <- file.path(output_anomalies, sprintf("%s/tmin_spcv_%s.RDS", "tmin",  time(tmax_obs))) %>%
+tmin_nospcv <- file.path(output_anomalies, sprintf("%s/tmin_nospcv_%s.RDS", "tmin",  time(tmax_obs))) %>%
   lapply(function(x) readRDS(x)) %>% do.call("rbind", .)
 
 # statistics
