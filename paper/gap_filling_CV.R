@@ -317,11 +317,18 @@ merge(results,
                           right = FALSE))-> results2
 
 
-shp_peru = file.path(".", "data", "raw", "vectorial", "Departamentos.shp") %>% 
-  raster::shapefile() 
+shp_peru = shp_peru = file.path(".", "data", "raw", "vectorial", "SEC_CLIM.shp") %>%
+  raster::shapefile()
+shp_peru@data$MAIREG = transform(shp_peru@data, MAIREG = ifelse(MAC_REG == "CO", "CO", ifelse(MAC_REG == "SEA", "SE", ifelse(MAC_REG == "SEB", "SE", ifelse(MAC_REG == "SIOC", "AN", "AN")))))$MAIREG
+shp_peru <- shp_peru %>% raster::aggregate(., by = 'MAIREG') %>%  
+  broom::tidy(region = "MAIREG") %>%
+  transform(., id2 = ifelse(id == "CO", "PC", ifelse(id == "SE", "AZ", "AN")))
+shp_peru$id2 <- factor(shp_peru$id2, 
+                       levels = c("PC", "AN", "AZ"), 
+                       labels = c("Pacific Coast", "Andes", "Amazon"))
 
 shp_sa = file.path(".", "data", "raw", "vectorial", "Sudamérica.shp") %>% 
-  raster::shapefile()
+  raster::shapefile() %>% broom::tidy()
 
 # font.settings <- list(fontfamily = "helvetica")
 # mytheme <- list(strip.background = list(col = 'gray95'), 
@@ -375,10 +382,10 @@ cols3 <- rev(colorRampPalette(c("#4682B4", "gray90", "#B47846"))(6))
 
 plt_dr <- results2 %>%
   ggplot() + 
-  geom_polygon(data = shp_sa %>% broom::tidy(),
+  geom_polygon(data = shp_sa,
                aes(x = long, y = lat, group = group),
                fill = NA, colour = "gray20", size = 0.3) +
-  geom_polygon(data = shp_peru %>% broom::tidy(),
+  geom_polygon(data = shp_peru,
                aes(x = long, y = lat, group = group),
                fill = NA, colour = "gray20", size = 0.3) + 
   geom_point(aes(x = LON, y = LAT, color = IOA_cut), shape = 19, size = 2) + 
@@ -418,7 +425,7 @@ plt_dr <- results2 %>%
   )
 
 plt_dr
-ggsave(filename = file.path(".", "paper", "output", "Figure_03_gap_filling_CV.jpg"),
-       dpi = 250, scale = 1,
+ggsave(filename = file.path(".", "paper", "output", "Figure_03_gap_filling_CV.tiff"),
+       device = "tiff",
+       dpi = 500, scale = 1,
        width = 7, height = 7, units = "in")
-
