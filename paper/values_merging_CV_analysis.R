@@ -7,12 +7,21 @@ library(spatialsample)
 # obs
 qc_data <- readRDS("./data/processed/obs/qc_output/OBS.RDS")
 
-shp_peru = file.path(".", "data", "raw", "vectorial", "Departamentos.shp") %>% 
-  raster::shapefile() 
+# shps
+shp_peru = file.path(".", "data", "raw", "vectorial", "SEC_CLIM.shp") %>%
+  shapefile()
+shp_peru@data$MAIREG = transform(shp_peru@data, MAIREG = ifelse(MAC_REG == "CO", "CO", ifelse(MAC_REG == "SEA", "SE", ifelse(MAC_REG == "SEB", "SE", ifelse(MAC_REG == "SIOC", "AN", "AN")))))$MAIREG
+shp_peru <- shp_peru %>% raster::aggregate(., by = 'MAIREG') %>%  
+  broom::tidy(region = "MAIREG") %>%
+  transform(., id2 = ifelse(id == "CO", "PC", ifelse(id == "SE", "AZ", "AN")))
+shp_peru$id2 <- factor(shp_peru$id2, 
+                       levels = c("PC", "AN", "AZ"), 
+                       labels = c("Pacific Coast", "Andes", "Amazon"))
 
 shp_sa = file.path(".", "data", "raw", "vectorial", "Sudamérica.shp") %>% 
-  raster::shapefile()
+  raster::shapefile() %>% broom::tidy()
 
+# stations for cv
 stations_CV <- qc_data$xyz[qc_data$xyz@data$filter_qc70 != 0, ]
 
 ####### points for spcv/nospcv #######
@@ -216,10 +225,10 @@ library(ggplot2)
 # nospcv
 plt_nospcv_bias <- values_cv %>% subset(cv == "nospcv") %>%
   ggplot() + 
-  geom_polygon(data = shp_sa %>% broom::tidy(),
+  geom_polygon(data = shp_sa,
                aes(x = long, y = lat, group = group),
                fill = NA, colour = "gray20", size = 0.3) +
-  geom_polygon(data = shp_peru %>% broom::tidy(),
+  geom_polygon(data = shp_peru,
                aes(x = long, y = lat, group = group),
                fill = NA, colour = "gray20", size = 0.3) + 
   geom_point(aes(x = LON, y = LAT, color = bias), shape = 19, size = 2) + 
@@ -260,10 +269,10 @@ plt_nospcv_bias <- values_cv %>% subset(cv == "nospcv") %>%
 
 plt_nospcv_MAE <- values_cv %>% subset(cv == "nospcv") %>%
   ggplot() + 
-  geom_polygon(data = shp_sa %>% broom::tidy(),
+  geom_polygon(data = shp_sa,
                aes(x = long, y = lat, group = group),
                fill = NA, colour = "gray20", size = 0.3) +
-  geom_polygon(data = shp_peru %>% broom::tidy(),
+  geom_polygon(data = shp_peru,
                aes(x = long, y = lat, group = group),
                fill = NA, colour = "gray20", size = 0.3) + 
   geom_point(aes(x = LON, y = LAT, color = MAE), shape = 19, size = 2) + 
@@ -303,10 +312,10 @@ plt_nospcv_MAE <- values_cv %>% subset(cv == "nospcv") %>%
 
 plt_nospcv_dr <- values_cv %>% subset(cv == "nospcv") %>%
   ggplot() + 
-  geom_polygon(data = shp_sa %>% broom::tidy(),
+  geom_polygon(data = shp_sa,
                aes(x = long, y = lat, group = group),
                fill = NA, colour = "gray20", size = 0.3) +
-  geom_polygon(data = shp_peru %>% broom::tidy(),
+  geom_polygon(data = shp_peru,
                aes(x = long, y = lat, group = group),
                fill = NA, colour = "gray20", size = 0.3) + 
   geom_point(aes(x = LON, y = LAT, color = dr), shape = 19, size = 2) + 
@@ -481,13 +490,13 @@ library(patchwork)
      theme(strip.background.y = element_blank(), strip.text.y = element_blank()) + 
      theme(plot.margin=grid::unit(c(0,0,0,0), "mm")))
 
-ggsave(file.path(".", "paper", "output", "Fig_values_nospcv.tiff"),
+ggsave(file.path(".", "paper", "output", "Figure_05_values_nospcv_bias_mae.tiff"),
        device = "tiff",
        dpi = 500, scale = 1,
        width = 9.5, height = 7, units = "in")
 
 plt_nospcv_dr
 
-ggsave(file.path(".", "paper", "output", "Fig_values_nospcv_dr.tiff"),
+ggsave(file.path(".", "paper", "output", "Figure_06_values_nospcv_dr.tiff"),
        dpi = 500, scale = 1,
        width = 7, height = 7, units = "in")
