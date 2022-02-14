@@ -490,13 +490,13 @@ library(patchwork)
      theme(strip.background.y = element_blank(), strip.text.y = element_blank()) + 
      theme(plot.margin=grid::unit(c(0,0,0,0), "mm")))
 
-ggsave(file.path(".", "paper", "output", "Figure_05_values_nospcv_bias_mae.tiff"),
+ggsave(file.path(".", "paper", "output", "Figure_06_values_nospcv_bias_mae.tiff"),
        device = "tiff",
        dpi = 500, scale = 1,
        width = 9.5, height = 7, units = "in")
 
 plt_nospcv_dr
 
-ggsave(file.path(".", "paper", "output", "Figure_06_values_nospcv_dr.tiff"),
+ggsave(file.path(".", "paper", "output", "Figure_07_values_nospcv_dr.tiff"),
        dpi = 500, scale = 1,
        width = 7, height = 7, units = "in")
