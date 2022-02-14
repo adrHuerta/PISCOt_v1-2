@@ -10,7 +10,7 @@ library(parallel)
 
 font.settings <- list(fontfamily = "helvetica")
 
-mytheme <- list(strip.background = list(col = 'gray95'), 
+mytheme <- list(strip.background = list(col = 'white'), 
                 strip.border = list(col = 'black'),
                 par.xlab.text = font.settings,
                 par.ylab.text = font.settings,
@@ -28,11 +28,11 @@ sapply(qc01$values, function(x) max(zoo::index(x))) %>% sort(., decreasing = TRU
 
 ############ 
 tx <- parallel::mclapply(qc01$values, function(x) x[,1], mc.cores = 6) %>% do.call("cbind", .)
-tx <- tx["1981/2019"]
+tx <- tx["1981/2020"]
 colnames(tx) <- names(qc01$values)
 
 tn <- parallel::mclapply(qc01$values, function(x) x[,2], mc.cores = 6) %>% do.call("cbind", .)
-tn <- tn["1981/2019"]
+tn <- tn["1981/2020"]
 colnames(tn) <- names(qc01$values)
 
 # without seasonal variability?
@@ -174,7 +174,7 @@ xyplot(value  ~ Var2 | variable, groups = Var1, type = c("l"), lwd = 3,
                        cex.title = 1,
                        cex = .8),
        par.settings = list(superpose.line = list(lwd = 3)),
-       xlab = "Distance (km)", ylab = "Correlation coefficient", ylim = c(0.5, 0.875),
+       xlab = "Distance (km)", ylab = "Pearson Correlation", ylim = c(0.5, 0.875),
        data = aggregate(response_cor[c("Tmin", "Tmax")], 
                         by = response_cor[c("Var1", "Var2")],
                         FUN = function(x) median(x, na.rm = TRUE)) %>%
@@ -194,8 +194,8 @@ xyplot(Dist  ~ Var2, groups = Var1, type = c("l"), lwd = 3,
   update(par.settings = mytheme)-> p1
 
 
-jpeg(filename = file.path(".", "paper", "output", "Fig_z_vs_dist_vs_r.jpg"),
+tiff(filename = file.path(".", "paper", "output", "Fig_z_vs_dist_vs_r.tiff"),
      width = 10, height = 5.75, units = "in",
-     res = 150)
+     res = 500)
 print(cowplot::plot_grid(p3, p0,  labels = c("a)", "b)")))
 dev.off()
