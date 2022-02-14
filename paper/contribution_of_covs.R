@@ -11,12 +11,12 @@ qc_data <- readRDS("./data/processed/obs/qc_output/Normals_OBS.RDS")
 stats_above_alt <- qc_data$xyz@data[qc_data$xyz@data$ALT > 250, "ID"]
 
 # gridded
-LST_day <- raster::brick("data/processed/gridded/LST_DAY.nc")
-LST_night <- raster::brick("data/processed/gridded/LST_NIGHT.nc")
-CC <- raster::brick("data/processed/gridded/CC.nc")
-DEM <- raster::raster("data/processed/gridded/DEM.nc")
-X <- raster::raster("data/processed/gridded/X.nc")
-Y <- raster::raster("data/processed/gridded/Y.nc")
+LST_day <- raster::brick("data/processed/gridded/co_variables/LST_DAY.nc")
+LST_night <- raster::brick("data/processed/gridded/co_variables/LST_NIGHT.nc")
+CC <- raster::brick("data/processed/gridded/co_variables/CC.nc")
+DEM <- raster::raster("data/processed/gridded/co_variables/DEM.nc")
+X <- raster::raster("data/processed/gridded/co_variables/X.nc")
+Y <- raster::raster("data/processed/gridded/co_variables/Y.nc")
 
 # making list of covs
 covs_list_tmax <- list(dynamic = list(LST = LST_day),
@@ -108,7 +108,8 @@ plot_all_pro <- ggplot(subset(all_propor, variable == "ALL"), aes(x = id, y = va
   scale_y_continuous(limits = c(.6, 1), breaks = seq(.6, 1, .1)) + 
   theme(legend.position= c(.1,.25),
         legend.background=element_blank(),
-        legend.key = element_blank()) 
+        legend.key = element_blank(),
+        plot.margin=grid::unit(c(0,0,0,0), "mm"))
 
 
 plot_pro_by_cov <- ggplot(subset(all_propor, variable != "ALL"), aes(x = id, y = value, colour = variable)) + 
@@ -117,10 +118,20 @@ plot_pro_by_cov <- ggplot(subset(all_propor, variable != "ALL"), aes(x = id, y =
   ylab("Proportion of R²") + xlab("Month") + theme_bw() + 
   scale_x_continuous(limits = c(1,12), breaks = 1:12) + 
   scale_y_continuous(limits = c(0, .6), breaks = seq(0, .6, .1)) + 
-  theme(legend.position= c(.1,.44)) + 
+  theme(legend.position= c(.75,.37)) + 
   theme(legend.title=element_blank())+
   facet_wrap(~var) + 
   theme(strip.background = element_blank(),
         strip.text = element_text(size = 13),
-        legend.background=element_blank(),
-        legend.key = element_blank()) 
+        legend.background = element_blank(), 
+        legend.direction = "horizontal",
+        legend.key = element_blank(),
+        plot.margin = grid::unit(c(0,0,0,0), "mm")) 
+
+cowplot::plot_grid(plot_all_pro, plot_pro_by_cov,
+                   ncol = 1)
+
+ggsave(file.path(".", "paper", "output", "Fig_contributions_of_covs.tiff"),
+       device = "tiff",
+       dpi = 500, scale = 0.75,
+       width = 8, height = 6, units = "in")
