@@ -418,7 +418,7 @@ plt_dr <- results2 %>%
   )
 
 plt_dr
-ggsave(filename = file.path(".", "paper", "output", "Fig_gap_filling_CV.jpg"),
+ggsave(filename = file.path(".", "paper", "output", "Figure_03_gap_filling_CV.jpg"),
        dpi = 250, scale = 1,
        width = 7, height = 7, units = "in")
 
