@@ -51,8 +51,9 @@ plt2 %>%
 tmax_obs <- qc_data$values$tmax[, stations_CV@data$ID]
 tmin_obs <- qc_data$values$tmin[, stations_CV@data$ID]
 
-# cv 
+# cv
 output_normals <- "./paper/others/normals"
+
 # tmax_spcv <- file.path(output_normals, sprintf("%s/tmax_spcv_%02d.RDS", "tmax",  1:12)) %>%
 #   lapply(function(x) readRDS(x)) %>% do.call("rbind", .)
 # 
@@ -366,12 +367,13 @@ plt_nospcv_MAE <- normals_cv %>% subset(cv == "nospcv") %>%
 
 library(patchwork)
 (plt_nospcv_bias +
-    theme(plot.margin=margin(l=-0.8,unit="cm")))  +  
+    theme(plot.margin=grid::unit(c(0,0,0,0), "mm")))  +  
   (plt_nospcv_MAE + theme(strip.background.y = element_blank(), strip.text.y = element_blank()) + 
-     theme(plot.margin=margin(l=-0.8,unit="cm")))
+     theme(plot.margin=grid::unit(c(0,0,0,0), "mm")))
 
-ggsave(file.path(".", "paper", "output", "Fig_normal_nospcv.jpg"),
-       dpi = 250, scale = 1,
+ggsave(file.path(".", "paper", "output", "Fig_normal_nospcv.tiff"),
+       device = "tiff",
+       dpi = 500, scale = 1,
        width = 9.5, height = 7, units = "in")
 
 # (plt_spcv_bias +

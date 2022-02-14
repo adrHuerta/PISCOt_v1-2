@@ -1,6 +1,7 @@
 rm(list = ls())
 
 library(raster)
+library(gstat)
 library(spatialsample)
 "%>%" = magrittr::`%>%`
 
@@ -15,7 +16,7 @@ qc_data <- readRDS("./data/processed/obs/qc_output/Normals_OBS.RDS")
 # gridded
 LST_day <- raster::brick("data/processed/gridded/co_variables/LST_DAY.nc")
 LST_night <- raster::brick("data/processed/gridded/co_variables/LST_NIGHT.nc")
-CC <- raster::brick("data/processed/gridded/co_variables/CC.nc")
+# CC <- raster::brick("data/processed/gridded/co_variables/CC.nc")
 DEM <- raster::raster("data/processed/gridded/co_variables/DEM.nc")
 X <- raster::raster("data/processed/gridded/co_variables/X.nc")
 Y <- raster::raster("data/processed/gridded/co_variables/Y.nc")
@@ -27,8 +28,8 @@ covs_list_tmax <- list(dynamic = list(LST = LST_day),
 covs_list_tmin <- list(dynamic = list(LST = LST_night),
                        static = list(DEM = DEM, X = X, Y = Y))
 
+stations_CV <- qc_data$xyz
 # # kfold validation (spatial)
-# stations_CV <- qc_data$xyz
 # set.seed(2020+1)
 # folds <- spatial_clustering_cv(stations_CV@data, coords = c("LON", "LAT"), v = 10)
 # 
