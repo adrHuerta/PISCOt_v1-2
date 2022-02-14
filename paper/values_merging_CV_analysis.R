@@ -9,7 +9,7 @@ qc_data <- readRDS("./data/processed/obs/qc_output/OBS.RDS")
 
 # shps
 shp_peru = file.path(".", "data", "raw", "vectorial", "SEC_CLIM.shp") %>%
-  shapefile()
+  raster::shapefile()
 shp_peru@data$MAIREG = transform(shp_peru@data, MAIREG = ifelse(MAC_REG == "CO", "CO", ifelse(MAC_REG == "SEA", "SE", ifelse(MAC_REG == "SEB", "SE", ifelse(MAC_REG == "SIOC", "AN", "AN")))))$MAIREG
 shp_peru <- shp_peru %>% raster::aggregate(., by = 'MAIREG') %>%  
   broom::tidy(region = "MAIREG") %>%
