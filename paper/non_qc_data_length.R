@@ -98,7 +98,7 @@ c("(i) Obvious errors" = p1, "(ii) Extreme values" = p2,
   update(xlab = "", ylab = "Number of deleted data",
          par.settings = mytheme) -> pfinal
 
-tiff(filename = file.path(".", "paper", "output", "Fig_non_qc_data_lenght.tiff"),
+tiff(filename = file.path(".", "paper", "output", "Figure_S03_non_qc_data_lenght.tiff"),
      width = 8, height = 5, units = "in",
      res = 500)
 print(pfinal)

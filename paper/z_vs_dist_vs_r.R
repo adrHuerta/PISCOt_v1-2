@@ -194,7 +194,7 @@ xyplot(Dist  ~ Var2, groups = Var1, type = c("l"), lwd = 3,
   update(par.settings = mytheme)-> p1
 
 
-tiff(filename = file.path(".", "paper", "output", "Fig_z_vs_dist_vs_r.tiff"),
+tiff(filename = file.path(".", "paper", "output", "Figure_S02_z_vs_dist_vs_r.tiff"),
      width = 10, height = 5.75, units = "in",
      res = 500)
 print(cowplot::plot_grid(p3, p0,  labels = c("a)", "b)")))
