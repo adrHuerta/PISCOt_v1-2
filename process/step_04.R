@@ -144,9 +144,6 @@ qc_data$values$tmin <- qc_daily_values_tmin_ERA5_hmg
 qc_data$xyz <- qc_data$xyz[match(colnames(qc_daily_values_tmax_ERA5_hmg), qc_data$xyz$ID), ]
 rownames(qc_data$xyz) <- NULL
 
-saveRDS(object = qc_data,
-        file = "./data/processed/obs/qc_output/QC_GF_HG_data.RDS")
-
 source('./src/process/QC/QC_precision_and_variability_check.R')
 
 qc_data$xyz$ID %>%
@@ -164,3 +161,17 @@ qc_data$xyz$ID %>%
                       dpi = 150)
 
   })
+
+# time series were the method did not worked very well (visual inspection)
+to_del <- c("PE103038", "PE103042", "PE105054", 
+            "PE106109", "PE105076", "PE104090",
+            "PE100136", "PE100081", "PE116052")
+
+qc_data$values$tmax <- qc_data$values$tmax[, -match(to_del, colnames(qc_data$values$tmax))]
+qc_data$values$tmin <- qc_data$values$tmin[, -match(to_del, colnames(qc_data$values$tmin))]
+qc_data$xyz <- qc_data$xyz[-match(to_del, qc_data$xyz$ID), ]
+rownames(qc_data$xyz) <- NULL
+
+saveRDS(object = qc_data,
+        file = "./data/processed/obs/qc_output/QC_GF_HG_data.RDS")
+
