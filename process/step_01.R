@@ -206,11 +206,11 @@ raw_xy_file <- transform(raw_xy_file,
 saveRDS(object = list(values = list(tmax = lapply(QC_data, function(x) x[, "tmax"]) %>%
                                       do.call(cbind, .) %>%
                                       setNames(raw_xy_file$ID) %>%
-                                      .["1981/2019"],
+                                      .["1981/2020"],
                                     tmin = lapply(QC_data, function(x) x[, "tmin"]) %>%
                                       do.call(cbind, .) %>%
                                       setNames(raw_xy_file$ID) %>%
-                                      .["1981/2019"]),
+                                      .["1981/2020"]),
                       xyz = raw_xy_file),
         file = file.path(qc_out_path, "QC_data.RDS"))
 
