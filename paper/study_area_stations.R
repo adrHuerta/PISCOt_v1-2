@@ -32,10 +32,12 @@ shp_lakes = file.path(".", "data", "raw", "vectorial", "Lagos_lagunas_Project.sh
   .[.@data$Rasgo_Secu == "Perenne", ] %>%
   .[.@data$are > 1000, ]
 
-shp_sa = file.path(".", "data", "raw", "vectorial", "Sudamérica.shp") %>% 
-  shapefile() %>%
+shp_sa <- file.path(".", "data", "raw", "vectorial", "Sudamérica.shp") %>% 
+  shapefile()
+  
+dem <- raster::mask(raster::crop(dem, shp_sa), shp_sa)
+shp_sa <- shp_sa %>%
   broom::tidy()
-
 # qc 01
 
 qc01 <- file.path(".", "data", "processed", "obs", "qc_output", "RAW(QC01)_data.RDS") %>% 
@@ -223,6 +225,8 @@ p3 <- ggplot() +
   labs(x = "", y = "") +
   #theme_linedraw() + 
   theme_bw() + 
+  geom_rect(aes(xmin = -73.5, xmax = -68, ymin = -18.5, ymax = -12),
+            fill = "transparent", color = "red", size = .75) +
   theme(axis.title = element_blank(),
         #axis.title.x = element_text(size = 15),
         # axis.text.x = element_blank(),
@@ -350,7 +354,7 @@ p4 +
 
 cowplot::plot_grid(p4, p3, ncol = 2)
 
-ggsave(file.path(".", "paper", "output", "Figure_02_study_area_stations.tiff"),
-       device = "tiff",
+ggsave(file.path(".", "paper", "output", "Figure_02_study_area_stations.pdf"),
+       device = "pdf",
        dpi = 500, scale = 1,
        width = 8, height = 6, units = "in")
