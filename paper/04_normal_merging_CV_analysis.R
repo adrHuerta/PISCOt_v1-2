@@ -380,8 +380,8 @@ library(patchwork)
   (plt_nospcv_MAE + theme(strip.background.y = element_blank(), strip.text.y = element_blank()) + 
      theme(plot.margin=grid::unit(c(0,0,0,0), "mm")))
 
-ggsave(file.path(".", "paper", "output", "Figure_04_normal_nospcv_bias_mae.tiff"),
-       device = "tiff",
+ggsave(file.path(".", "paper", "output", "Figure_04_normal_nospcv_bias_mae.pdf"),
+       device = "pdf",
        dpi = 500, scale = 1,
        width = 9.5, height = 7, units = "in")
 
