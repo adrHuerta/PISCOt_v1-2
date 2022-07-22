@@ -56,7 +56,7 @@ xyplot(tx_qc, par.settings = mytheme, col = "tomato", lwd = 2) +
 c("Raw" = p1, "After QC" = p2, layout = c(1, 2)) %>%
   update(ylim = c(0, 450), ylab = "Number of data", xlab = "") -> pfinal
 
-tiff(filename = file.path(".", "paper", "output", "Figure_S01_data_lenght.tiff"),
+pdf(filename = file.path(".", "paper", "output", "Figure_S01_data_lenght.pdf"),
      width = 6, height = 5, units = "in",
      res = 500)
 print(pfinal)

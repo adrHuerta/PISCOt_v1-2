@@ -571,7 +571,7 @@ ggplot() +
         legend.margin=margin(t=0)) + 
   labs(x = "", y = "") -> mean_MTmax_trend
 
-ggsave(file.path(".", "paper", "output", "Figure_S04_MTmax.pdf"),
+ggsave(file.path(".", "paper", "output", "Figure_S05_MTmax.pdf"),
        plot = mean_MTmax_trend,
        device = "pdf",
        dpi = 300, scale = .75,
@@ -617,7 +617,7 @@ ggplot() +
         legend.margin=margin(t=0)) + 
   labs(x = "", y = "") -> mean_MTmin_trend
 
-ggsave(file.path(".", "paper", "output", "Figure_S04_MTmin.pdf"),
+ggsave(file.path(".", "paper", "output", "Figure_S05_MTmin.pdf"),
        plot = mean_MTmin_trend,
        device = "pdf",
        dpi = 300, scale = .75,
@@ -682,7 +682,7 @@ g$layout <- g$layout[!pos, ]
 grid.newpage()
 
 
-ggsave(file.path(".", "paper", "output", "Figure_S04_FD.pdf"),
+ggsave(file.path(".", "paper", "output", "Figure_S05_FD.pdf"),
        plot = grid.draw(g),
        device = "pdf",
        dpi = 300, scale = .75,
