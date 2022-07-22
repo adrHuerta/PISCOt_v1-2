@@ -13,7 +13,7 @@ stats_above_alt <- qc_data$xyz@data[qc_data$xyz@data$ALT > 250, "ID"]
 # gridded
 LST_day <- raster::brick("data/processed/gridded/co_variables/LST_DAY.nc")
 LST_night <- raster::brick("data/processed/gridded/co_variables/LST_NIGHT.nc")
-CC <- raster::brick("data/processed/gridded/co_variables/CC.nc")
+# CC <- raster::brick("data/processed/gridded/co_variables/CC.nc")
 DEM <- raster::raster("data/processed/gridded/co_variables/DEM.nc")
 X <- raster::raster("data/processed/gridded/co_variables/X.nc")
 Y <- raster::raster("data/processed/gridded/co_variables/Y.nc")
@@ -131,7 +131,7 @@ plot_pro_by_cov <- ggplot(subset(all_propor, variable != "ALL"), aes(x = id, y =
 cowplot::plot_grid(plot_all_pro, plot_pro_by_cov,
                    ncol = 1)
 
-ggsave(file.path(".", "paper", "output", "Figure_05_contributions_of_covs.tiff"),
-       device = "tiff",
+ggsave(file.path(".", "paper", "output", "Figure_05_contributions_of_covs.pdf"),
+       device = "pdf",
        dpi = 500, scale = 0.75,
        width = 8, height = 6, units = "in")

@@ -8,16 +8,16 @@ library(parallel)
 
 ##
 
-font.settings <- list(fontfamily = "helvetica")
+# font.settings <- list(fontfamily = "helvetica")
 
 mytheme <- list(strip.background = list(col = 'white'), 
-                strip.border = list(col = 'black'),
-                par.xlab.text = font.settings,
-                par.ylab.text = font.settings,
-                axis.text = font.settings,
-                sub.text = font.settings,
-                add.text = font.settings)
-
+                strip.border = list(col = 'black')
+                # par.xlab.text = font.settings,
+                # par.ylab.text = font.settings,
+                # axis.text = font.settings,
+                # sub.text = font.settings,
+                # add.text = font.settings
+)
 # qc 01
 
 qc01 <- file.path(".", "data", "processed", "obs", "qc_output", "RAW(QC01)_data.RDS") %>% 
@@ -194,8 +194,8 @@ xyplot(Dist  ~ Var2, groups = Var1, type = c("l"), lwd = 3,
   update(par.settings = mytheme)-> p1
 
 
-tiff(filename = file.path(".", "paper", "output", "Figure_S02_z_vs_dist_vs_r.tiff"),
-     width = 10, height = 5.75, units = "in",
-     res = 500)
-print(cowplot::plot_grid(p3, p0,  labels = c("a)", "b)")))
+pdf(file = file.path(".", "paper", "output", "Figure_S02_z_vs_dist_vs_r.pdf"),
+     width = 10, height = 5.75)
+print(cowplot::plot_grid(p3, p0,  labels = c("(a)", "(b)")))
 dev.off()
+

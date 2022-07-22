@@ -5,16 +5,16 @@ library(xts)
 library(lattice)
 library(latticeExtra)
 
-font.settings <- list(fontfamily = "helvetica")
+# font.settings <- list(fontfamily = "helvetica")
 
 mytheme <- list(strip.background = list(col = 'white'), 
-                strip.border = list(col = 'black'),
-                par.xlab.text = font.settings,
-                par.ylab.text = font.settings,
-                axis.text = font.settings,
-                sub.text = font.settings,
-                add.text = font.settings)
-
+                strip.border = list(col = 'black')
+                # par.xlab.text = font.settings,
+                # par.ylab.text = font.settings,
+                # axis.text = font.settings,
+                # sub.text = font.settings,
+                # add.text = font.settings
+)
 ##
 
 non_qc_dir = dir("data/processed/obs/non_qc_output", full.names = TRUE) 
@@ -98,8 +98,7 @@ c("(i) Obvious errors" = p1, "(ii) Extreme values" = p2,
   update(xlab = "", ylab = "Number of deleted data",
          par.settings = mytheme) -> pfinal
 
-tiff(filename = file.path(".", "paper", "output", "Figure_S03_non_qc_data_lenght.tiff"),
-     width = 8, height = 5, units = "in",
-     res = 500)
+pdf(file = file.path(".", "paper", "output", "Figure_S03_non_qc_data_lenght.pdf"),
+     width = 8, height = 5)
 print(pfinal)
 dev.off()

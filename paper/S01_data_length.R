@@ -5,15 +5,16 @@ library(xts)
 library(lattice)
 library(latticeExtra)
 
-font.settings <- list(fontfamily = "helvetica")
+# font.settings <- list(fontfamily = "helvetica")
 
 mytheme <- list(strip.background = list(col = 'white'), 
-                strip.border = list(col = 'black'),
-                par.xlab.text = font.settings,
-                par.ylab.text = font.settings,
-                axis.text = font.settings,
-                sub.text = font.settings,
-                add.text = font.settings)
+                strip.border = list(col = 'black')
+                # par.xlab.text = font.settings,
+                # par.ylab.text = font.settings,
+                # axis.text = font.settings,
+                # sub.text = font.settings,
+                # add.text = font.settings
+                )
 
 # qc 01
 
@@ -56,8 +57,7 @@ xyplot(tx_qc, par.settings = mytheme, col = "tomato", lwd = 2) +
 c("Raw" = p1, "After QC" = p2, layout = c(1, 2)) %>%
   update(ylim = c(0, 450), ylab = "Number of data", xlab = "") -> pfinal
 
-pdf(filename = file.path(".", "paper", "output", "Figure_S01_data_lenght.pdf"),
-     width = 6, height = 5, units = "in",
-     res = 500)
+pdf(file = file.path(".", "paper", "output", "Figure_S01_data_lenght.pdf"),
+     width = 6, height = 5)
 print(pfinal)
 dev.off()
