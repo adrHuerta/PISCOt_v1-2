@@ -303,7 +303,7 @@ results3[results3$Variables == "Tmin",]
 merge(results3[results3$Variables == "Tmax",],
       results3[results3$Variables == "Tmin",],
       by = c("Experiment")) %>%
-  write.csv(file.path(".", "paper", "output", "Tab_gap_filling_CV.csv"))
+  write.csv(file.path(".", "paper", "output", "01_Tab_gap_filling_CV.csv"))
 
 # library(lattice)
 # library(sp)
@@ -425,7 +425,7 @@ plt_dr <- results2 %>%
   )
 
 plt_dr
-ggsave(filename = file.path(".", "paper", "output", "Figure_03_gap_filling_CV.tiff"),
-       device = "tiff",
+ggsave(filename = file.path(".", "paper", "output", "Figure_03_gap_filling_CV.pdf"),
+       device = "pdf",
        dpi = 500, scale = 1,
        width = 7, height = 7, units = "in")
