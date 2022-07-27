@@ -188,7 +188,10 @@ normals_cv <-
             MAE = cut(MGE, 
                       breaks = c(0, .5, 1, 1.5, 2, 2.5, 3, Inf),
                       labels = c("0 - .5", ".5 - 1", "1 - 1.5", "1.5 - 2", "2 - 2.5", "2.5 - 3", "> 3"), 
-                      right = FALSE)) 
+                      right = FALSE))
+
+virtualStat_toDel <- match(rownames(normals_cv)[grepl("point_", rownames(normals_cv))], rownames(normals_cv))
+normals_cv <- normals_cv[-virtualStat_toDel, ]
 
 # stats
 overall_values <- aggregate(. ~ season + var + cv, data = normals_cv[, c(2, 3, 4, 5, 6)], FUN = function(x) round(mean(x), 2))
