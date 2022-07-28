@@ -14,6 +14,7 @@ shp_sa <- file.path(".", "data", "raw", "vectorial", "Sudamérica.shp") %>%
 
 shp_sa_gg <- shp_sa %>% broom::tidy()
 
+
 ###### mean annual mean #######
 
 grid_files <- list.files(file.path(".", "paper", "others", "global_gridded_products"),
@@ -73,22 +74,22 @@ ggplot() +
                aes(x = long, y = lat, group = group),
                fill = "skyblue", colour = "black", size = 0.5) +
   scale_fill_gradientn(colors = colorRampPalette(ochRe::ochre_palettes$olsen_seq)(15) %>% rev(),
-                       limits = c(5, 35),
-                       "     MTmax (°C)",
+                       limits = c(0, 35),
+                       breaks = c(0, 5, 10, 15, 20, 25, 30, 35),
+                       "(°C)",
+                       labels = c("0", "5", "10", "15", "20", "25", "30", "35+"), # to adjust MTmin/FD plots
                        guide = guide_colorbar(frame.colour = "black",
                                               ticks.colour = "black",
-                                              title.position = "left",
+                                              title.position = "top",
                                               barwidth = 0.5, barheight = 4,
                                               label.theme = element_text(size = 5),
-                                              title.theme = element_text(size = 7,
-                                                                         angle = 90,
-                                                                         vjust = 2))) +
+                                              title.theme = element_text(size = 5))) +
   coord_quickmap(expand = c(0, 0), ylim = c(-18.5, -12), xlim = c(-73.5, -68)) +
   theme_bw() + 
   theme(axis.title = element_blank(),
-        axis.title.x = element_text(size = 16),
+        axis.title.x = element_text(size = 9),
         axis.text.x = element_blank(),
-        axis.title.y = element_text(size = 15),
+        axis.title.y = element_text(size = 9),
         axis.text.y = element_blank(),
         axis.ticks = element_blank(),
         legend.box = 'vertical',
@@ -101,7 +102,7 @@ ggplot() +
         legend.spacing.x = unit(.01, 'cm'),
         legend.spacing.y = unit(.05, 'cm'),
         legend.margin=margin(t=0)) + 
-    labs(x = "", y = "") -> mean_MTmax
+    labs(x = "", y = "MTmax") -> mean_MTmax
 
 ggsave(file.path(".", "paper", "output", "Figure_08_mean_MTmax.pdf"),
        device = "pdf",
@@ -119,22 +120,22 @@ ggplot() +
                aes(x = long, y = lat, group = group),
                fill = "skyblue", colour = "black", size = 0.5) +
   scale_fill_gradientn(colors = colorRampPalette(ochRe::ochre_palettes$olsen_seq)(15) %>% rev(),
-                       limits = c(-5, 20),
-                       "     MTmin (°C)",
+                       limits = c(-15, 27),
+                       breaks = c(-15, -10, -5, 0, 5, 10, 15, 20, 25),
+                       "(°C)",
+                       labels = function(x) sprintf("%.0f", x),
                        guide = guide_colorbar(frame.colour = "black",
                                               ticks.colour = "black",
-                                              title.position = "left",
+                                              title.position = "top",
                                               barwidth = 0.5, barheight = 4,
                                               label.theme = element_text(size = 5),
-                                              title.theme = element_text(size = 7,
-                                                                         angle = 90,
-                                                                         vjust = 2))) +
+                                              title.theme = element_text(size = 5))) +
   coord_quickmap(expand = c(0, 0), ylim = c(-18.5, -12), xlim = c(-73.5, -68)) +
   theme_bw() + 
   theme(axis.title = element_blank(),
-        axis.title.x = element_text(size = 15),
+        axis.title.x = element_text(size = 9),
         axis.text.x = element_blank(),
-        axis.title.y = element_text(size = 15),
+        axis.title.y = element_text(size = 9),
         axis.text.y = element_blank(),
         axis.ticks = element_blank(),
         legend.box = 'vertical',
@@ -146,7 +147,7 @@ ggplot() +
         legend.spacing.x = unit(.01, 'cm'),
         legend.spacing.y = unit(.05, 'cm'),
         legend.margin=margin(t=0)) + 
-  labs(x = "", y = "") -> mean_MTmin
+  labs(x = "", y = "MTmin") -> mean_MTmin
 
 ggsave(file.path(".", "paper", "output", "Figure_08_mean_MTmin.pdf"),
        device = "pdf",
@@ -164,21 +165,20 @@ ggplot() +
                fill = "skyblue", colour = "black", size = 0.5) +
   scale_fill_gradientn(colors = colorRampPalette(ochRe::ochre_palettes$williams_pilbara)(15),
                        limits = c(0, 100),
-                       "         FD (%)",
+                       "(%)",
+                       labels = function(x) sprintf("%.0f", x),
                        guide = guide_colorbar(frame.colour = "black",
                                               ticks.colour = "black",
-                                              title.position = "left",
+                                              title.position = "top",
                                               barwidth = 0.5, barheight = 4,
-                                              label.theme = element_text(size = 4),
-                                              title.theme = element_text(size = 6,
-                                                                         angle = 90,
-                                                                         vjust = 2))) +
+                                              label.theme = element_text(size = 5),
+                                              title.theme = element_text(size = 5))) +
   coord_quickmap(expand = c(0, 0), ylim = c(-18.5, -12), xlim = c(-73.5, -68)) +
   theme_bw() + 
   theme(axis.title = element_blank(),
-        axis.title.x = element_text(size = 15),
+        axis.title.x = element_text(size = 9),
         axis.text.x = element_blank(),
-        axis.title.y = element_text(size = 15),
+        axis.title.y = element_text(size = 9),
         axis.text.y = element_blank(),
         axis.ticks = element_blank(),
         legend.box = 'vertical',
@@ -190,23 +190,23 @@ ggplot() +
         legend.spacing.x = unit(.01, 'cm'),
         legend.spacing.y = unit(.05, 'cm'),
         legend.margin=margin(t=0)) + 
-  labs(x = "", y = "") -> mean_FD
+  labs(x = "", y = "FD") -> mean_FD
 
-library(grid)
-
-g = ggplotGrob(mean_FD)
-g$layout
-pos <- grepl(pattern = c("panel-1-3"), g$layout$name)
-g$grobs <- g$grobs[!pos]
-g$layout <- g$layout[!pos, ]
-pos <- grepl(pattern = c("panel-1-4"), g$layout$name)
-g$grobs <- g$grobs[!pos]
-g$layout <- g$layout[!pos, ]
-grid.newpage()
+# library(grid)
+# 
+# g = ggplotGrob(mean_FD)
+# g$layout
+# pos <- grepl(pattern = c("panel-1-3"), g$layout$name)
+# g$grobs <- g$grobs[!pos]
+# g$layout <- g$layout[!pos, ]
+# pos <- grepl(pattern = c("panel-1-4"), g$layout$name)
+# g$grobs <- g$grobs[!pos]
+# g$layout <- g$layout[!pos, ]
+# grid.newpage()
 
 
 ggsave(file.path(".", "paper", "output", "Figure_08_mean_FD.pdf"),
-       plot = grid.draw(g),
+       plot = mean_FD,
        device = "pdf",
        dpi = 300, scale = .75,
        width = 10, height = 6, units = "in")
@@ -246,7 +246,7 @@ trend_PISCOtv11 <- list.files(file.path(".", "paper", "others", "global_gridded_
 # PISCOt v1.2
 
 trend_PISCOtv12 <- list.files(file.path(".", "paper", "others", "global_gridded_products", "PISCOt_v1.2"),
-                              full.names = TRUE) %>%
+                              full.names = TRUE, pattern = ".nc") %>%
   setNames(., .) %>%
   lapply(function(x){
     
@@ -402,7 +402,7 @@ ggplot() +
             show.legend = FALSE) +
   scale_colour_manual(values = pallete_colors) +
   scale_shape_manual(values = c(NA, 1)) +
-  ylab("Sen trend slope [°C / decade]") + xlab("") +
+  ylab("Sen trend slope") + xlab("") +
   facet_wrap(~Variable, scales = "free_y", ncol = 2) + 
   theme_bw() + 
   theme(legend.background = element_blank(),
@@ -417,6 +417,9 @@ ggsave(file.path(".", "paper", "output", "Figure_09_sen_trend_by_time.pdf"),
 
 
 #### trend slope vs altitude ####
+
+dem = file.path(".", "data", "processed", "gridded", "co_variables", "DEM.nc") %>% 
+  raster::raster()
 
 # mean annual mean
 
@@ -497,6 +500,8 @@ grid_df_files$Product <- factor(grid_df_files$Product,
                              level = c("PISCOt.v1.2", "PISCOt.v1.1", "VS2018", "TerraClimate", "CHIRTS", "ERA5.Land"),
                              labels = c("PISCOt v1.2", "PISCOt v1.1", "VS2018", "TerraClimate", "CHIRTS", "ERA5-Land"))
 
+pallete_colors = c("#000000", "#E69F00", "#56B4E9", "#009E73",
+                   "#0072B2", "#CC79A7")
 
 ggplot() + 
   geom_hline(yintercept = 0, linetype = "dashed", color = "gray20", size=.5) +
@@ -509,13 +514,15 @@ ggplot() +
                                 "1500-2000", "2000-2500", "2500-3000",
                                 "3000-3500", "3500-4000", "4000-4500",
                                 "4500-5000", ">5000")) + 
-  ylab("Sen trend slope [°C / decade]") + xlab("") +
+  ylab("Sen trend slope") + xlab("") +
   facet_wrap(~Variable, scales = "free_y", ncol = 2) + 
   theme_bw() + 
   theme(legend.background = element_blank(),
         strip.background = element_blank(),
-        legend.position = c(0.8, 0.175),
+        legend.position = c(0.8, 0.2),
         axis.text.x = element_text(angle = 30, vjust = 1, hjust=1, size = 7),
+        axis.title.y = element_text(size = 9),
+        strip.text = element_text(size = 9),
         plot.title=element_text(size=20))
 
 ggsave(file.path(".", "paper", "output", "Figure_10_sen_trend_by_elevation.pdf"),
@@ -523,7 +530,7 @@ ggsave(file.path(".", "paper", "output", "Figure_10_sen_trend_by_elevation.pdf")
        dpi = 300, scale = 1,
        width = 7, height = 5, units = "in")
 
-# Figure_S04
+############ Figure_S04 #############
 
 rownames(grid_df_files_rs) <- NULL
 grid_df_files_rs$Product <- factor(grid_df_files_rs$Product,
@@ -540,28 +547,29 @@ ggplot() +
   geom_polygon(data = shp_lakes, # water bodies > 10 km^2
                aes(x = long, y = lat, group = group),
                fill = "skyblue", colour = "black", size = 0.5) +
-  scale_fill_gradientn(colors = colorRampPalette(ochRe::ochre_palettes$olsen_seq)(15) %>% rev(),
+  scale_fill_gradient2(high = scales::muted("red"),
+                       low = scales::muted("blue"),
                        limits = c(-.6, .6),
-                       "     MTmax (°C)",
+                       midpoint = 0,
+                       breaks = c(-.6, -.4, -.2 , 0, .2, .4, .6),
+                       "(°C)",
                        guide = guide_colorbar(frame.colour = "black",
                                               ticks.colour = "black",
-                                              title.position = "left",
+                                              title.position = "top",
                                               barwidth = 0.5, barheight = 4,
                                               label.theme = element_text(size = 5),
-                                              title.theme = element_text(size = 7,
-                                                                         angle = 90,
-                                                                         vjust = 2))) +
+                                              title.theme = element_text(size = 5))) +
   coord_quickmap(expand = c(0, 0), ylim = c(-18.5, -12), xlim = c(-73.5, -68)) +
   theme_bw() + 
   theme(axis.title = element_blank(),
-        axis.title.x = element_text(size = 16),
+        axis.title.x = element_text(size = 9),
         axis.text.x = element_blank(),
-        axis.title.y = element_text(size = 15),
+        axis.title.y = element_text(size = 9),
         axis.text.y = element_blank(),
         axis.ticks = element_blank(),
         legend.box = 'vertical',
         legend.background = element_blank(),
-        plot.margin=unit(c(0,0,0,0), "null"),
+        plot.margin=unit(c(0,0,0,0), "cm"),
         plot.caption = element_blank(),
         strip.background = element_blank(),
         strip.text = element_text(size = 9),
@@ -569,7 +577,7 @@ ggplot() +
         legend.spacing.x = unit(.01, 'cm'),
         legend.spacing.y = unit(.05, 'cm'),
         legend.margin=margin(t=0)) + 
-  labs(x = "", y = "") -> mean_MTmax_trend
+  labs(x = "", y = "MTmax") -> mean_MTmax_trend
 
 ggsave(file.path(".", "paper", "output", "Figure_S05_MTmax.pdf"),
        plot = mean_MTmax_trend,
@@ -587,35 +595,36 @@ ggplot() +
   geom_polygon(data = shp_lakes, # water bodies > 10 km^2
                aes(x = long, y = lat, group = group),
                fill = "skyblue", colour = "black", size = 0.5) +
-  scale_fill_gradientn(colors = colorRampPalette(ochRe::ochre_palettes$olsen_seq)(15) %>% rev(),
+  scale_fill_gradient2(high = scales::muted("red"),
+                       low = scales::muted("blue"),
                        limits = c(-.6, .6),
-                       "     MTmin (°C)",
+                       midpoint = 0,
+                       breaks = c(-.6, -.4, -.2 , 0, .2, .4, .6),
+                       "(°C)",
                        guide = guide_colorbar(frame.colour = "black",
                                               ticks.colour = "black",
-                                              title.position = "left",
+                                              title.position = "top",
                                               barwidth = 0.5, barheight = 4,
                                               label.theme = element_text(size = 5),
-                                              title.theme = element_text(size = 7,
-                                                                         angle = 90,
-                                                                         vjust = 2))) +
+                                              title.theme = element_text(size = 5))) +
   coord_quickmap(expand = c(0, 0), ylim = c(-18.5, -12), xlim = c(-73.5, -68)) +
   theme_bw() + 
   theme(axis.title = element_blank(),
-        axis.title.x = element_text(size = 15),
+        axis.title.x = element_text(size = 9),
         axis.text.x = element_blank(),
-        axis.title.y = element_text(size = 15),
+        axis.title.y = element_text(size = 9),
         axis.text.y = element_blank(),
         axis.ticks = element_blank(),
         legend.box = 'vertical',
         legend.background = element_blank(),
-        plot.margin=unit(c(0,0,0,0), "null"),
+        plot.margin=unit(c(0,0,0,0), "cm"),
         plot.caption = element_blank(),
         strip.background = element_blank(),
         strip.text = element_blank(),
         legend.spacing.x = unit(.01, 'cm'),
         legend.spacing.y = unit(.05, 'cm'),
         legend.margin=margin(t=0)) + 
-  labs(x = "", y = "") -> mean_MTmin_trend
+  labs(x = "", y = "MTmin") -> mean_MTmin_trend
 
 ggsave(file.path(".", "paper", "output", "Figure_S05_MTmin.pdf"),
        plot = mean_MTmin_trend,
@@ -639,51 +648,52 @@ ggplot() +
   geom_polygon(data = shp_lakes, # water bodies > 10 km^2
                aes(x = long, y = lat, group = group),
                fill = "skyblue", colour = "black", size = 0.5) +
-  scale_fill_gradientn(colors = colorRampPalette(ochRe::ochre_palettes$olsen_seq)(15),
-                       limits = c(-.8, .8),
-                       "         FD (%)",
+  scale_fill_gradient2(high = scales::muted("red"),
+                       low = scales::muted("blue"),
+                       limits = c(-9, 9),
+                       midpoint = 0,
+                       labels = function(x) sprintf("%.1f", x),
+                       breaks = c(-8, -6, -4, -2, 0, 2, 4, 6, 8),
+                       "(%)",
                        guide = guide_colorbar(frame.colour = "black",
                                               ticks.colour = "black",
-                                              title.position = "left",
+                                              title.position = "top",
                                               barwidth = 0.5, barheight = 4,
                                               label.theme = element_text(size = 5),
-                                              title.theme = element_text(size = 7,
-                                                                         angle = 90,
-                                                                         vjust = 2))) +
+                                              title.theme = element_text(size = 5))) +
   coord_quickmap(expand = c(0, 0), ylim = c(-18.5, -12), xlim = c(-73.5, -68)) +
   theme_bw() + 
   theme(axis.title = element_blank(),
-        axis.title.x = element_text(size = 15),
+        axis.title.x = element_text(size = 9),
         axis.text.x = element_blank(),
-        axis.title.y = element_text(size = 15),
+        axis.title.y = element_text(size = 9),
         axis.text.y = element_blank(),
         axis.ticks = element_blank(),
         legend.box = 'vertical',
         legend.background = element_blank(),
-        plot.margin=unit(c(0,0,0,0), "null"),
+        plot.margin=unit(c(0,0,0,0), "cm"),
         plot.caption = element_blank(),
         strip.background = element_blank(),
         strip.text = element_blank(),
         legend.spacing.x = unit(.01, 'cm'),
         legend.spacing.y = unit(.05, 'cm'),
         legend.margin=margin(t=0)) + 
-  labs(x = "", y = "") -> mean_FD_trend
+  labs(x = "", y = "FD") -> mean_FD_trend
 
-library(grid)
-
-g = ggplotGrob(mean_FD_trend)
-g$layout
-pos <- grepl(pattern = c("panel-1-3"), g$layout$name)
-g$grobs <- g$grobs[!pos]
-g$layout <- g$layout[!pos, ]
-pos <- grepl(pattern = c("panel-1-4"), g$layout$name)
-g$grobs <- g$grobs[!pos]
-g$layout <- g$layout[!pos, ]
-grid.newpage()
-
+# library(grid)
+# 
+# g = ggplotGrob(mean_FD_trend)
+# g$layout
+# pos <- grepl(pattern = c("panel-1-3"), g$layout$name)
+# g$grobs <- g$grobs[!pos]
+# g$layout <- g$layout[!pos, ]
+# pos <- grepl(pattern = c("panel-1-4"), g$layout$name)
+# g$grobs <- g$grobs[!pos]
+# g$layout <- g$layout[!pos, ]
+# grid.newpage()
 
 ggsave(file.path(".", "paper", "output", "Figure_S05_FD.pdf"),
-       plot = grid.draw(g),
+       plot = mean_FD_trend,
        device = "pdf",
        dpi = 300, scale = .75,
        width = 10, height = 6, units = "in")
