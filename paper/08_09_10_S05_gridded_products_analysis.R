@@ -14,6 +14,15 @@ shp_sa <- file.path(".", "data", "raw", "vectorial", "Sudamérica.shp") %>%
 
 shp_sa_gg <- shp_sa %>% broom::tidy()
 
+shp_peru = file.path(".", "data", "raw", "vectorial", "SEC_CLIM.shp") %>%
+  raster::shapefile()
+shp_peru@data$MAIREG = transform(shp_peru@data, MAIREG = ifelse(MAC_REG == "CO", "CO", ifelse(MAC_REG == "SEA", "SE", ifelse(MAC_REG == "SEB", "SE", ifelse(MAC_REG == "SIOC", "AN", "AN")))))$MAIREG
+shp_peru <- shp_peru %>% raster::aggregate(., by = 'MAIREG') %>%  
+  broom::tidy(region = "MAIREG") %>%
+  transform(., id2 = ifelse(id == "CO", "PC", ifelse(id == "SE", "AZ", "AN")))
+shp_peru$id2 <- factor(shp_peru$id2, 
+                       levels = c("PC", "AN", "AZ"), 
+                       labels = c("Pacific Coast", "Andes", "Amazon"))
 
 ###### mean annual mean #######
 
@@ -36,8 +45,8 @@ names(grid_df_files[[15]]) <- strsplit(grid_files[15], "/")[[1]][5]
 grid_df_files[[16]] <- raster::t(raster::flip(grid_df_files[[16]], direction = 2))
 names(grid_df_files[[16]]) <- strsplit(grid_files[16], "/")[[1]][5]
 
-
-grid_df_files <- 
+# absolute values
+grid_df_files_abs <- 
   grid_df_files %>%
   lapply(function(x){
     rs <- raster::mask(raster::mask(x, shp_lakes[1,], inverse = TRUE), shp_sa)
@@ -49,41 +58,68 @@ grid_df_files <-
     
   }) %>% do.call("rbind", .)
 
-grid_df_files <- rbind(grid_df_files, 
+grid_df_files_abs <- rbind(grid_df_files_abs, 
                        data.frame(x = c(-68.62500, -68.62500), 
                                   y = c(-13.825, -13.825),
                                   value = c(NA, NA), 
                                   Product = c("VS2018", "TerraClimate"), 
                                   Variable = c("FD", "FD")))
-rownames(grid_df_files) <- NULL
-grid_df_files$Product <- factor(grid_df_files$Product, 
+rownames(grid_df_files_abs) <- NULL
+grid_df_files_abs$Product <- factor(grid_df_files_abs$Product, 
                                 level = c("PISCOt.v1.2", "PISCOt.v1.1", "VS2018", "TerraClimate", "CHIRTS", "ERA5.Land"),
                                 labels = c("PISCOt v1.2", "PISCOt v1.1", "VS2018", "TerraClimate", "CHIRTS", "ERA5-Land"))
 
+# difference values
 
+grid_df_files_diff <- 
+  grid_df_files %>%
+  lapply(function(x){
+    rsd <- raster::mask(raster::mask(x, shp_lakes[1,], inverse = TRUE), shp_sa)
+    PISCOt_v12 <- raster::raster(file.path("paper", "others", "global_gridded_products", 
+                                           paste("mean", "PISCOt-v1.2", strsplit(names(rsd), "_")[[1]][3], sep = "_")))
+    PISCOt_v12 <- raster::resample(PISCOt_v12, rsd, method = "ngb")
+    
+    rs <- raster::as.data.frame(PISCOt_v12 - rsd, xy = TRUE)
+    rs$Product <- strsplit(names(rsd), "_")[[1]][2]
+    rs$Variable <- strsplit(strsplit(names(rsd), "_")[[1]][3], ".nc")[[1]][1]
+    colnames(rs) <- c("x", "y", "value", "Product", "Variable")
+    rs[complete.cases(rs), ]
+    
+  }) %>% do.call("rbind", .)
 
-library(ggplot2)
+grid_df_files_diff <- rbind(grid_df_files_diff, 
+                           data.frame(x = c(-68.62500, -68.62500), 
+                                      y = c(-13.825, -13.825),
+                                      value = c(0, 0), 
+                                      Product = c("VS2018", "TerraClimate"), 
+                                      Variable = c("FD", "FD")))
+rownames(grid_df_files_diff) <- NULL
+grid_df_files_diff <- grid_df_files_diff[grid_df_files_abs$Product != "PISCOt v1.2", ]
+grid_df_files_diff$Product <- factor(grid_df_files_diff$Product, 
+                                    level = c("PISCOt.v1.1", "VS2018", "TerraClimate", "CHIRTS", "ERA5.Land"),
+                                    labels = c("PISCOt v1.1", "VS2018", "TerraClimate", "CHIRTS", "ERA5-Land"))
 
 ggplot() + 
-  geom_raster(data = grid_df_files[grid_df_files$Variable == "MTmax",], aes(x = x, y = y, fill = value)) +
-  facet_grid(Variable~Product) + 
+  geom_raster(data = grid_df_files_abs[grid_df_files_abs$Variable == "MTmax" & grid_df_files_abs$Product == "PISCOt v1.2",], 
+              aes(x = x, y = y, fill = value)) +
+  facet_wrap(~Product) + 
   geom_polygon(data = shp_sa, # water bodies > 10 km^2
                aes(x = long, y = lat, group = group),
-               fill = NA, colour = "black", size = 0.5) +
+               fill = NA, colour = "black", size = 0.4) +
+  geom_polygon(data = shp_peru,
+               aes(x = long, y = lat, group = group),
+               fill = NA, colour = "black", size = 0.4) +
   geom_polygon(data = shp_lakes, # water bodies > 10 km^2
                aes(x = long, y = lat, group = group),
-               fill = "skyblue", colour = "black", size = 0.5) +
+               fill = "skyblue", colour = "black", size = 0.4) +
   scale_fill_gradientn(colors = colorRampPalette(ochRe::ochre_palettes$olsen_seq)(15) %>% rev(),
                        limits = c(0, 35),
                        breaks = c(0, 5, 10, 15, 20, 25, 30, 35),
-                       "(°C)",
+                       "°C",
                        labels = c("0", "5", "10", "15", "20", "25", "30", "35+"), # to adjust MTmin/FD plots
                        guide = guide_colorbar(frame.colour = "black",
                                               ticks.colour = "black",
-                                              title.position = "top",
-                                              barwidth = 0.5, barheight = 4,
-                                              label.theme = element_text(size = 5),
-                                              title.theme = element_text(size = 5))) +
+                                              title.position = "top")) +
   coord_quickmap(expand = c(0, 0), ylim = c(-18.5, -12), xlim = c(-73.5, -68)) +
   theme_bw() + 
   theme(axis.title = element_blank(),
@@ -101,35 +137,34 @@ ggplot() +
         strip.text.y = element_blank(),
         legend.spacing.x = unit(.01, 'cm'),
         legend.spacing.y = unit(.05, 'cm'),
-        legend.margin=margin(t=0)) + 
+        legend.margin=margin(t=0),
+        legend.title = element_text(size = 9),
+        legend.text = element_text(size = 9),
+        legend.key.height =  unit(.45, 'cm'),
+        legend.key.width = unit(.35, 'cm')) + 
     labs(x = "", y = "MTmax") -> mean_MTmax
 
-ggsave(file.path(".", "paper", "output", "Figure_08_mean_MTmax.pdf"),
-       device = "pdf",
-       dpi = 300, scale = .75,
-       width = 10, height = 6, units = "in")
-
-
 ggplot() + 
-  geom_raster(data = grid_df_files[grid_df_files$Variable == "MTmin",], aes(x = x, y = y, fill = value)) +
-  facet_grid(Variable~Product) + 
+  geom_raster(data = grid_df_files_abs[grid_df_files_abs$Variable == "MTmin"  & grid_df_files_abs$Product == "PISCOt v1.2",],
+              aes(x = x, y = y, fill = value)) +
+  facet_grid(~Product) + 
   geom_polygon(data = shp_sa, # water bodies > 10 km^2
                aes(x = long, y = lat, group = group),
-               fill = NA, colour = "black", size = 0.5) +
+               fill = NA, colour = "black", size = 0.4) +
+  geom_polygon(data = shp_peru,
+               aes(x = long, y = lat, group = group),
+               fill = NA, colour = "black", size = 0.4) +
   geom_polygon(data = shp_lakes, # water bodies > 10 km^2
                aes(x = long, y = lat, group = group),
-               fill = "skyblue", colour = "black", size = 0.5) +
+               fill = "skyblue", colour = "black", size = 0.4) +
   scale_fill_gradientn(colors = colorRampPalette(ochRe::ochre_palettes$olsen_seq)(15) %>% rev(),
                        limits = c(-15, 27),
                        breaks = c(-15, -10, -5, 0, 5, 10, 15, 20, 25),
-                       "(°C)",
+                       "°C",
                        labels = function(x) sprintf("%.0f", x),
                        guide = guide_colorbar(frame.colour = "black",
                                               ticks.colour = "black",
-                                              title.position = "top",
-                                              barwidth = 0.5, barheight = 4,
-                                              label.theme = element_text(size = 5),
-                                              title.theme = element_text(size = 5))) +
+                                              title.position = "top")) +
   coord_quickmap(expand = c(0, 0), ylim = c(-18.5, -12), xlim = c(-73.5, -68)) +
   theme_bw() + 
   theme(axis.title = element_blank(),
@@ -146,33 +181,33 @@ ggplot() +
         strip.text = element_blank(),
         legend.spacing.x = unit(.01, 'cm'),
         legend.spacing.y = unit(.05, 'cm'),
-        legend.margin=margin(t=0)) + 
+        legend.margin=margin(t=0),
+        legend.title = element_text(size = 9),
+        legend.text = element_text(size = 9),
+        legend.key.height =  unit(.45, 'cm'),
+        legend.key.width = unit(.35, 'cm')) + 
   labs(x = "", y = "MTmin") -> mean_MTmin
 
-ggsave(file.path(".", "paper", "output", "Figure_08_mean_MTmin.pdf"),
-       device = "pdf",
-       dpi = 300, scale = .75,
-       width = 10, height = 6, units = "in")
-
 ggplot() + 
-  geom_raster(data = grid_df_files[grid_df_files$Variable == "FD",], aes(x = x, y = y, fill = value)) +
+  geom_raster(data = grid_df_files_abs[grid_df_files_abs$Variable == "FD" & grid_df_files_abs$Product == "PISCOt v1.2",], 
+              aes(x = x, y = y, fill = value)) +
   facet_grid(Variable~Product) + 
   geom_polygon(data = shp_sa, # water bodies > 10 km^2
                aes(x = long, y = lat, group = group),
-               fill = NA, colour = "black", size = 0.5) +
+               fill = NA, colour = "black", size = 0.4) +
+  geom_polygon(data = shp_peru,
+               aes(x = long, y = lat, group = group),
+               fill = NA, colour = "black", size = 0.4) +
   geom_polygon(data = shp_lakes, # water bodies > 10 km^2
                aes(x = long, y = lat, group = group),
-               fill = "skyblue", colour = "black", size = 0.5) +
+               fill = "skyblue", colour = "black", size = 0.4) +
   scale_fill_gradientn(colors = colorRampPalette(ochRe::ochre_palettes$williams_pilbara)(15),
                        limits = c(0, 100),
-                       "(%)",
+                       "%",
                        labels = function(x) sprintf("%.0f", x),
                        guide = guide_colorbar(frame.colour = "black",
                                               ticks.colour = "black",
-                                              title.position = "top",
-                                              barwidth = 0.5, barheight = 4,
-                                              label.theme = element_text(size = 5),
-                                              title.theme = element_text(size = 5))) +
+                                              title.position = "top")) +
   coord_quickmap(expand = c(0, 0), ylim = c(-18.5, -12), xlim = c(-73.5, -68)) +
   theme_bw() + 
   theme(axis.title = element_blank(),
@@ -189,8 +224,160 @@ ggplot() +
         strip.text = element_blank(),
         legend.spacing.x = unit(.01, 'cm'),
         legend.spacing.y = unit(.05, 'cm'),
-        legend.margin=margin(t=0)) + 
+        legend.margin=margin(t=0),
+        legend.title = element_text(size = 9),
+        legend.text = element_text(size = 9),
+        legend.key.height =  unit(.45, 'cm'),
+        legend.key.width = unit(.35, 'cm')) + 
   labs(x = "", y = "FD") -> mean_FD
+
+
+MTmax_diff <- grid_df_files_diff[grid_df_files_diff$Variable == "MTmax",]
+MTmax_diff$value_dis <- cut(MTmax_diff$value, breaks = c(-Inf, -6, -4, -2, -1, 1, 2, 4, 6, Inf),
+                            labels = c("(,-6]", "(-6,-4]", "(-4,-2]", "(-2,-1]", "(-1,1]", "(1,2]", "(2,4]", "(4,6]", "(6,]"))
+
+MTmin_diff <- grid_df_files_diff[grid_df_files_diff$Variable == "MTmin",]
+MTmin_diff$value_dis <- cut(MTmin_diff$value, breaks = c(-Inf, -6, -4, -2, -1, 1, 2, 4, 6, Inf),
+                            labels = c("(,-6]", "(-6,-4]", "(-4,-2]", "(-2,-1]", "(-1,1]", "(1,2]", "(2,4]", "(4,6]", "(6,]"))
+
+FD_diff <- grid_df_files_diff[grid_df_files_diff$Variable == "FD",]
+FD_diff$value_dis <- cut(FD_diff$value/10, breaks = c(-Inf, -6, -4, -2, -1, 1, 2, 4, 6, Inf),
+                         labels = c("(,-6]", "(-6,-4]", "(-4,-2]", "(-2,-1]", "(-1,1]", "(1,2]", "(2,4]", "(4,6]", "(6,]"))
+
+ggplot() + 
+  geom_raster(data = MTmax_diff, aes(x = x, y = y, fill = value_dis)) +
+  facet_wrap(~Product,  ncol = 3) + 
+  geom_polygon(data = shp_sa, # water bodies > 10 km^2
+               aes(x = long, y = lat, group = group),
+               fill = NA, colour = "black", size = 0.2) +
+  geom_polygon(data = shp_peru,
+               aes(x = long, y = lat, group = group),
+               fill = NA, colour = "black", size = 0.2) +
+  geom_polygon(data = shp_lakes, # water bodies > 10 km^2
+               aes(x = long, y = lat, group = group),
+               fill = "skyblue", colour = "black", size = 0.2) +
+  scale_fill_manual(values = RColorBrewer::brewer.pal(n = 9, name = 'RdBu') %>% rev(), 
+                    drop = FALSE, "°C", guide = guide_legend(reverse = TRUE)) +
+  coord_quickmap(expand = c(0, 0), ylim = c(-18.5, -12), xlim = c(-73.5, -68)) +
+  theme_bw() + 
+  theme(axis.title = element_blank(),
+        axis.title.x = element_text(size = 9),
+        axis.text.x = element_blank(),
+        axis.title.y = element_text(size = 9),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        legend.box = 'vertical',
+        legend.background = element_blank(),
+        plot.margin=unit(c(-1,0,0,0), "null"),
+        plot.caption = element_blank(),
+        strip.background = element_blank(),
+        strip.text = element_text(size = 9),
+        strip.text.y = element_blank(),
+        legend.spacing.x = unit(.01, 'cm'),
+        legend.spacing.y = unit(.05, 'cm'),
+        legend.margin=margin(t=0),
+        legend.title = element_text(size = 9),
+        legend.text = element_text(size = 9),
+        legend.key.height =  unit(.05, 'cm'),
+        legend.key.width = unit(.3, 'cm')) + 
+  labs(x = "", y = "") -> mean_MTmax_diff
+
+ggplot() + 
+  geom_raster(data = MTmin_diff, aes(x = x, y = y, fill = value_dis)) +
+  facet_wrap(~Product,  ncol = 3) + 
+  geom_polygon(data = shp_sa, # water bodies > 10 km^2
+               aes(x = long, y = lat, group = group),
+               fill = NA, colour = "black", size = 0.2) +
+  geom_polygon(data = shp_peru,
+               aes(x = long, y = lat, group = group),
+               fill = NA, colour = "black", size = 0.2) +
+  geom_polygon(data = shp_lakes, # water bodies > 10 km^2
+               aes(x = long, y = lat, group = group),
+               fill = "skyblue", colour = "black", size = 0.2) +
+  scale_fill_manual(values = RColorBrewer::brewer.pal(n = 9, name = 'RdBu') %>% rev(), 
+                    drop = FALSE, "°C", guide = guide_legend(reverse = TRUE)) +
+  coord_quickmap(expand = c(0, 0), ylim = c(-18.5, -12), xlim = c(-73.5, -68)) +
+  theme_bw() + 
+  theme(axis.title = element_blank(),
+        axis.title.x = element_text(size = 9),
+        axis.text.x = element_blank(),
+        axis.title.y = element_text(size = 9),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        legend.box = 'vertical',
+        legend.background = element_blank(),
+        plot.margin=unit(c(-1,0,0,0), "null"),
+        plot.caption = element_blank(),
+        strip.background = element_blank(),
+        strip.text = element_text(size = 9),
+        strip.text.y = element_blank(),
+        legend.spacing.x = unit(.01, 'cm'),
+        legend.spacing.y = unit(.05, 'cm'),
+        legend.margin=margin(t=0),
+        legend.title = element_text(size = 9),
+        legend.text = element_text(size = 9),
+        legend.key.height =  unit(.05, 'cm'),
+        legend.key.width = unit(.3, 'cm')) + 
+  labs(x = "", y = "") -> mean_MTmin_diff
+
+ggplot() + 
+  geom_raster(data = FD_diff, aes(x = x, y = y, fill = value_dis)) +
+  facet_wrap(~Product,  ncol = 3) + 
+  geom_polygon(data = shp_sa, # water bodies > 10 km^2
+               aes(x = long, y = lat, group = group),
+               fill = NA, colour = "black", size = 0.2) +
+  geom_polygon(data = shp_peru,
+               aes(x = long, y = lat, group = group),
+               fill = NA, colour = "black", size = 0.2) +
+  geom_polygon(data = shp_lakes, # water bodies > 10 km^2
+               aes(x = long, y = lat, group = group),
+               fill = "skyblue", colour = "black", size = 0.2) +
+  scale_fill_manual(values = RColorBrewer::brewer.pal(n = 9, name = 'RdBu') %>% rev(), 
+                    drop = FALSE, "%/10", guide = guide_legend(reverse = TRUE)) +
+  coord_quickmap(expand = c(0, 0), ylim = c(-18.5, -12), xlim = c(-73.5, -68)) +
+  theme_bw() + 
+  theme(axis.title = element_blank(),
+        axis.title.x = element_text(size = 9),
+        axis.text.x = element_blank(),
+        axis.title.y = element_text(size = 9),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        legend.box = 'vertical',
+        legend.background = element_blank(),
+        plot.margin=unit(c(-1,0,0,0), "null"),
+        plot.caption = element_blank(),
+        strip.background = element_blank(),
+        strip.text = element_text(size = 9),
+        strip.text.y = element_blank(),
+        legend.spacing.x = unit(.01, 'cm'),
+        legend.spacing.y = unit(.05, 'cm'),
+        legend.margin=margin(t=0),
+        legend.title = element_text(size = 9),
+        legend.text = element_text(size = 9),
+        legend.key.height =  unit(.05, 'cm'),
+        legend.key.width = unit(.3, 'cm')) + 
+  labs(x = "", y = "") -> mean_FD_diff
+
+library(patchwork)
+
+mean_MTmax + mean_MTmax_diff
+ggsave(file.path(".", "paper", "output", "Figure_08_mean_MTmax.pdf"),
+       device = "pdf",
+       dpi = 300, scale = .75,
+       width = 7.9, height = 4, units = "in")
+
+mean_MTmin + mean_MTmin_diff
+ggsave(file.path(".", "paper", "output", "Figure_08_mean_MTmin.pdf"),
+       device = "pdf",
+       dpi = 300, scale = .75,
+       width = 7.9, height = 4, units = "in")
+
+mean_FD + mean_FD_diff
+ggsave(file.path(".", "paper", "output", "Figure_08_mean_FD.pdf"),
+       device = "pdf",
+       dpi = 300, scale = .75,
+       width = 7.9, height = 4, units = "in")
+
 
 # library(grid)
 # 
@@ -203,14 +390,6 @@ ggplot() +
 # g$grobs <- g$grobs[!pos]
 # g$layout <- g$layout[!pos, ]
 # grid.newpage()
-
-
-ggsave(file.path(".", "paper", "output", "Figure_08_mean_FD.pdf"),
-       plot = mean_FD,
-       device = "pdf",
-       dpi = 300, scale = .75,
-       width = 10, height = 6, units = "in")
-
 
 ###### window moving trend ###### 
 

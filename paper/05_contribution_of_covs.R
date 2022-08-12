@@ -98,32 +98,35 @@ all_propor <- rbind(data.frame(reshape2::melt(data.frame(data.frame(tmax_monthly
                     data.frame(reshape2::melt(data.frame(data.frame(tmin_monthly_relimp,
                                                                     ALL = apply(tmin_monthly_relimp, 1, sum)), id = 1:12), id  = "id"), var = "Tmin"))
 
+months_labels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
 library(ggplot2)
 
 plot_all_pro <- ggplot(subset(all_propor, variable == "ALL"), aes(x = id, y = value, colour = var)) + 
   geom_line() + 
   geom_point(size = 2.2) + 
   scale_colour_manual("",values = c("#ff5454ff", "#3395efff")) + 
-  ylab("R²") + xlab("Month") + theme_bw() + 
-  scale_x_continuous(limits = c(1,12), breaks = 1:12) + 
+  ylab("R²") + xlab("") + theme_bw() + 
+  scale_x_continuous(limits = c(1,12), breaks = 1:12, labels = months_labels) + 
   scale_y_continuous(limits = c(.6, 1), breaks = seq(.6, 1, .1)) + 
   theme(legend.position= c(.1,.25),
         legend.background=element_blank(),
         legend.key = element_blank(),
         plot.margin=grid::unit(c(0,0,0,0), "mm"))
 
-
+# tmax/tmin (order of levels)
 plot_pro_by_cov <- ggplot(subset(all_propor, variable != "ALL"), aes(x = id, y = value, colour = variable)) + 
   geom_line() + 
   geom_point(size = 2.2) + 
-  ylab("Proportion of R²") + xlab("Month") + theme_bw() + 
-  scale_x_continuous(limits = c(1,12), breaks = 1:12) + 
+  ylab("Proportion of R²") + xlab("") + theme_bw() + 
+  scale_x_continuous(limits = c(1,12), breaks = 1:12, labels = months_labels) + 
   scale_y_continuous(limits = c(0, .6), breaks = seq(0, .6, .1)) + 
   theme(legend.position= c(.75,.37)) + 
   theme(legend.title=element_blank())+
   facet_wrap(~var) + 
-  theme(strip.background = element_blank(),
-        strip.text = element_text(size = 13),
+  theme(legend.title = element_blank(),
+        strip.background = element_blank(),
+        strip.text = element_blank(),
         legend.background = element_blank(), 
         legend.direction = "horizontal",
         legend.key = element_blank(),
@@ -135,4 +138,4 @@ cowplot::plot_grid(plot_all_pro, plot_pro_by_cov,
 ggsave(file.path(".", "paper", "output", "Figure_05_contributions_of_covs.pdf"),
        device = "pdf",
        dpi = 500, scale = 0.75,
-       width = 8, height = 6, units = "in")
+       width = 9, height = 6, units = "in")
