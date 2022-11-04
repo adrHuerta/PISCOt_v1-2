@@ -132,7 +132,7 @@ plot_pro_by_cov <- ggplot(subset(all_propor, variable != "ALL"), aes(x = id, y =
         legend.key = element_blank(),
         plot.margin = grid::unit(c(0,0,0,0), "mm")) 
 
-cowplot::plot_grid(plot_all_pro, plot_pro_by_cov,
+cowplot::plot_grid(plot_pro_by_cov, plot_all_pro,
                    ncol = 1)
 
 ggsave(file.path(".", "paper", "output", "Figure_05_contributions_of_covs.pdf"),
