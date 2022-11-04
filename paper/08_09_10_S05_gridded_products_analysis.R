@@ -124,10 +124,10 @@ ggplot() +
   theme_bw() + 
   theme(axis.title = element_blank(),
         axis.title.x = element_text(size = 9),
-        axis.text.x = element_blank(),
+        #axis.text.x = element_blank(),
         axis.title.y = element_text(size = 9),
-        axis.text.y = element_blank(),
-        axis.ticks = element_blank(),
+        #axis.text.y = element_blank(),
+        #axis.ticks = element_blank(),
         legend.box = 'vertical',
         legend.background = element_blank(),
         plot.margin=unit(c(0,0,0,0), "null"),
@@ -169,10 +169,10 @@ ggplot() +
   theme_bw() + 
   theme(axis.title = element_blank(),
         axis.title.x = element_text(size = 9),
-        axis.text.x = element_blank(),
+        #axis.text.x = element_blank(),
         axis.title.y = element_text(size = 9),
-        axis.text.y = element_blank(),
-        axis.ticks = element_blank(),
+        #axis.text.y = element_blank(),
+        #axis.ticks = element_blank(),
         legend.box = 'vertical',
         legend.background = element_blank(),
         plot.margin=unit(c(0,0,0,0), "null"),
@@ -212,10 +212,10 @@ ggplot() +
   theme_bw() + 
   theme(axis.title = element_blank(),
         axis.title.x = element_text(size = 9),
-        axis.text.x = element_blank(),
+        #axis.text.x = element_blank(),
         axis.title.y = element_text(size = 9),
-        axis.text.y = element_blank(),
-        axis.ticks = element_blank(),
+        #axis.text.y = element_blank(),
+        #axis.ticks = element_blank(),
         legend.box = 'vertical',
         legend.background = element_blank(),
         plot.margin=unit(c(0,0,0,0), "null"),
@@ -234,15 +234,18 @@ ggplot() +
 
 MTmax_diff <- grid_df_files_diff[grid_df_files_diff$Variable == "MTmax",]
 MTmax_diff$value_dis <- cut(MTmax_diff$value, breaks = c(-Inf, -6, -4, -2, -1, 1, 2, 4, 6, Inf),
-                            labels = c("(,-6]", "(-6,-4]", "(-4,-2]", "(-2,-1]", "(-1,1]", "(1,2]", "(2,4]", "(4,6]", "(6,]"))
+                            # labels = c("(,-6]", "(-6,-4]", "(-4,-2]", "(-2,-1]", "(-1,1]", "(1,2]", "(2,4]", "(4,6]", "(6,]"))
+                            labels = c("< -6", "-6,-4", "-4,-2", "-2,-1", "-1, 1", " 1, 2", " 2, 4", " 4, 6", "> 6"))
 
 MTmin_diff <- grid_df_files_diff[grid_df_files_diff$Variable == "MTmin",]
 MTmin_diff$value_dis <- cut(MTmin_diff$value, breaks = c(-Inf, -6, -4, -2, -1, 1, 2, 4, 6, Inf),
-                            labels = c("(,-6]", "(-6,-4]", "(-4,-2]", "(-2,-1]", "(-1,1]", "(1,2]", "(2,4]", "(4,6]", "(6,]"))
+                            # labels = c("(,-6]", "(-6,-4]", "(-4,-2]", "(-2,-1]", "(-1,1]", "(1,2]", "(2,4]", "(4,6]", "(6,]"))
+                            labels = c("< -6", "-6,-4", "-4,-2", "-2,-1", "-1, 1", " 1, 2", " 2, 4", " 4, 6", "> 6"))
 
 FD_diff <- grid_df_files_diff[grid_df_files_diff$Variable == "FD",]
 FD_diff$value_dis <- cut(FD_diff$value/10, breaks = c(-Inf, -6, -4, -2, -1, 1, 2, 4, 6, Inf),
-                         labels = c("(,-6]", "(-6,-4]", "(-4,-2]", "(-2,-1]", "(-1,1]", "(1,2]", "(2,4]", "(4,6]", "(6,]"))
+                         # labels = c("(,-6]", "(-6,-4]", "(-4,-2]", "(-2,-1]", "(-1,1]", "(1,2]", "(2,4]", "(4,6]", "(6,]"))
+                         labels = c("< -6", "-6,-4", "-4,-2", "-2,-1", "-1, 1", " 1, 2", " 2, 4", " 4, 6", "> 6"))
 
 ggplot() + 
   geom_raster(data = MTmax_diff, aes(x = x, y = y, fill = value_dis)) +
@@ -579,14 +582,14 @@ ggplot() +
             aes(x = Year, y = sen_value*10, colour = Product, shape = mk_pvalue < 0.05, fill = mk_pvalue < 0.05), 
             alpha = .75, size = 3,
             show.legend = FALSE) +
-  scale_colour_manual(values = pallete_colors) +
+  scale_colour_manual(values = pallete_colors, guide = guide_legend(ncol=2)) +
   scale_shape_manual(values = c(NA, 1)) +
   ylab("Sen trend slope") + xlab("") +
   facet_wrap(~Variable, scales = "free_y", ncol = 2) + 
   theme_bw() + 
   theme(legend.background = element_blank(),
         strip.background = element_blank(),
-        legend.position = c(0.8, 0.225),
+        legend.position = c(0.75, 0.225),
         plot.title=element_text(size=20))
 
 ggsave(file.path(".", "paper", "output", "Figure_09_sen_trend_by_time.pdf"),
@@ -682,12 +685,16 @@ grid_df_files$Product <- factor(grid_df_files$Product,
 pallete_colors = c("#000000", "#E69F00", "#56B4E9", "#009E73",
                    "#0072B2", "#CC79A7")
 
+FD_to_NA <- rownames(grid_df_files[grid_df_files$Variable == "FD" & (grid_df_files$Elevation %in% c(1:6)), ])
+grid_df_files[as.numeric(FD_to_NA),]$slope_median <- NA
+
+
 ggplot() + 
   geom_hline(yintercept = 0, linetype = "dashed", color = "gray20", size=.5) +
   geom_line(data = grid_df_files, 
             aes(x = Elevation, y = slope_median*10, colour = Product), 
             alpha = .75, size = 1.25) +
-  scale_colour_manual(values = pallete_colors) +
+  scale_colour_manual(values = pallete_colors, guide = guide_legend(ncol=2)) +
   scale_x_continuous(breaks = 1:11,
                      labels = c("<500", "500-1000", "1000-1500", 
                                 "1500-2000", "2000-2500", "2500-3000",
@@ -698,7 +705,9 @@ ggplot() +
   theme_bw() + 
   theme(legend.background = element_blank(),
         strip.background = element_blank(),
-        legend.position = c(0.8, 0.2),
+        legend.position = c(0.75, 0.2),
+        legend.margin=margin(-10,-10,10,-10),
+        legend.box.margin=margin(-10,-10,-10,-20),
         axis.text.x = element_text(angle = 30, vjust = 1, hjust=1, size = 7),
         axis.title.y = element_text(size = 9),
         strip.text = element_text(size = 9),
@@ -708,6 +717,39 @@ ggsave(file.path(".", "paper", "output", "Figure_10_sen_trend_by_elevation.pdf")
        device = "pdf",
        dpi = 300, scale = 1,
        width = 7, height = 5, units = "in")
+
+# ############ Figure_S06 ############
+# # as Figure 10 but only FD
+# 
+# ggplot() + 
+#   geom_hline(yintercept = 0, linetype = "dashed", color = "gray20", size=.5) +
+#   geom_line(data = grid_df_files[grid_df_files$Variable == "FD", ], 
+#             aes(x = Elevation, y = slope_median*10, colour = Product), 
+#             alpha = .75, size = 1.25) +
+#   scale_colour_manual(values = pallete_colors, drop = FALSE) +
+#   scale_x_continuous(breaks = 1:11,
+#                      labels = c("<500", "500-1000", "1000-1500", 
+#                                 "1500-2000", "2000-2500", "2500-3000",
+#                                 "3000-3500", "3500-4000", "4000-4500",
+#                                 "4500-5000", ">5000"),
+#                      limits = c(7,11)) +
+#   ylab("Sen trend slope") + xlab("") +
+#   facet_wrap(~Variable, scales = "free_y", ncol = 2) + 
+#   theme_bw() + 
+#   theme(legend.background = element_blank(),
+#         strip.background = element_blank(),
+#         legend.position = "right",
+#         legend.margin=margin(0,10,0,20),
+#         legend.box.margin=margin(-10,-10,-10,-20),
+#         axis.text.x = element_text(size = 7),
+#         axis.title.y = element_text(size = 9),
+#         strip.text = element_text(size = 9),
+#         plot.title=element_text(size=20))
+# 
+# ggsave(file.path(".", "paper", "output", "Figure_S06_sen_trend_by_elevation.pdf"),
+#        device = "pdf",
+#        dpi = 300, scale = 1,
+#        width = 5, height = 3, units = "in")
 
 ############ Figure_S04 #############
 
@@ -723,9 +765,12 @@ ggplot() +
   geom_polygon(data = shp_sa, # water bodies > 10 km^2
                aes(x = long, y = lat, group = group),
                fill = NA, colour = "black", size = 0.5) +
+  geom_polygon(data = shp_peru,
+               aes(x = long, y = lat, group = group),
+               fill = NA, colour = "black", size = 0.2) +
   geom_polygon(data = shp_lakes, # water bodies > 10 km^2
                aes(x = long, y = lat, group = group),
-               fill = "skyblue", colour = "black", size = 0.5) +
+               fill = "skyblue", colour = "black", size = 0.4) +
   scale_fill_gradient2(high = scales::muted("red"),
                        low = scales::muted("blue"),
                        limits = c(-.6, .6),
@@ -771,9 +816,12 @@ ggplot() +
   geom_polygon(data = shp_sa, # water bodies > 10 km^2
                aes(x = long, y = lat, group = group),
                fill = NA, colour = "black", size = 0.5) +
+  geom_polygon(data = shp_peru,
+               aes(x = long, y = lat, group = group),
+               fill = NA, colour = "black", size = 0.2) +
   geom_polygon(data = shp_lakes, # water bodies > 10 km^2
                aes(x = long, y = lat, group = group),
-               fill = "skyblue", colour = "black", size = 0.5) +
+               fill = "skyblue", colour = "black", size = 0.4) +
   scale_fill_gradient2(high = scales::muted("red"),
                        low = scales::muted("blue"),
                        limits = c(-.6, .6),
@@ -824,9 +872,12 @@ ggplot() +
   geom_polygon(data = shp_sa, # water bodies > 10 km^2
                aes(x = long, y = lat, group = group),
                fill = NA, colour = "black", size = 0.5) +
+  geom_polygon(data = shp_peru,
+               aes(x = long, y = lat, group = group),
+               fill = NA, colour = "black", size = 0.2) +
   geom_polygon(data = shp_lakes, # water bodies > 10 km^2
                aes(x = long, y = lat, group = group),
-               fill = "skyblue", colour = "black", size = 0.5) +
+               fill = "skyblue", colour = "black", size = 0.4) +
   scale_fill_gradient2(high = scales::muted("red"),
                        low = scales::muted("blue"),
                        limits = c(-9, 9),
@@ -876,3 +927,7 @@ ggsave(file.path(".", "paper", "output", "Figure_S05_FD.pdf"),
        device = "pdf",
        dpi = 300, scale = .75,
        width = 10, height = 6, units = "in")
+
+
+
+
