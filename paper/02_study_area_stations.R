@@ -174,7 +174,7 @@ dem <- as.data.frame(dem, xy = TRUE) %>%
 shp_peru <- broom::tidy(shp_peru)
 
 qc_points <- rbind(data.frame(qc01$xyz[, colnames(qc01$xyz)], Stations = "Raw"),
-                   data.frame(qc_data$xyz[, colnames(qc01$xyz)], Stations = "To interpolate"))
+                   data.frame(qc_data$xyz[, colnames(qc01$xyz)], Stations = "Interpolation"))
 
 df_countries <- data.frame(LON = c(-78, -72, -70, -67.4),
                            LAT = c(-1,   0,  -7, -15),
@@ -188,12 +188,13 @@ p3 <- ggplot() +
             aes(x = x, y = y, fill = DEM), alpha = .8) +
   scale_fill_gradientn(colors = colorRampPalette(ochRe::ochre_palettes$dead_reef)(10) %>% rev(),
                        na.value= "lightblue",
-                       " Elevation (km)",
+                       "  Elevation (km asl)",
                        guide = guide_colorbar(frame.colour = "black",
                                               ticks.colour = "black",
                                               title.position = "left",
-                                              barheight = 5,
-                                              title.theme = element_text(size = 11,
+                                              order = 2, # display order
+                                              barheight = 6.5,
+                                              title.theme = element_text(size = 10,
                                                                          angle = 90,
                                                                          vjust = 0.5))) +
   geom_polygon(data = shp_sa,
