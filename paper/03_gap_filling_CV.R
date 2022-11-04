@@ -7,7 +7,7 @@ source("./src/process/QC/QC_spatial_neighbors.R")
 source("./src/process/GapFilling/GF_build_neigh_matrix.R")
 source("./src/process/GapFilling/GF_std_dep_imputation_allModel.R")
 
-n_cores = 10
+n_cores = 8
 
 qc_data <- readRDS("./data/processed/obs/qc_output/QC_(plusERA5)_data.RDS")
 
@@ -378,7 +378,7 @@ colnames(results3)[c(1, 2)] <- c("Var", "Type")
 library(ggplot2)
 
 # plots
-cols3 <- rev(colorRampPalette(c("#4682B4", "gray90", "#B47846"))(6))
+cols3 <- colorRampPalette(c("gray90", "#4682B4"))(6)
 
 plt_dr <- results2 %>%
   ggplot() + 
@@ -388,7 +388,7 @@ plt_dr <- results2 %>%
   geom_polygon(data = shp_peru,
                aes(x = long, y = lat, group = group),
                fill = NA, colour = "gray20", size = 0.3) + 
-  geom_point(aes(x = LON, y = LAT, color = IOA_cut), shape = 19, size = 2) + 
+  geom_point(aes(x = LON, y = LAT, color = IOA_cut), shape = 19, size = 1.5) + 
   facet_grid(Type~Var, switch = "y") + 
   #scale_fill_manual(values = cols1) + 
   scale_color_manual(values = cols3, drop = FALSE) +

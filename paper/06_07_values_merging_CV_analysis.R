@@ -26,7 +26,7 @@ stations_CV <- qc_data$xyz[qc_data$xyz@data$filter_qc70 != 0, ]
 
 ####### points for spcv/nospcv #######
 set.seed(2020+1)
-folds_spcv <- spatial_clustering_cv(stations_CV@data, coords = c("LON", "LAT"), v = 10)
+folds_spcv <- spatial_clustering_cv(qc_data$xyz@datastations_CV@data, coords = c("LON", "LAT"), v = 10)
 folds_nospcv <- rsample::vfold_cv(stations_CV@data, v = 10)
 
 
@@ -80,7 +80,7 @@ tmin_nospcv <- file.path(output_anomalies, sprintf("%s/tmin_nospcv_%s.RDS", "tmi
 cold_months <- which(format(time(tmax_obs), "%m") %in% c("04", "05", "06", "07", "08", "09"))
 warm_months <- which(format(time(tmax_obs), "%m") %in% c("10", "11", "12", "01", "02", "03"))
 
-# # spcv
+# # spcv 
 # tmax_spcv_stat_warm <- parallel::mcmapply(function(obs, model){
 #   
 #   openair::modStats(mod = "model", obs = "obs",
@@ -200,15 +200,15 @@ values_cv <-
   transform(ID = rownames(.),
             bias = cut(MB, 
                        breaks = c(-Inf, -3, -2, -1, 1, 2, 3, Inf),
-                       labels = c("< -3", "-3 - -2", "-2 - -1", "-1 - 1", "1 - 2", "2 - 3", "> 3"),
+                       labels = c("< -3", "-3,-2", "-2,-1", "-1, 1", " 1, 2", " 2, 3", "> 3"),
                        right = FALSE),
             MAE = cut(MGE, 
                       breaks = c(0, .5, 1, 1.5, 2, 2.5, 3, Inf),
-                      labels = c("0 - .5", ".5 - 1", "1 - 1.5", "1.5 - 2", "2 - 2.5", "2.5 - 3", "> 3"), 
+                      labels = c("0,0.5", "0.5,1", "1,1.5", "1.5,2", "2,2.5", "2.5,3", "> 3"), 
                       right = FALSE),
             dr = cut(IOA, 
                      breaks = c(-Inf, .5, .6, .7, .8, .9, Inf),
-                     labels = c("< .5", ".5 - .6", ".6 - .7", ".7 - .8", ".8 - .9","> .9"), 
+                     labels = c("< 0.5", "0.5,0.6", "0.6,0.7", "0.7,0.8", "0.8,0.9","> 0.9"), 
                      right = FALSE)) 
 
 # stats
@@ -216,8 +216,8 @@ overall_values <- aggregate(. ~ season + var + cv, data = values_cv[, c(1, 2, 3,
 
 # plots
 cols1 <- colorRampPalette(c("#4682B4", "gray90", "#B47846"))(7)
-cols2 <- colorRampPalette(c("#4682B4", "gray90", "#B47846"))(7)
-cols3 <- rev(colorRampPalette(c("#4682B4", "gray90", "#B47846"))(6))
+cols2 <- colorRampPalette(c("gray90", "#B47846"))(7)
+cols3 <- colorRampPalette(c("gray90", "#4682B4"))(6)
 
 
 library(ggplot2)
@@ -231,7 +231,7 @@ plt_nospcv_bias <- values_cv %>% subset(cv == "nospcv") %>%
   geom_polygon(data = shp_peru,
                aes(x = long, y = lat, group = group),
                fill = NA, colour = "gray20", size = 0.3) + 
-  geom_point(aes(x = LON, y = LAT, color = bias), shape = 19, size = 2) + 
+  geom_point(aes(x = LON, y = LAT, color = bias), shape = 19, size = 1.5) + 
   facet_grid(season~var, switch = "y") + 
   #scale_fill_manual(values = cols1) + 
   scale_color_manual(values = cols1, drop = FALSE) +
@@ -275,7 +275,7 @@ plt_nospcv_MAE <- values_cv %>% subset(cv == "nospcv") %>%
   geom_polygon(data = shp_peru,
                aes(x = long, y = lat, group = group),
                fill = NA, colour = "gray20", size = 0.3) + 
-  geom_point(aes(x = LON, y = LAT, color = MAE), shape = 19, size = 2) + 
+  geom_point(aes(x = LON, y = LAT, color = MAE), shape = 19, size = 1.5) + 
   facet_grid(season~var, switch = "y") + 
   #scale_fill_manual(values = cols2) + 
   scale_color_manual(values = cols2, drop = FALSE) +
@@ -318,7 +318,7 @@ plt_nospcv_dr <- values_cv %>% subset(cv == "nospcv") %>%
   geom_polygon(data = shp_peru,
                aes(x = long, y = lat, group = group),
                fill = NA, colour = "gray20", size = 0.3) + 
-  geom_point(aes(x = LON, y = LAT, color = dr), shape = 19, size = 2) + 
+  geom_point(aes(x = LON, y = LAT, color = dr), shape = 19, size = 1.5) + 
   facet_grid(season~var, switch = "y") + 
   scale_color_manual(values = cols3, drop = FALSE) +
   theme_bw() + 

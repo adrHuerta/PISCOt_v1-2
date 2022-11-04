@@ -183,11 +183,11 @@ normals_cv <-
   transform(ID = rownames(.),
             bias = cut(MB, 
                        breaks = c(-Inf, -3, -2, -1, 1, 2, 3, Inf),
-                       labels = c("< -3", "-3 - -2", "-2 - -1", "-1 - 1", "1 - 2", "2 - 3", "> 3"), 
+                       labels = c("< -3", "-3,-2", "-2,-1", "-1, 1", " 1, 2", " 2, 3", "> 3"), 
                        right = FALSE),
             MAE = cut(MGE, 
                       breaks = c(0, .5, 1, 1.5, 2, 2.5, 3, Inf),
-                      labels = c("0 - .5", ".5 - 1", "1 - 1.5", "1.5 - 2", "2 - 2.5", "2.5 - 3", "> 3"), 
+                      labels = c("0,0.5", "0.5,1", "1,1.5", "1.5,2", "2,2.5", "2.5,3", "> 3"), 
                       right = FALSE))
 
 virtualStat_toDel <- match(rownames(normals_cv)[grepl("point_", rownames(normals_cv))], rownames(normals_cv))
@@ -199,7 +199,7 @@ overall_values <- aggregate(. ~ season + var + cv, data = normals_cv[, c(2, 3, 4
 
 # plots
 cols1 <- colorRampPalette(c("#4682B4", "gray90", "#B47846"))(7)
-cols2 <- colorRampPalette(c("#4682B4", "gray90", "#B47846"))(7)
+cols2 <- colorRampPalette(c("gray90", "#B47846"))(7)
 
 library(ggplot2)
  
@@ -211,7 +211,7 @@ plt_nospcv_bias <- normals_cv %>% subset(cv == "nospcv") %>%
   geom_polygon(data = shp_peru,
                aes(x = long, y = lat, group = group),
                fill = NA, colour = "gray20", size = 0.3) + 
-  geom_point(aes(x = LON, y = LAT, color = bias), shape = 19, size = 2) + 
+  geom_point(aes(x = LON, y = LAT, color = bias), shape = 19, size = 1.5) + 
   facet_grid(season~var, switch = "y") + 
   #scale_fill_manual(values = cols1) + 
   scale_color_manual(values = cols1, drop = FALSE) +
@@ -255,7 +255,7 @@ plt_nospcv_MAE <- normals_cv %>% subset(cv == "nospcv") %>%
   geom_polygon(data = shp_peru,
                aes(x = long, y = lat, group = group),
                fill = NA, colour = "gray20", size = 0.3) + 
-  geom_point(aes(x = LON, y = LAT, color = MAE), shape = 19, size = 2) + 
+  geom_point(aes(x = LON, y = LAT, color = MAE), shape = 19, size = 1.5) + 
   facet_grid(season~var, switch = "y") + 
   #scale_fill_manual(values = cols2) + 
   scale_color_manual(values = cols2, drop = FALSE) +
