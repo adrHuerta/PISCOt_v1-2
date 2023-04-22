@@ -185,15 +185,15 @@ df_chile <- data.frame(LON = c(-69.6),
 
 p3 <- ggplot() + 
   geom_raster(data = dem,
-            aes(x = x, y = y, fill = DEM), alpha = .8) +
-  scale_fill_gradientn(colors = colorRampPalette(ochRe::ochre_palettes$dead_reef)(10) %>% rev(),
+            aes(x = x, y = y, fill = DEM)) +
+  scale_fill_gradientn(colors = terrain.colors(8, alpha = .8)[2:length(terrain.colors(8))],
                        na.value= "lightblue",
-                       "  Elevation (km asl)",
+                       "Elevation (km asl)",
                        guide = guide_colorbar(frame.colour = "black",
                                               ticks.colour = "black",
                                               title.position = "left",
                                               order = 2, # display order
-                                              barheight = 6.5,
+                                              barheight = 5.5,
                                               title.theme = element_text(size = 10,
                                                                          angle = 90,
                                                                          vjust = 0.5))) +
@@ -226,8 +226,12 @@ p3 <- ggplot() +
   labs(x = "", y = "") +
   #theme_linedraw() + 
   theme_bw() + 
+  geom_rect(aes(xmin = -81.3, xmax = -75.5, ymin = -10, ymax = -3.4),
+            fill = "transparent", color = "red", size = .75) +
+  annotate("text", label = "B", x = -75.5, y = -3.1, size = 3, colour = "red") +
   geom_rect(aes(xmin = -73.5, xmax = -68, ymin = -18.5, ymax = -12),
             fill = "transparent", color = "red", size = .75) +
+  annotate("text", label = "A", x = -68, y = -12 + .3, size = 3, colour = "red") +
   theme(axis.title = element_blank(),
         #axis.title.x = element_text(size = 15),
         # axis.text.x = element_blank(),
