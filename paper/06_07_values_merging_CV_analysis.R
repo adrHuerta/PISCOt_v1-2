@@ -217,7 +217,8 @@ overall_values <- aggregate(. ~ season + var + cv, data = values_cv[, c(1, 2, 3,
 # plots
 cols1 <- colorRampPalette(c("#4682B4", "gray90", "#B47846"))(7)
 cols2 <- colorRampPalette(c("gray90", "#B47846"))(7)
-cols3 <- colorRampPalette(c("gray90", "#4682B4"))(6)
+cols3 <- colorRampPalette(c("gray80", "#4682B4"))(5)
+cols3 <- c("lightsalmon", cols3)
 
 
 library(ggplot2)

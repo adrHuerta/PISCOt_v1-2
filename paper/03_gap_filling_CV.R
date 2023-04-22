@@ -378,7 +378,8 @@ colnames(results3)[c(1, 2)] <- c("Var", "Type")
 library(ggplot2)
 
 # plots
-cols3 <- colorRampPalette(c("gray90", "#4682B4"))(6)
+cols3 <- colorRampPalette(c("gray80", "#4682B4"))(5)
+cols3 <- c("lightsalmon", cols3)
 
 plt_dr <- results2 %>%
   ggplot() + 
