@@ -12,7 +12,7 @@ qc_data <- readRDS("./data/processed/obs/qc_output/OBS.RDS")
 
 # stations for cv
 stations_CV <- qc_data$xyz[qc_data$xyz@data$filter_qc70 != 0, ]
-PE116026
+
 ####### points for nospcv #######
 set.seed(2020+1)
 folds_nospcv <- rsample::vfold_cv(stations_CV@data, v = 10)
@@ -150,7 +150,7 @@ data_slope$freq <- factor(data_slope$freq, levels = c("Annual", "Oct.-Mar.", "Ap
 by(data_slope, INDICES = list(data_slope$var, data_slope$freq),
    function(x){
      data.frame(var = unique(x$var), freq = unique(x$freq),
-                y = 0.04, x = 0,
+                y = 0.05, x = 0.07,
        openair::modStats(mod = "slope_model", obs = "slope_obs",
                        mydata = x, 
                        statistic = c("MB", "MGE", "IOA"))
@@ -168,6 +168,8 @@ ggplot2::ggplot() +
               ggplot2::aes(x = slope_obs, y = slope_model), method='lm', formula= y~x, se = FALSE) +
   geom_text(data = stat_slope_summary, aes(x = x, y = y, label = label), parse = TRUE) +
   ggplot2::facet_grid(var~freq) + 
+  ggplot2::geom_hline(yintercept=0, linetype="dashed") +
+  ggplot2::geom_vline(xintercept=0, linetype="dashed") +
   xlab("Observed (°C/year)") + ylab("Estimated (°C/year)") + 
   ggplot2::theme_bw() + 
   ggplot2::theme(legend.box = 'vertical',
