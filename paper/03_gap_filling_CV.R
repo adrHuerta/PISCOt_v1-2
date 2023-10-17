@@ -392,7 +392,7 @@ plt_dr <- results2 %>%
   geom_point(aes(x = LON, y = LAT, color = IOA_cut), shape = 19, size = 1.5) + 
   facet_grid(Type~Var, switch = "y") + 
   #scale_fill_manual(values = cols1) + 
-  scale_color_manual(values = cols3, drop = FALSE) +
+  viridis::scale_color_viridis(direction = -1, discrete = TRUE, drop = FALSE) +
   theme_bw() + 
   theme(axis.title = element_blank(),
         axis.text = element_blank(),

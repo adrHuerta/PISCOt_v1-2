@@ -26,7 +26,7 @@ stations_CV <- qc_data$xyz[qc_data$xyz@data$filter_qc70 != 0, ]
 
 ####### points for spcv/nospcv #######
 set.seed(2020+1)
-folds_spcv <- spatial_clustering_cv(qc_data$xyz@datastations_CV@data, coords = c("LON", "LAT"), v = 10)
+#folds_spcv <- spatial_clustering_cv(qc_data$xyz@datastations_CV@data, coords = c("LON", "LAT"), v = 10)
 folds_nospcv <- rsample::vfold_cv(stations_CV@data, v = 10)
 
 
@@ -321,7 +321,7 @@ plt_nospcv_dr <- values_cv %>% subset(cv == "nospcv") %>%
                fill = NA, colour = "gray20", size = 0.3) + 
   geom_point(aes(x = LON, y = LAT, color = dr), shape = 19, size = 1.5) + 
   facet_grid(season~var, switch = "y") + 
-  scale_color_manual(values = cols3, drop = FALSE) +
+  viridis::scale_color_viridis(direction = -1, discrete = TRUE, drop = FALSE) +
   theme_bw() + 
   theme(axis.title = element_blank(),
         axis.text = element_blank(),
